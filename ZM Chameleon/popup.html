@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+  <head>
+	<title>ZM Chameleon</title>
+	<link rel="stylesheet" href="css/base-stylesheet.css">
+  </head>
+  <body>
+	<div id="top">
+		<img src="icons/Actions-window-close-icon.png" id="closeIcon">
+		<img src="icons\header.png" alt="ZM Chameleon" id="logo" class="center">
+		<hr style="margin-top: -18px;">
+	</div>
+	<div>
+		<table>
+			<tr>
+				<td>
+					<label class="switch">
+						<input type="checkbox" id="hideHeader">
+						<span class="slider round"></span>
+					</label>
+				</td>
+				<td><h4>Hide Header</h4></td>
+			</tr>
+			<tr>
+				<td>
+					<label class="switch">
+						<input type="checkbox" id="toggleMonitors">
+						<span class="slider round"></span>
+					</label>
+				</td>
+				<td><h4 id="sliderText">Monitors Per Row</h4></td>
+			</tr>
+			<tr>
+				<td colspan="3"> 
+					<input type="range" step="1" min="1" max="10" class="mySlider" id="monitorSlider">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label class="switch">
+						<input type="checkbox" id="toggleScroll">
+						<span class="slider round"></span>
+					</label>
+				</td>
+				<td><h4>Hide Scrollbars</h4></td>
+			</tr>
+			<tr>
+				<td>
+					<label class="switch">
+						<input type="checkbox" id="maximizeSingleView">
+						<span class="slider round"></span>
+					</label>
+				</td>
+				<td><h4>Maximize Single View</h4></td>
+			</tr>
+		</table>
+		<hr>
+		<table>
+			<tr>
+				<td>
+					<label class="switch">
+						<input type="checkbox" id="flashAlarm">
+						<span class="slider round"></span>
+					</label>
+				</td>
+				<td><h4>Flash On Alarm</h4></td>
+			</tr>
+			<tr>
+				<td><h4>Width</h4></td>
+				<td colspan="2">
+					<input type="range" step="0.25" min="0" class="mySlider" id="flashWidth">
+				</td>
+			</tr>			
+		</table>
+		<hr>
+		<table>
+			<tr>
+				<td><h4>Grid:</h4></td>
+				<td>
+					<input name="Color Picker" id="colorPicker" type="color">
+				</td>
+			</tr>
+			<tr>
+				<td><h4>Width</h4></td>
+				<td>
+					<input type="range" step="0.25" min="0" class="mySlider" id="gridWidth">
+				</td>
+			</tr>
+		</table>
+		<hr>
+		<table>
+			<tr>
+				<td>
+					<label class="switch smallSwitch">
+						<input type="checkbox" id="invertColors">
+						<span class="smallSlider round"></span>
+					</label>
+				</td>
+				<td><h4>Invert Colors</h4></td>
+			</tr>
+			<tr>
+				<td>
+					<label class="switch smallSwitch">
+						<input type="checkbox" id="dropShadow">
+						<span class="smallSlider round"></span>
+					</label>
+				</td>
+				<td><h4>Monitor Shadows</h4></td>				
+				<td>
+					<input type="color" id="shadowColor" value="#000000">
+				</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td><h4>Border Radius</h4></td>
+				<td>
+					<input type="range" step="1" min="0" max="50" class="mySmallSlider" id="borderRadius">
+				</td>
+			</tr>		
+		</table>
+	</div>
+	<script src="js/popup.js"></script>
+  </body>
+</html>
