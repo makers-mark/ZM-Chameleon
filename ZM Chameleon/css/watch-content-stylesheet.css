@@ -15,7 +15,8 @@
 
 @font-face {
     font-family: digitalFont;
-    src: url('chrome-extension://__MSG_@@extension_id__/fonts/Digital7-1e1Z.ttf'); 
+    src: url('chrome-extension://__MSG_@@extension_id__/fonts/Digital7-1e1Z.ttf');
+    /* font source: https://www.dafont.com/digital-7.font */
 }
 
 #recordDiv {
