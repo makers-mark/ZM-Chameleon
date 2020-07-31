@@ -23,6 +23,8 @@ chrome.runtime.onInstalled.addListener( () => {
 	watchStorageChanges();
 });
 
+//var fontUrl = chrome.runtime.getURL('/fonts/Digital7-1e1Z.ttf');
+
 function loadSettings(){
 	chrome.storage.local.get({
 		customLocation: '',
@@ -97,7 +99,6 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 	var value = Object.getOwnPropertyNames(msg)[0];
 	switch (value){
 		case 'fullscreen':
-			//hideHeader(true);
 			toggleFullscreenFn();
 			break;
 
