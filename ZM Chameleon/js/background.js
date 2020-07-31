@@ -13,9 +13,6 @@ chrome.runtime.onInstalled.addListener( () => {
 					pageUrl: {queryPrefix: 'view=watch'}
 				}),
 				new chrome.declarativeContent.PageStateMatcher({
-					pageUrl: {pathContains: 'index.php'}
-				}),					
-				new chrome.declarativeContent.PageStateMatcher({
 					pageUrl: {queryPrefix: 'view=console'}
 				})
 			],
