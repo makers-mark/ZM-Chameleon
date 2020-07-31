@@ -66,10 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	slider.oninput = () => {
 		sliderText.textContent = slider.value + ' Monitors Per Row';
-		if (toggleMonitors.checked){
-			chrome.storage.local.set({'monitors': parseInt(sliderText.textContent, 10)});
-		}
-	}
+		chrome.storage.local.set({'monitors': parseInt(slider.value, 10)});
+}
 
 	gridWidth.oninput = () => {
 		chrome.storage.local.set({'gridWidth': parseFloat(gridWidth.value)});
