@@ -47,7 +47,7 @@ function loadSettings(){
 		flashSpeed: 0.6,
 		invertColors: false,
 		showFps: true,
-		fpsColor: '#222222',
+		fpsColor: '#ffffff',
 		fpsPosX: 10,
 		fpsPosY: 100,
 		dropShadow: false,
