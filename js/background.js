@@ -62,9 +62,9 @@ function loadSettings(){
 
 function initMontage() {
 	if (settings.monitorOverride) {
-		chrome.tabs.insertCSS({ code: '.monitorFrame {width: ' + parseFloat(100 / settings.monitors) + '% !important;}' });
+		chrome.tabs.insertCSS({ code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}' });
 	} else {
-		chrome.tabs.insertCSS({ code: '.monitorFrame {width: ' + parseFloat(100 / settings.zmMontageLayout) + '% !important;}' });
+		chrome.tabs.insertCSS({ code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}' });
 	}
 	chrome.tabs.insertCSS({ code: 'div.monitorState{display: none !important;}#content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
 }
@@ -209,13 +209,13 @@ const lastError = () => {
 
 function monitorOverride(){
 	if (settings.monitorOverride){
-		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + parseFloat(100/settings.monitors) + '% !important;}'});
+		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}'});
 	} else {
 		if (settings.zmMontageLayout == 1){
 			//freeform is selected in ZoneMinder, so do nothing
 			return;
 		}
-		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + parseFloat(100/settings.zmMontageLayout) + '% !important;}'});
+		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}'});
 	}
 }
 

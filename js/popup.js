@@ -66,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	slider.oninput = () => {
 		sliderText.textContent = slider.value + ' Monitors Per Row';
-		chrome.storage.local.set({'monitors': parseInt(slider.value, 10)});
+		chrome.storage.local.set({'monitors': slider.value});
 }
 
-	gridWidth.oninput = () => chrome.storage.local.set({'gridWidth': parseFloat(gridWidth.value)});
-	flashWidth.oninput = () => chrome.storage.local.set({'flashWidth': parseFloat(flashWidth.value)});
+	gridWidth.oninput = () => chrome.storage.local.set({'gridWidth': gridWidth.value});
+	flashWidth.oninput = () => chrome.storage.local.set({'flashWidth': flashWidth.value});
 });
 
 function cssLoader(toggleDark) {
