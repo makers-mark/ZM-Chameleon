@@ -169,6 +169,9 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 	return true;
 });
 
+const borderRadius = () => chrome.tabs.insertCSS({code: 'img {border-radius: ' + settings.borderRadius + '% !important;}'});
+const gridHandler = () => chrome.tabs.insertCSS({code: 'img {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
+
 function widthMax(){
  	if (settings.gridWidth > settings.widthMax){
 		settings.gridWidth = settings.widthMax;
@@ -203,16 +206,12 @@ const lastError = () => {
 	}
 }
 
-function gridHandler(){
-	chrome.tabs.insertCSS({code: 'img {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
-}
-
 function monitorOverride(){
 	if (settings.monitorOverride){
 		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + parseFloat(100/settings.monitors) + '% !important;}'});
 	} else {
 		if (settings.zmMontageLayout == 1){
-			//freeform is selected in Zoneminder, so do nothing
+			//freeform is selected in ZoneMinder, so do nothing
 			return;
 		}
 		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + parseFloat(100/settings.zmMontageLayout) + '% !important;}'});
@@ -225,10 +224,6 @@ function toggleScroll(){
 	} else {
 		chrome.tabs.insertCSS({code: 'body {overflow: visible !important;}'});
 	}
-}
-
-function borderRadius(){
-	chrome.tabs.insertCSS({code: 'img {border-radius: ' + settings.borderRadius + '% !important;}'});
 }
 
 function filterHandler(){
