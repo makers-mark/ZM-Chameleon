@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     widthMax: 10,
     flashSpeed: 0.6,
     showFps: true,
-    fpsColor: '#222222',
+    fpsColor: '#ffffff',
     lockRecordButton: false
   }, (item) => {
     customLocation.value = item.customLocation;
@@ -48,40 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
     alertOpacityText.textContent = alertOpacity.value;
     chrome.storage.local.set({'alertOpacity': alertOpacity.value});
   }
-
   alarmOpacity.onchange = () => {
     alarmOpacityText.textContent = alarmOpacity.value;
     chrome.storage.local.set({'alarmOpacity': alarmOpacity.value});
   }
-
-  widthMax.onchange = () => {
-    chrome.storage.local.set({'widthMax': widthMax.value});
-  }
-
-  flashSpeed.onchange = () => {
-    chrome.storage.local.set({'flashSpeed': flashSpeed.value});
-  }
-
-  userName.onchange = () => {
-    chrome.storage.local.set({'userName': userName.value});
-  }
-
-  password.onchange = () => {
-    chrome.storage.local.set({'password': password.value});
-  }
-
-  customLocation.onchange = () => {
-    chrome.storage.local.set({'customLocation': customLocation.value});
-  }
-
-  showFps.onchange = () => {
-    chrome.storage.local.set({'showFps': showFps.checked});
-  }
-
-  fpsColor.onchange = () => {
-    chrome.storage.local.set({'fpsColor': fpsColor.value});
-  }
-  lockRecordButton.onchange = () => {
-    chrome.storage.local.set({'lockRecordButton': lockRecordButton.checked});
-  }
+  widthMax.onchange = () => chrome.storage.local.set({'widthMax': widthMax.value});
+  flashSpeed.onchange = () => chrome.storage.local.set({'flashSpeed': flashSpeed.value});
+  userName.onchange = () => chrome.storage.local.set({'userName': userName.value});
+  password.onchange = () => chrome.storage.local.set({'password': password.value});
+  customLocation.onchange = () => chrome.storage.local.set({'customLocation': customLocation.value});
+  showFps.onchange = () => chrome.storage.local.set({'showFps': showFps.checked})
+  fpsColor.onchange = () => chrome.storage.local.set({'fpsColor': fpsColor.value});
+  lockRecordButton.onchange = () =>  chrome.storage.local.set({'lockRecordButton': lockRecordButton.checked});
 })
