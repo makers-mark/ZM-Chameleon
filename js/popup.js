@@ -69,9 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		chrome.storage.local.set({'monitors': parseInt(slider.value, 10)});
 }
 
-	gridWidth.oninput = () => {
-		chrome.storage.local.set({'gridWidth': parseFloat(gridWidth.value)});
-	}
+	gridWidth.oninput = () => chrome.storage.local.set({'gridWidth': parseFloat(gridWidth.value)});
 
 	flashWidth.oninput = () => {
 		if (flashAlarm.checked){
@@ -88,8 +86,7 @@ function cssLoader(toggleDark) {
 
 	if (toggleDark) {
 		link.href = 'css/darkStylesheet.css';
-	}
-	else {
+	} else {
 		link.href = 'css/stylesheet.css';
 	}
 	head.appendChild(link);
