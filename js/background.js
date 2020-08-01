@@ -241,10 +241,10 @@ function filterHandler(){
 
 function flashAlarm(){
 	const flash = () => {
-		chrome.tabs.insertCSS({ code: '@-webkit-keyframes alarm {from, to {outline-color: transparent} 50% {outline-color: rgba(255,0,0,' + settings.alarmOpacity + ')}} img.alarm {outline: ' + settings.flashWidth + 'px solid rgba(255,0,0,' + settings.alarmOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alarm ' + settings.flashSpeed + 's linear infinite;}' }, () => {
+		chrome.tabs.insertCSS({ code: '@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,' + settings.alarmOpacity + ');}} img.alarm {outline: ' + settings.flashWidth + 'px solid rgba(255,0,0,' + settings.alarmOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alarm ' + settings.flashSpeed + 's linear infinite;}' }, () => {
 			lastError();
 		});
-		chrome.tabs.insertCSS({ code: '@-webkit-keyframes alert {from, to {outline-color: transparent} 50% {outline-color: rgba(255,247,28,' + settings.alertOpacity + ')}} img.alert {outline: ' + settings.flashWidth + 'px solid rgba(255,247,28,' + settings.alertOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alert ' + settings.flashSpeed + 's linear infinite;}' }, () => {
+		chrome.tabs.insertCSS({ code: '@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,' + settings.alertOpacity + ');}} img.alert {outline: ' + settings.flashWidth + 'px solid rgba(255,247,28,' + settings.alertOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alert ' + settings.flashSpeed + 's linear infinite;}' }, () => {
 			lastError();
 		});
 	};
