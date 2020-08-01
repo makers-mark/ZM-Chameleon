@@ -21,31 +21,26 @@
 			"exclude_matches": [
 				"*://*/zm/*view=montagereview*"
 			],
-			"js": ["js/montage-content.js"],
-			"all_frames": true
+			"js": ["js/montage-content.js"]
 		},
 		{
 			"matches": [
 				"*://*/zm/*view=login*"
 			],
-			"js": ["js/login-content.js"],
-			"all_frames": true
+			"js": ["js/login-content.js"]
 		},
 		{
 			"matches": [
 				"*://*/zm/*"
 			],
-			"js": ["js/general-content.js"],
-			"all_frames": true
+			"js": ["js/general-content.js"]
 		},		
 		{
 			"matches": [
 				"*://*/zm/*view=watch*"
 			],
 			"js": ["js/watch-content.js"],
-			"css": ["css/watch-content-stylesheet.css"],
-			"all_frames": true,
-			"run_at": "document_idle"
+			"css": ["css/watch-content-stylesheet.css"]
 		}
 	],
 	"background": {
