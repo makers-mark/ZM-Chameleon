@@ -2,10 +2,15 @@
 
   chrome.storage.local.get({
     userName: '',
-    password: ''
+    password: '',
+    obfuscate: false
   }, (item) => {
-    if (item.userName !== ''){
-      document.getElementById('inputUsername').value = item.userName;
+    const user = document.getElementById('inputUsername');
+    if (item.obfuscate){
+      user.type = 'password';
+      user.value = item.userName;
+    } else  if (item.userName !== ''){
+      user.value = item.userName;
     }
     if (item.password !== ''){
       document.getElementById('inputPassword').value = item.password;

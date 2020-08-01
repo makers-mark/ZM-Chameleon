@@ -53,7 +53,8 @@ function loadSettings(){
 		dropShadow: false,
 		shadowColor: '#000000',
 		borderRadius: 0,
-		lockRecordButton: false
+		lockRecordButton: false,
+		obfuscate: false
 		}, (localStorage) => {
 			settings = localStorage;
 	})
@@ -121,7 +122,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			chrome.storage.local.set({'zmMontageLayout': msg.zmMontageLayout});
 			var settingNames = Object.getOwnPropertyNames(settings);
 			for (var name in settingNames){
-				if (settings[settingNames[name]] === true && settingNames[name] !== 'lockRecordButton' && settingNames[name] !== 'showFps' && settingNames[name] !== 'maximizeSingleView' && settingNames[name] !== 'toggleDark' && settingNames[name] !== 'invertColors' && settingNames[name] !== 'dropShadow') {
+				if (settings[settingNames[name]] === true && settingNames[name] !== 'lockRecordButton' && settingNames[name] !== 'showFps' && settingNames[name] !== 'maximizeSingleView' && settingNames[name] !== 'toggleDark' && settingNames[name] !== 'invertColors' && settingNames[name] !== 'dropShadow' && settingNames[name] !== 'obfuscate') {
 					window[settingNames[name]]();
 				}
 			}

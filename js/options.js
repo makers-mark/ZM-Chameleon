@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var fpsColor = document.getElementById('fpsColor');
   var lockRecordButton = document.getElementById('lockRecordButton');
   var versionH3 = document.getElementById('version');
+  var obfuscate = document.getElementById('obfuscate');
   var version = chrome.runtime.getManifest().version;
   if (version.indexOf('.') === -1){version += '.0';}
   versionH3.innerText = 'Version ' + version;
@@ -28,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     flashSpeed: 0.6,
     showFps: true,
     fpsColor: '#ffffff',
-    lockRecordButton: false
+    lockRecordButton: false,
+    obfuscate: false
   }, (item) => {
     customLocation.value = item.customLocation;
     alarmOpacity.value = item.alarmOpacity;
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showFps.checked = item.showFps;
     fpsColor.value = item.fpsColor;
     lockRecordButton.checked = item.lockRecordButton;
+    obfuscate.checked = item.obfuscate;
   });
 
   document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
@@ -62,4 +65,5 @@ document.addEventListener('DOMContentLoaded', () => {
   showFps.onchange = () => chrome.storage.local.set({'showFps': showFps.checked})
   fpsColor.onchange = () => chrome.storage.local.set({'fpsColor': fpsColor.value});
   lockRecordButton.onchange = () =>  chrome.storage.local.set({'lockRecordButton': lockRecordButton.checked});
+  obfuscate.onchange = () => chrome.storage.local.set({'obfuscate': obfuscate.checked});
 })
