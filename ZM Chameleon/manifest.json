@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ZM Chameleon",
 	"description": "This extension is designed to make the Zoneminder viewing experience better!",
-	"version": "1",
+	"version": "1.0.1",
 	"permissions": [
 		"activeTab",
 		"storage",

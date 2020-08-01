@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   var fpsColor = document.getElementById('fpsColor');
   var lockRecordButton = document.getElementById('lockRecordButton');
   var versionH3 = document.getElementById('version');
-  versionH3.innerText = 'Version ' + chrome.runtime.getManifest().version;
+  var version = chrome.runtime.getManifest().version;
+  if (version.indexOf('.') === -1){version += '.0';}
+  versionH3.innerText = 'Version ' + version;
 
   chrome.storage.local.get({
     customLocation: '',
