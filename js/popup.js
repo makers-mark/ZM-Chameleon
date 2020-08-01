@@ -70,12 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 	gridWidth.oninput = () => chrome.storage.local.set({'gridWidth': parseFloat(gridWidth.value)});
-
-	flashWidth.oninput = () => {
-		if (flashAlarm.checked){
-			chrome.storage.local.set({'flashWidth': parseFloat(flashWidth.value)});
-		}
-	}
+	flashWidth.oninput = () => chrome.storage.local.set({'flashWidth': parseFloat(flashWidth.value)});
 });
 
 function cssLoader(toggleDark) {
