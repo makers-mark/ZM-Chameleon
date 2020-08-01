@@ -31,20 +31,20 @@ document.addEventListener('DOMContentLoaded', () => {
     fpsColor: '#ffffff',
     lockRecordButton: false,
     obfuscate: false
-  }, (item) => {
-    customLocation.value = item.customLocation;
-    alarmOpacity.value = item.alarmOpacity;
-    alertOpacity.value = item.alertOpacity;
-    userName.value = item.userName;
-    password.value = item.password;
-    widthMax.value = item.widthMax;
-    flashSpeed.value = item.flashSpeed;
-    alertOpacityText.textContent = item.alertOpacity;
-    alarmOpacityText.textContent = item.alarmOpacity;
-    showFps.checked = item.showFps;
-    fpsColor.value = item.fpsColor;
-    lockRecordButton.checked = item.lockRecordButton;
-    obfuscate.checked = item.obfuscate;
+  }, (settings) => {
+    customLocation.value = settings.customLocation;
+    alarmOpacity.value = settings.alarmOpacity;
+    alertOpacity.value = settings.alertOpacity;
+    userName.value = settings.userName;
+    password.value = settings.password;
+    widthMax.value = settings.widthMax;
+    flashSpeed.value = settings.flashSpeed;
+    alertOpacityText.textContent = settings.alertOpacity;
+    alarmOpacityText.textContent = settings.alarmOpacity;
+    showFps.checked = settings.showFps;
+    fpsColor.value = settings.fpsColor;
+    lockRecordButton.checked = settings.lockRecordButton;
+    obfuscate.checked = settings.obfuscate;
   });
 
   document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
