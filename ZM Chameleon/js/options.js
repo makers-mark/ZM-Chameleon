@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   var showFps = document.getElementById('showFps');
   var fpsColor = document.getElementById('fpsColor');
   var lockRecordButton = document.getElementById('lockRecordButton');
+  var versionH3 = document.getElementById('version');
+  versionH3.innerText = 'Version ' + chrome.runtime.getManifest().version;
 
   chrome.storage.local.get({
     customLocation: '',

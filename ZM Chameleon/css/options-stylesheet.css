@@ -13,6 +13,14 @@ body {
     cursor: ew-resize;
 }
 
+h3, h4, a, input {
+    margin: 0em .5em;
+}
+
+h3.warning {
+    margin: 2em;
+}
+
 button#save {
     width: 100px;
     height: 25px;
