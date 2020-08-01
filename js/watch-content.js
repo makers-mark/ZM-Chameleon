@@ -85,12 +85,12 @@ if (ref.indexOf('view=montage') > 0){
             if (recordButton.classList.contains('recording')){
                 if (recordButton.classList.contains('alerting')){
                     recordDiv.className = recordButton.className = 'recording';
-                    forceAlarm.click();                    
-                    return;
+                    forceAlarm.click();
+                } else {
+                    recordDiv.className = 'notRecording'
+                    recordButton.className = 'alerting';
+                    cancelAlarm.click();
                 }
-                recordDiv.className = 'notRecording'
-                recordButton.className = 'alerting';
-                cancelAlarm.click();
             } else {
                 recordDiv.className = recordButton.className = 'recording';
                 forceAlarm.click();
