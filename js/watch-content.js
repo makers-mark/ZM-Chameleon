@@ -84,6 +84,8 @@ if (ref.indexOf('view=montage') > 0){
         recordDiv.addEventListener('click', () => {
             if (recordButton.classList.contains('recording')){
                 if (recordButton.classList.contains('alerting')){
+                    recordDiv.className = recordButton.className = 'recording';
+                    forceAlarm.click();                    
                     return;
                 }
                 recordDiv.className = 'notRecording'
