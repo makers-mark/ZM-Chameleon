@@ -157,8 +157,8 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 						'y': [msg.monitorName].y || 0,
 					}
 				}, (obj) => {
-						callback({obj: obj, showFps: settings.showFps, fpsColor: settings.fpsColor, x: settings.fpsPosX, y: settings.fpsPosY, lockRecordButton: settings.lockRecordButton});
-						filterHandler();
+					callback({obj: obj, showFps: settings.showFps, fpsColor: settings.fpsColor, x: settings.fpsPosX, y: settings.fpsPosY, lockRecordButton: settings.lockRecordButton});
+					filterHandler();
 				});
 			} else {
 				callback();
