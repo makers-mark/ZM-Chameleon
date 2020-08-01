@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ZM Chameleon Options</title>
+    <link rel="stylesheet" href="css/options-stylesheet.css">
+  </head>
+  <body>
+    <div>
+      <h2>ZM Chameleon</h2>
+      <h3>Written by Joe Fornecker</h3>
+      <h3>fornecker.joseph@gmail.com</h3>
+      <h3 id="version"></h3>
+      <a href="https://github.com/makers-mark/ZM-Chameleon">
+        Link to github page https://github.com/makers-mark/ZM-Chameleon
+      </a>
+      <hr>
+    </div>
+    <div>
+      <h2>The opacity and flash speed options below will require a refresh (F5) of the Zoneminder page to take effect.</h2>
+      <h3>Alarm Opacity: <span id="alarmOpacityText"></span></h3>
+      <input type="range" step="0.05" class="optionsSlider" min="0" max="1" id="alarmOpacity">
+      <br>
+      <div>
+        <h3>Alert Opacity: <span id="alertOpacityText"></span></h3>
+      </div>
+      <input type="range" step="0.05" class="optionsSlider" min="0" max="1" id="alertOpacity">
+      <h3>Flashing animation speed (seconds):<input type="number" class="smallNumber" id="flashSpeed" min="0" step="0.01"></h3>
+      <h4>(default is 0.6 seconds, and setting this to 0 will disable the flash animation)</h4>
+      <hr>
+      <h3>By default the max range for the grid width and flash on alarm width is 10. You can change that here.
+        <input type="number" min="1" id="widthMax" class="smallNumber">
+      </h3>
+      <hr>
+      <h3>Custom 'Url-contains' that matches pages that this extension should be run on:<input id="customLocation"></input></h3>
+      <h4>Examples: 'https://192.168.0.2/zm' OR 'zm'</h4>
+      <hr>
+      <h3><input type="checkbox" id="showFps">Show FPS</h3>
+      <h3><input type="checkbox" id="lockRecordButton">Lock the record button positions on all monitors</h3>
+      <input type="color" id="fpsColor">
+      <hr>
+      <h3>You can use the two fields below to autofill the user and password at the login screen.</h3>
+      <h3 class="warning">This is NOT recommended because the information is stored in local storage on your computer.<br></h3>
+      <h3>Do not use unless you understand the inherrent risks. For example, any person that uses your computer can access this data in plain text with the debugger.</h3>
+      <h3>User: <span><input type="password" id="userName"></input></span></h3>
+      <h3>Password: <span><input type="password" id="password"></input></span></h3>
+      <hr>
+      <div>
+        <h3>Clearing storage will set the extension back to default values.
+          <button id="clearStorage">Clear Storage</button>
+        </h3>
+      </div>
+    </div>
+    <script src="js/options.js"></script>
+  </body>
+</html>

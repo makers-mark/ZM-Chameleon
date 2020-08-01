@@ -1,0 +1,201 @@
+body {
+	overflow: hidden;
+	width: auto;
+    height: auto;
+    opacity: .86;
+    margin: 0;
+}
+
+.mySlider {
+    width: 96%;
+    margin: 2px 0px 0px 0px;
+}
+
+.mySmallSlider {
+    width: 96%;
+    margin: 2px 0px 0px 0px;
+    height: 13px;
+}
+
+input[type='range'] {
+    -webkit-appearance: none;
+    outline: none;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+    border-radius: 20px;
+    -webkit-appearance: none;
+    height: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+}
+
+input[type='range']::-webkit-slider-thumb {
+    width: 17px;
+    height: 17px;
+    border-radius: 17px;
+    border: .5px solid black;
+    -webkit-appearance: none;
+    margin-top: 1px;
+    cursor: ew-resize;
+}
+
+hr {
+    height: 2px;
+    border: none;
+    margin: 2px 0px 0px 0px;
+}
+
+h4, label.switch {
+    text-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+    margin: 2px 0px 0px 0px;
+}
+
+div {
+    white-space: nowrap;
+}
+
+#closeIcon {
+	position: absolute;
+	top: 0;
+    right: 0;
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+#colorPicker{
+	padding: 0px; 
+	width: 96%;
+	height: 22px;
+	border: none;
+    margin: 0px;
+}
+
+#shadowColor{
+	padding: 0px; 
+	width: 30px;
+	height: 22px;
+	border: none;
+    margin: 0px;
+}
+
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 99%;
+	opacity: .9;
+    margin-top: -8px;
+    visibility: visible;
+}
+
+/*
+Most of this below was taken from:
+https://www.w3schools.com/howto/howto_js_rangeslider.asp
+*/
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.smallSwitch {
+    position: relative;
+    display: inline-block;
+    width:40px;
+    height: 12px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: .4s;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+    background-color: #ffff80; 
+}
+
+.smallSlider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: .4s;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+    background-color: #ffff80; 
+}
+
+input[type="number"]{
+    width: 3em;
+}
+
+.slider::before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    top: 1px;
+    left: 1px;
+    border: .5px black solid;
+}
+
+.smallSlider::before {
+    position: absolute;
+    content: "";
+    height: 8px;
+    width: 8px;
+    top: 0px;
+    left: 0px;
+    border: .5px black solid;
+}
+
+input:checked + .slider::before {
+    transform: translateX(20px);
+    transition: .3s;    
+}
+
+input:checked + .smallSlider::before {
+    transform: translateX(28px);
+    transition: .2s;
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 20px;
+    border: #333333 1px solid;
+}
+
+.smallSlider.round {
+    border-radius: 10px;
+    border: #333333 .5px solid;
+}
+
+.slider.round::before {
+    border-radius: 50%;
+}
+
+.smallSlider.round::before {
+    border-radius: 50%;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+}
