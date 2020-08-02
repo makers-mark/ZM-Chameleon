@@ -1,6 +1,7 @@
 "use strict";
 
 var settings = {};
+var tabId = null;
 
 chrome.runtime.onInstalled.addListener( () => {
 	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
@@ -94,6 +95,9 @@ function changeDeclarativeContent(customLocation){
 }
 
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
+	if (!tabId && sender.tab){
+		tabId = sender.tab.id;
+	}
 	var value = Object.getOwnPropertyNames(msg)[0];
 	switch (value){
 		case 'fullscreen':
@@ -238,10 +242,10 @@ function filterHandler(){
 
 function flashAlarm(){
 	const flash = () => {
-		chrome.tabs.insertCSS({ code: '@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,' + settings.alarmOpacity + ');}} img.alarm {outline: ' + settings.flashWidth + 'px solid rgba(255,0,0,' + settings.alarmOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alarm ' + settings.flashSpeed + 's linear infinite;}' }, () => {
+		chrome.tabs.insertCSS(tabId, {code: '@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,' + settings.alarmOpacity + ');}} img.alarm {outline: ' + settings.flashWidth + 'px solid rgba(255,0,0,' + settings.alarmOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alarm ' + settings.flashSpeed + 's linear infinite;}' }, () => {
 			lastError();
 		});
-		chrome.tabs.insertCSS({ code: '@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,' + settings.alertOpacity + ');}} img.alert {outline: ' + settings.flashWidth + 'px solid rgba(255,247,28,' + settings.alertOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alert ' + settings.flashSpeed + 's linear infinite;}' }, () => {
+		chrome.tabs.insertCSS(tabId, {code: '@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,' + settings.alertOpacity + ');}} img.alert {outline: ' + settings.flashWidth + 'px solid rgba(255,247,28,' + settings.alertOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alert ' + settings.flashSpeed + 's linear infinite;}' }, () => {
 			lastError();
 		});
 	};
@@ -311,6 +315,9 @@ function watchStorageChanges(){
 
 				case 'flashAlarm':
 				case 'flashWidth':
+				case 'alertOpacity':
+				case 'alarmOpacity':
+				case 'flashSpeed':
 					settings[value] = change[value].newValue;
 					flashAlarm();
 			}
