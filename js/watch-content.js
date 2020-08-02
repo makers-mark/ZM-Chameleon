@@ -50,7 +50,7 @@ if (ref.indexOf('view=montage') > 0){
         recordDiv.style.top = y + 'px';
         recordDiv.style.left = x + 'px';
         recordDiv.id = 'recordDiv';
-        if (!lockRecordButton) {recordDiv.draggable = true;}
+        recordDiv.draggable = !lockRecordButton;
         if (recording){
             recordDiv.className = recordButton.className = 'recording';
         } else {
