@@ -3,7 +3,8 @@ body {
 	width: auto;
     height: auto;
     opacity: .86;
-    margin: 0;
+    margin: 2px 2px 8px 2px;
+    background-color: black;
 }
 
 .mySlider {
@@ -62,6 +63,8 @@ div {
     height: 24px;
     z-index: 1;
     cursor: pointer;
+    margin-top: 2px;
+    margin-right: 1px;
 }
 
 #colorPicker{

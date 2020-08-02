@@ -132,9 +132,7 @@ if (ref.indexOf('view=montage') > 0){
         window.close();
     };
 } else {
-    chrome.runtime.sendMessage({fullscreenWatch: false}, (re) => {
-        //console.log(re);
-    });
+    chrome.runtime.sendMessage({fullscreenWatch: false}, (re) => {});
     //The page was navigated to from the console screen which opens in the
     //same window, so don't close it and just go back.
     document.ondblclick = (e) => {

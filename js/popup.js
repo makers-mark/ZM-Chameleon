@@ -58,19 +58,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	})
 
 	logo.addEventListener('click', () => {
-		chrome.storage.local.get('toggleDark', (toggleDark) => {
-			chrome.storage.local.set({'toggleDark': !toggleDark.toggleDark});
+		chrome.storage.local.get({toggleDark: false}, (toggleDark) => {
+			chrome.storage.local.set({toggleDark: !toggleDark.toggleDark});
 			cssLoader(!toggleDark.toggleDark);
 		});		
 	});	
 
 	slider.oninput = () => {
 		sliderText.textContent = slider.value + ' Monitors Per Row';
-		chrome.storage.local.set({'monitors': slider.value});
-}
+		chrome.storage.local.set({monitors: slider.value});
+	}
 
-	gridWidth.oninput = () => chrome.storage.local.set({'gridWidth': gridWidth.value});
-	flashWidth.oninput = () => chrome.storage.local.set({'flashWidth': flashWidth.value});
+	gridWidth.oninput = () => chrome.storage.local.set({gridWidth: gridWidth.value});
+	flashWidth.oninput = () => chrome.storage.local.set({flashWidth: flashWidth.value});
 });
 
 function cssLoader(toggleDark) {

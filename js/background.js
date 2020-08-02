@@ -107,7 +107,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 
 		case 'zmMontageChanged':
 			settings.zmMontageLayout = msg.value;
-			chrome.storage.local.set({'zmMontageLayout': msg.value});
+			chrome.storage.local.set({zmMontageLayout: msg.value});
 			break;
 
 		case 'popupOpen':
@@ -138,7 +138,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 
 		case 'montageOpen':
 			settings.zmMontageLayout = msg.zmMontageLayout || 3;
-			chrome.storage.local.set({'zmMontageLayout': msg.zmMontageLayout});
+			chrome.storage.local.set({zmMontageLayout: msg.zmMontageLayout});
 			var settingNames = Object.getOwnPropertyNames(settings);
 			for (var name in settingNames){
 				if (typeof window[settingNames[name]] == 'function' && settings[settingNames[name]] === true && settingNames[name] !== 'maximizeSingleView') {
@@ -154,8 +154,8 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 		case "setMonitor":
 			chrome.storage.local.set({
 				[msg.monitorName]: {
-					'x': msg.positionX,
-					'y': msg.positionY
+					x: msg.positionX,
+					y: msg.positionY
 				}
 			});
 			break;
@@ -173,8 +173,8 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 				chrome.windows.getCurrent( (window) => chrome.windows.update(window.id, {state: 'fullscreen'}));
 				chrome.storage.local.get({
 					[msg.monitorName]: {
-						'x': [msg.monitorName].x || 0,
-						'y': [msg.monitorName].y || 0,
+						x: [msg.monitorName].x || 0,
+						y: [msg.monitorName].y || 0,
 					}
 				}, (obj) => {
 					callback({obj: obj,
