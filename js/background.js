@@ -53,7 +53,8 @@ function loadSettings(){
 		shadowColor: '#000000',
 		borderRadius: 0,
 		lockRecordButton: false,
-		obfuscate: false
+		obfuscate: false,
+		disableRecordOnAlert: true
 		}, (localStorage) => {
 			settings = localStorage;
 	})
@@ -110,7 +111,23 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			break;
 
 		case 'popupOpen':
-			callback(settings);
+			callback({
+				hideHeader: settings.hideHeader,
+				toggleDark: settings.toggleDark,
+				widthMax: settings.widthMax,
+				monitorOverride: settings.monitorOverride,
+				monitors: settings.monitors,
+				gridColor: settings.gridColor,
+				gridWidth: settings.gridWidth,
+				toggleScroll: settings.toggleScroll,
+				flashAlarm: settings.flashAlarm,
+				flashWidth: settings.flashWidth,
+				maximizeSingleView: settings.maximizeSingleView,
+				invertColors: settings.invertColors,
+				dropShadow: settings.dropShadow,
+				shadowColor: settings.shadowColor,
+				borderRadius: settings.borderRadius
+			});
 			break;
 
 		case 'clearStorage':
@@ -120,18 +137,18 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			break;
 
 		case 'montageOpen':
-			settings.zmMontageLayout = msg.zmMontageLayout;
+			settings.zmMontageLayout = msg.zmMontageLayout || 3;
 			chrome.storage.local.set({'zmMontageLayout': msg.zmMontageLayout});
 			var settingNames = Object.getOwnPropertyNames(settings);
 			for (var name in settingNames){
-				if (settings[settingNames[name]] === true && settingNames[name] !== 'lockRecordButton' && settingNames[name] !== 'showFps' && settingNames[name] !== 'maximizeSingleView' && settingNames[name] !== 'toggleDark' && settingNames[name] !== 'invertColors' && settingNames[name] !== 'dropShadow' && settingNames[name] !== 'obfuscate') {
+				if (typeof window[settingNames[name]] == 'function' && settings[settingNames[name]] === true && settingNames[name] !== 'maximizeSingleView') {
 					window[settingNames[name]]();
 				}
 			}
+			initMontage();			
 			filterHandler();
 			gridHandler();
 			borderRadius();
-			initMontage();
 			break;
 
 		case "setMonitor":
@@ -160,7 +177,14 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 						'y': [msg.monitorName].y || 0,
 					}
 				}, (obj) => {
-					callback({obj: obj, showFps: settings.showFps, fpsColor: settings.fpsColor, x: settings.fpsPosX, y: settings.fpsPosY, lockRecordButton: settings.lockRecordButton});
+					callback({obj: obj,
+						showFps: settings.showFps,
+						fpsColor: settings.fpsColor,
+						x: settings.fpsPosX,
+						y: settings.fpsPosY,
+						lockRecordButton: settings.lockRecordButton,
+						disableRecordOnAlert: settings.disableRecordOnAlert
+					});
 					filterHandler();
 				});
 			} else {

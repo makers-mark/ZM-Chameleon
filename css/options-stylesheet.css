@@ -14,11 +14,7 @@ body {
 }
 
 h3, h4, input  {
-    margin: .45em;
-}
-
-input[type="checkbox"] {
-    margin: 0em;
+    margin: .45em .45em .45em 0em;
 }
 
 h3.warning {

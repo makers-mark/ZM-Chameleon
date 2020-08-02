@@ -6,6 +6,7 @@ var showFps;
 var cancelAlarm = document.getElementById('cancelAlarmLink');
 var forceAlarm = document.getElementById('forceAlarmLink');
 var lockRecordButton = false;
+var disableRecordOnAlert = true;
 
 if (ref.indexOf('view=montage') > 0){
     var recordDiv;
@@ -84,11 +85,11 @@ if (ref.indexOf('view=montage') > 0){
         recordDiv.addEventListener('click', () => {
             if (recordButton.classList.contains('recording')){
                 if (recordButton.classList.contains('alerting')){
+                    if (disableRecordOnAlert){return;}
                     recordDiv.className = recordButton.className = 'recording';
                     forceAlarm.click();
                 } else {
-                    recordDiv.className = 'notRecording'
-                    recordButton.className = 'alerting';
+                    recordDiv.className = recordButton.className = 'notRecording';
                     cancelAlarm.click();
                 }
             } else {
@@ -100,6 +101,7 @@ if (ref.indexOf('view=montage') > 0){
 
     chrome.runtime.sendMessage({fullscreenWatch: true, monitorName: monitorName}, (msg) =>{
         lockRecordButton = msg.lockRecordButton;
+        disableRecordOnAlert = msg.disableRecordOnAlert;
         if (forceAlarm && cancelAlarm){
             placeDiv(0, msg.obj[monitorName].x, msg.obj[monitorName].y);
             const recording = document.getElementById('stateValue');

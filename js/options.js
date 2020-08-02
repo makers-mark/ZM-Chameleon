@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var lockRecordButton = document.getElementById('lockRecordButton');
   var versionH3 = document.getElementById('version');
   var obfuscate = document.getElementById('obfuscate');
+  var disableRecordOnAlert = document.getElementById('disableRecordOnAlert');
   var version = chrome.runtime.getManifest().version;
   if (version.indexOf('.') === -1){version += '.0';}
   versionH3.innerText = 'Version ' + version;
@@ -30,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     showFps: true,
     fpsColor: '#ffffff',
     lockRecordButton: false,
-    obfuscate: false
+    obfuscate: false,
+    disableRecordOnAlert: true
   }, (settings) => {
     customLocation.value = settings.customLocation;
     alarmOpacity.value = settings.alarmOpacity;
@@ -45,25 +47,27 @@ document.addEventListener('DOMContentLoaded', () => {
     fpsColor.value = settings.fpsColor;
     lockRecordButton.checked = settings.lockRecordButton;
     obfuscate.checked = settings.obfuscate;
+    disableRecordOnAlert.checked = settings.disableRecordOnAlert;
   });
 
   document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
 
   alertOpacity.onchange = () => {
     alertOpacityText.textContent = alertOpacity.value;
-    chrome.storage.local.set({'alertOpacity': alertOpacity.value});
+    chrome.storage.local.set({alertOpacity: alertOpacity.value});
   }
   alarmOpacity.onchange = () => {
     alarmOpacityText.textContent = alarmOpacity.value;
-    chrome.storage.local.set({'alarmOpacity': alarmOpacity.value});
+    chrome.storage.local.set({alarmOpacity: alarmOpacity.value});
   }
-  widthMax.onchange = () => chrome.storage.local.set({'widthMax': widthMax.value});
-  flashSpeed.onchange = () => chrome.storage.local.set({'flashSpeed': flashSpeed.value});
-  userName.onchange = () => chrome.storage.local.set({'userName': userName.value});
-  password.onchange = () => chrome.storage.local.set({'password': password.value});
-  customLocation.onchange = () => chrome.storage.local.set({'customLocation': customLocation.value});
-  showFps.onchange = () => chrome.storage.local.set({'showFps': showFps.checked})
-  fpsColor.onchange = () => chrome.storage.local.set({'fpsColor': fpsColor.value});
-  lockRecordButton.onchange = () =>  chrome.storage.local.set({'lockRecordButton': lockRecordButton.checked});
-  obfuscate.onchange = () => chrome.storage.local.set({'obfuscate': obfuscate.checked});
+  widthMax.onchange = () => chrome.storage.local.set({widthMax: widthMax.value});
+  flashSpeed.onchange = () => chrome.storage.local.set({flashSpeed: flashSpeed.value});
+  userName.onchange = () => chrome.storage.local.set({userName: userName.value});
+  password.onchange = () => chrome.storage.local.set({password: password.value});
+  customLocation.onchange = () => chrome.storage.local.set({customLocation: customLocation.value});
+  showFps.onchange = () => chrome.storage.local.set({showFps: showFps.checked})
+  fpsColor.onchange = () => chrome.storage.local.set({fpsColor: fpsColor.value});
+  lockRecordButton.onchange = () =>  chrome.storage.local.set({lockRecordButton: lockRecordButton.checked});
+  obfuscate.onchange = () => chrome.storage.local.set({obfuscate: obfuscate.checked});
+  disableRecordOnAlert.onchange = () => chrome.storage.local.set({disableRecordOnAlert: disableRecordOnAlert.checked});
 })
