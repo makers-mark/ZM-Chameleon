@@ -248,15 +248,15 @@ function toggleScroll(){
 	}
 }
 
-function filterHandler(sender){
+function filterHandler(sender = tabId){
 	if (settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
 	} else if (settings.dropShadow && !settings.invertColors){
-		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
 	} else if (!settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img {filter: invert(1) !important;}'});
 	} else {
-		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: none !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img {filter: none !important;}'});
 	}
 }
 
