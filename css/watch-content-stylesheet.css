@@ -21,6 +21,7 @@
 
 #recordDiv {
     font-family: digitalfont;
+    user-select: none; /* Fix for Edge turning the whole screen blue because of a slight click/drag */
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
     color: darkred;
     display: flex;
