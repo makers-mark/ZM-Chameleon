@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
   var disableRecordOnAlert = document.getElementById('disableRecordOnAlert');
   var recordButton = document.getElementById('recordButton');
   var recordDiv = document.getElementById('recordDiv');
-
   document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
   var version = chrome.runtime.getManifest().version;
   if (version.indexOf('.') === -1){version += '.0';}
