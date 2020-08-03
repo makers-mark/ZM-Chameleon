@@ -3,6 +3,7 @@
   <head>
     <title>ZM Chameleon Options</title>
     <link rel="stylesheet" href="css/options-stylesheet.css">
+    <link rel="stylesheet" href="css/watch-content-stylesheet.css">
   </head>
   <body>
     <div>
@@ -38,8 +39,15 @@
       <hr>
       <h3>Fps Color <input type="color" id="fpsColor"></h3>
       <h3><input type="checkbox" id="showFps">Show FPS</h3>
-      <h3><input type="checkbox" id="lockRecordButton">Lock the record button positions on all monitors</h3>
+      <h3><input type="checkbox" id="lockRecordButton">Lock the record button position on all monitors</h3>
       <h3><input type="checkbox" id="disableRecordOnAlert">Disable the record button in 'Alert/yellow' mode</h3>
+      <h3>Record button size in pixels
+        <input type="number" min="1" id="recordButtonSize" class="smallNumber" value="70">
+        (Click the button to see the true scaled size) 
+      </h3>
+      <div id="recordDiv" class="Idle">
+        <button id="recordButton" class="Idle"></button>REC
+      </div>
       <hr>
       <h3>You can use the two fields below to autofill the user and password at the login screen.</h3>
       <h3 class="warning">This is NOT recommended because the information is stored in local storage on your computer.<br></h3>

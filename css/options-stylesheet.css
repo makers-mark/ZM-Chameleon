@@ -13,19 +13,16 @@ body {
     cursor: ew-resize;
 }
 
+button#recordButton {
+    outline: none !important;
+}
+
 h3, h4, input  {
     margin: .45em .45em .45em 0em;
 }
 
 h3.warning {
     margin: 1.2em;
-}
-
-button#save {
-    width: 100px;
-    height: 25px;
-    background-color: green;
-    border-radius: 15px;
 }
 
 .smallNumber {
@@ -42,7 +39,7 @@ button#save {
     cursor: not-allowed;
 }
 
-button {
+button#clearStorage {
     border: 2px solid #3474eb;
     padding: 5px;
     text-align: center;
@@ -58,7 +55,7 @@ button {
 
 }
 
-button:hover {
+button#clearStorage:hover {
     background-color: white;
     color: #3474eb;
 }

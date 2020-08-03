@@ -7,6 +7,8 @@ var cancelAlarm = document.getElementById('cancelAlarmLink');
 var forceAlarm = document.getElementById('forceAlarmLink');
 var lockRecordButton = false;
 var disableRecordOnAlert = true;
+var recordButtonSize = 70;
+var state = 'Idle';
 
 if (ref.indexOf('view=montage') > 0){
     var recordDiv;
@@ -37,12 +39,13 @@ if (ref.indexOf('view=montage') > 0){
         });
     }
 
-    function placeDiv(recording, x, y){
+    function placeDiv(x, y){
         var offset = [];
         recordDiv = document.createElement('div');
         var recordText = document.createTextNode('REC');
         recordButton = document.createElement('button');
         recordButton.style.backgroundColor = 'darkred';
+        recordButton.style.width = recordButton.style.height = recordButton.style.borderRadius = recordDiv.style.fontSize = recordButtonSize + 'px';
         recordButton.id = 'recordButton';
 
         recordDiv.appendChild(recordButton);
@@ -52,24 +55,16 @@ if (ref.indexOf('view=montage') > 0){
         recordDiv.style.left = x + 'px';
         recordDiv.id = 'recordDiv';
         recordDiv.draggable = !lockRecordButton;
-        if (recording){
-            recordDiv.className = recordButton.className = 'recording';
-        } else {
-            recordDiv.className = recordButton.className = 'notRecording';
-        }
+        recordDiv.className = recordButton.className = state;
         content.appendChild(recordDiv);
 
         if (!lockRecordButton){
             recordDiv.addEventListener('dragend', (event) => {
                 event.preventDefault();
-                let recording = 0;
-                if (recordButton.classList.contains('recording')){
-                    recording = 1;
-                }
                 recordDiv.parentNode.removeChild(recordDiv);
                 chrome.runtime.sendMessage({setMonitor: true, monitorName: monitorName, positionX: event.clientX - offset[0], positionY: event.clientY - offset[1]});
 
-                placeDiv(recording, event.clientX - offset[0], event.clientY - offset[1]);
+                placeDiv(event.clientX - offset[0], event.clientY - offset[1]);
             });
         
             recordDiv.addEventListener('mousedown', (event) => {
@@ -83,18 +78,24 @@ if (ref.indexOf('view=montage') > 0){
         }
 
         recordDiv.addEventListener('click', () => {
-            if (recordButton.classList.contains('recording')){
-                if (recordButton.classList.contains('alerting')){
-                    if (disableRecordOnAlert){return;}
-                    recordDiv.className = recordButton.className = 'recording';
-                    forceAlarm.click();
-                } else {
-                    recordDiv.className = recordButton.className = 'notRecording';
-                    cancelAlarm.click();
-                }
-            } else {
-                recordDiv.className = recordButton.className = 'recording';
+            if (state === 'Idle'){
                 forceAlarm.click();
+/*  This code below allows for an immediate animation when you click the REC div
+    and allows for non-recordable monitors to lose the animation and class if the state 
+    doesn't change, the question is how long to wait? Could make an option for it.
+    Response times can vary and machines vary. I will leave this alone for now.
+    There is probably a better way around this in the options page.*/
+
+                recordButton.className = recordDiv.className = 'Alarm';
+                setTimeout(() => { 
+                    if (state === 'Idle'){
+                        recordButton.className = recordDiv.className = state;
+                    }
+                }, 1500);
+            } else if (state === 'Alert' && !disableRecordOnAlert){
+                forceAlarm.click();
+            } else {
+                cancelAlarm.click();
             }
         });
     }
@@ -102,20 +103,15 @@ if (ref.indexOf('view=montage') > 0){
     chrome.runtime.sendMessage({fullscreenWatch: true, monitorName: monitorName}, (msg) =>{
         lockRecordButton = msg.lockRecordButton;
         disableRecordOnAlert = msg.disableRecordOnAlert;
+        recordButtonSize = msg.recordButtonSize;
         if (forceAlarm && cancelAlarm){
-            placeDiv(0, msg.obj[monitorName].x, msg.obj[monitorName].y);
+            placeDiv(msg.obj[monitorName].x, msg.obj[monitorName].y);
             const recording = document.getElementById('stateValue');
             const config = {childList: true};
             const callback = (mutation) => {
-                var state = mutation[0].addedNodes[0].data;
-                if (state === 'Alarm' || state === 'Alert'){
-                    recordButton.className = recordDiv.className = 'recording';
-                    if (state === 'Alert'){
-                        recordButton.classList.add('alerting');
-                    }
-                } else {
-                    recordButton.className = recordDiv.className = 'notRecording';
-                }
+                state = mutation[0].addedNodes[0].data;
+                console.log(state);
+                recordButton.className = recordDiv.className = state;
             };
             const observer = new MutationObserver(callback);
             observer.observe(recording, config);

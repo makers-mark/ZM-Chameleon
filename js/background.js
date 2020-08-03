@@ -21,7 +21,6 @@ chrome.runtime.onInstalled.addListener( () => {
 		}]);
 	});
 	loadSettings();
-	watchStorageChanges();
 });
 
 function loadSettings(){
@@ -54,19 +53,21 @@ function loadSettings(){
 		borderRadius: 0,
 		lockRecordButton: false,
 		obfuscate: false,
-		disableRecordOnAlert: true
+		disableRecordOnAlert: true,
+		recordButtonSize: 70
 		}, (localStorage) => {
 			settings = localStorage;
+			watchStorageChanges();
 	})
 }
 
 function initMontage() {
 	if (settings.monitorOverride) {
-		chrome.tabs.insertCSS({ code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}' });
+		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}' });
 	} else {
-		chrome.tabs.insertCSS({ code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}' });
+		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}' });
 	}
-	chrome.tabs.insertCSS({ code: 'div.monitorState{display: none !important;}#content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
+	chrome.tabs.insertCSS(tabId, { code: 'div.monitorState{display: none !important;}#content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
 }
 
 function changeDeclarativeContent(customLocation){
@@ -141,7 +142,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			chrome.storage.local.set({zmMontageLayout: msg.zmMontageLayout});
 			var settingNames = Object.getOwnPropertyNames(settings);
 			for (var name in settingNames){
-				if (typeof window[settingNames[name]] == 'function' && settings[settingNames[name]] === true && settingNames[name] !== 'maximizeSingleView') {
+				if (typeof window[settingNames[name]] == 'function' && settings[settingNames[name]] === true) {
 					window[settingNames[name]]();
 				}
 			}
@@ -162,14 +163,16 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 
 		case "setFps":
 			chrome.storage.local.set({
-				'fpsPosX': msg.x,
-				'fpsPosY': msg.y
+				fpsPosX: msg.x,
+				fpsPosY: msg.y
 			});
 			break;
 
 		case 'fullscreenWatch':
 			if (msg.fullscreenWatch && settings.maximizeSingleView){
-				maximizeSingleView();
+				chrome.tabs.insertCSS(sender.tab.id, {code: 'img:first-child {object-fit: contain !important; width: 100vw !important; height: 100vh !important;}'});	
+				chrome.tabs.insertCSS(sender.tab.id, {code: 'div#content {margin: 0 !important;}'});
+				chrome.tabs.insertCSS(sender.tab.id, {code: 'div.navbar, div#header, div#monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events {display: none !important;}'});
 				chrome.windows.getCurrent( (window) => chrome.windows.update(window.id, {state: 'fullscreen'}));
 				chrome.storage.local.get({
 					[msg.monitorName]: {
@@ -183,9 +186,10 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 						x: settings.fpsPosX,
 						y: settings.fpsPosY,
 						lockRecordButton: settings.lockRecordButton,
-						disableRecordOnAlert: settings.disableRecordOnAlert
+						disableRecordOnAlert: settings.disableRecordOnAlert,
+						recordButtonSize: settings.recordButtonSize
 					});
-					filterHandler();
+					filterHandler(sender.tab.id);
 				});
 			} else {
 				callback();
@@ -195,8 +199,8 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 	return true;
 });
 
-const borderRadius = () => chrome.tabs.insertCSS({code: 'img {border-radius: ' + settings.borderRadius + '% !important;}'});
-const gridHandler = () => chrome.tabs.insertCSS({code: 'img {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
+const borderRadius = () => chrome.tabs.insertCSS(tabId, {code: 'img {border-radius: ' + settings.borderRadius + '% !important;}'});
+const gridHandler = () => chrome.tabs.insertCSS(tabId, {code: 'img {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
 
 function widthMax(){
  	if (settings.gridWidth > settings.widthMax){
@@ -204,14 +208,6 @@ function widthMax(){
 	}
 	if (settings.flashWidth > settings.widthMax){
 		settings.flashWidth = settings.widthMax;
-	}
-}
-
-function maximizeSingleView(){
-	if (settings.maximizeSingleView){
-		chrome.tabs.insertCSS({code: 'img:first-child {object-fit: contain !important; width: 100vw !important; height: 100vh !important;}'});	
-		chrome.tabs.insertCSS({code: 'div#content {margin: 0 !important;}'});
-		chrome.tabs.insertCSS({code: 'div.navbar, div#header, div#monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events {display: none !important;}'});
 	}
 }
 
@@ -234,33 +230,33 @@ const lastError = () => {
 
 function monitorOverride(){
 	if (settings.monitorOverride){
-		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}'});
 	} else {
 		if (settings.zmMontageLayout == 1){
 			//freeform is selected in ZoneMinder, so do nothing
 			return;
 		}
-		chrome.tabs.insertCSS({code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}'});
 	}
 }
 
 function toggleScroll(){
 	if(settings.toggleScroll){
-		chrome.tabs.insertCSS({code: 'body {overflow: hidden !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'body {overflow: hidden !important;}'});
 	} else {
-		chrome.tabs.insertCSS({code: 'body {overflow: visible !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'body {overflow: visible !important;}'});
 	}
 }
 
-function filterHandler(){
+function filterHandler(sender){
 	if (settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS({code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
 	} else if (settings.dropShadow && !settings.invertColors){
-		chrome.tabs.insertCSS({code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
+		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
 	} else if (!settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS({code: 'img {filter: invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: invert(1) !important;}'});
 	} else {
-		chrome.tabs.insertCSS({code: 'img {filter: none !important;}'});
+		chrome.tabs.insertCSS(sender || tabId, {code: 'img {filter: none !important;}'});
 	}
 }
 
@@ -277,15 +273,15 @@ function flashAlarm(){
 	if (settings.flashAlarm){
 		flash();
 	} else {
-		chrome.tabs.insertCSS({code: 'img.alarm, .alert {animation: none; outline: unset;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'img.alarm, .alert {animation: none; outline: unset;}'});
 	}
 }
 
 function hideHeader(){
 	if (settings.hideHeader){
-		chrome.tabs.insertCSS({code: 'div.navbar{display: none !important;}div#header{display: none !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: none !important;}div#header{display: none !important;}'});
 	} else {
-		chrome.tabs.insertCSS({code: 'div.navbar{display: block !important;}div#header{display: block !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: block !important;}div#header{display: block !important;}'});
 	}
 }
 

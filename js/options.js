@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
   var versionH3 = document.getElementById('version');
   var obfuscate = document.getElementById('obfuscate');
   var disableRecordOnAlert = document.getElementById('disableRecordOnAlert');
+  var recordButton = document.getElementById('recordButton');
+  var recordDiv = document.getElementById('recordDiv');
+
   var version = chrome.runtime.getManifest().version;
   if (version.indexOf('.') === -1){version += '.0';}
   versionH3.innerText = 'Version ' + version;
@@ -32,7 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fpsColor: '#ffffff',
     lockRecordButton: false,
     obfuscate: false,
-    disableRecordOnAlert: true
+    disableRecordOnAlert: true,
+    recordButtonSize: 70
   }, (settings) => {
     customLocation.value = settings.customLocation;
     alarmOpacity.value = settings.alarmOpacity;
@@ -48,10 +52,19 @@ document.addEventListener('DOMContentLoaded', () => {
     lockRecordButton.checked = settings.lockRecordButton;
     obfuscate.checked = settings.obfuscate;
     disableRecordOnAlert.checked = settings.disableRecordOnAlert;
+    recordButtonSize.value = settings.recordButtonSize;
+    recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = settings.recordButtonSize + 'px';
   });
 
   document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
 
+  recordDiv.addEventListener('click', () => {
+    if (recordDiv.classList.contains('Alarm')){
+      recordButton.className = recordDiv.className = 'Idle';
+    } else {
+      recordButton.className = recordDiv.className = 'Alarm';
+    }
+  });
   alertOpacity.onchange = () => {
     alertOpacityText.textContent = alertOpacity.value;
     chrome.storage.local.set({alertOpacity: alertOpacity.value});
@@ -60,6 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
     alarmOpacityText.textContent = alarmOpacity.value;
     chrome.storage.local.set({alarmOpacity: alarmOpacity.value});
   }
+  recordButtonSize.oninput = () => recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = recordButtonSize.value + 'px';
+  recordButtonSize.onchange = () => chrome.storage.local.set({recordButtonSize: recordButtonSize.value});
+  
   widthMax.onchange = () => chrome.storage.local.set({widthMax: widthMax.value});
   flashSpeed.onchange = () => chrome.storage.local.set({flashSpeed: flashSpeed.value});
   userName.onchange = () => chrome.storage.local.set({userName: userName.value});

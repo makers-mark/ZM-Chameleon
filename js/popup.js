@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	slider.oninput = () => {
 		sliderText.textContent = slider.value + ' Monitors Per Row';
+	}
+	slider.onchange = () => {
 		chrome.storage.local.set({monitors: slider.value});
 	}
 

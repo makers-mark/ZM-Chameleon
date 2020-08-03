@@ -3,7 +3,7 @@
         box-shadow: 0px 0px 5px 0px rgba(173,0,0,.5);
         transform: scale(1);
     }
-    65% {
+    25% {
         box-shadow: 0px 0px 5px 25px rgba(173,0,0,.4);
         transform: scale(.6);
     }
@@ -22,7 +22,6 @@
 #recordDiv {
     font-family: digitalfont;
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
-    font-size: 70px;
     color: darkred;
     display: flex;
     align-items: center;
@@ -31,6 +30,7 @@
     transform: scale(.95);
     width: auto;
     height: auto;
+    opacity: .55;
 }
 
 #recordDiv:hover {
@@ -42,40 +42,38 @@
 }
 
 button#recordButton {
-    width: 70px;
-    height: 70px;
-    border: none !important; 
-    border-radius: 70px;
-    margin: 30px;
+    border: none !important;
+    margin: 8px;
+    background-color: darkred !important;
     box-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
 }
 
-#recordDiv.notRecording {
+#recordDiv.Idle {
     color: darkred !important;
     opacity: .55;
     transition: 1s;
 }
 
-#recordDiv.recording {
+#recordDiv.Alert, #recordDiv.Alarm {
     color: red !important;
     opacity: 1;
     transform: scale(1);
 }
 
-button#recordButton.notRecording {
+button#recordButton.Idle {
     background-color: darkred !important;
     transition: 1s;
 }
 
-button#recordButton.recording {
-    animation: pulse .6s infinite;
+button#recordButton.Alarm {
+    animation: pulse .5s infinite;
     background-color: red !important;
-
 }
 
-button#recordButton.alerting {
+button#recordButton.Alert {
+    animation: pulse .58s infinite;
     background-color: yellow !important;
-    opacity: .4;
+    opacity: .70;
 }
 
 #fpsDiv {
