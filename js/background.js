@@ -138,7 +138,14 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			break;
 
 		case 'montageOpen':
+			//New bootstrap header in 1.35.5
+			//chrome.tabs.insertCSS({code : 'div.fixed-top {display: none !important;}'});
 			settings.zmMontageLayout = msg.zmMontageLayout || 3;
+			initMontage();			
+			filterHandler();
+			gridHandler();
+			borderRadius();
+			callback(settings);
 			chrome.storage.local.set({zmMontageLayout: msg.zmMontageLayout});
 			var settingNames = Object.getOwnPropertyNames(settings);
 			for (var name in settingNames){
@@ -146,10 +153,6 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 					window[settingNames[name]]();
 				}
 			}
-			initMontage();			
-			filterHandler();
-			gridHandler();
-			borderRadius();
 			break;
 
 		case "setMonitor":

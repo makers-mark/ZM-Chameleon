@@ -49,12 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	colorPicker.addEventListener('change', () => {
 		var color = colorPicker.value || '#000000';
-		chrome.storage.local.set({'gridColor': color});
+		chrome.storage.local.set({gridColor: color});
 	});
 
 	shadowColor.addEventListener('change', () => {
 		var color = shadowColor.value || '#000000';
-		chrome.storage.local.set({'shadowColor': color})
+		chrome.storage.local.set({shadowColor: color})
 	})
 
 	logo.addEventListener('click', () => {

@@ -44,6 +44,7 @@
 
 button#recordButton {
     border: none !important;
+    outline: none !important;
     margin: 8px;
     background-color: darkred !important;
     box-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
