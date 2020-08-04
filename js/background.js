@@ -97,7 +97,7 @@ function changeDeclarativeContent(customLocation){
 }
 
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
-	if (!tabId && sender.tab){
+	if (!tabId && sender.tab){ //Get the id only once & make sure we don't get the popup message because it has no .tab
 		tabId = sender.tab.id;
 	}
 	var value = Object.getOwnPropertyNames(msg)[0];
