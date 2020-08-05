@@ -51,65 +51,65 @@ chrome.tabs.onUpdated.addListener( () => {
 		obfuscate: false,
 		disableRecordOnAlert: true,
 		recordButtonSize: 70
-		}, (localStorage) => {
-			settings = localStorage;
-			chrome.storage.onChanged.addListener( (change) => {
-				var values = Object.getOwnPropertyNames(change);
-				values.forEach(function(value) {
-					switch(value){
-						default:
-							settings[value] = change[value].newValue;
-							break;
-		
-						case 'hideHeader':
-							settings.hideHeader = change[value].newValue;
-							hideHeader();
-							break;
-		
-						case 'monitorOverride':
-						case 'monitors':
-						case 'zmMontageLayout':
-							settings[value] = change[value].newValue;
-							monitorOverride();
-							break;
-		
-						case 'gridWidth':
-						case 'gridColor':
-							settings[value] = change[value].newValue;
-							gridHandler();
-							break;
-		
-						case 'customLocation':
-							changeDeclarativeContent(change[value].newValue);
-							break;
-		
-						case 'toggleScroll':
-							settings.toggleScroll = change[value].newValue;
-							toggleScroll();
-							break;
-		
-						case 'dropShadow':
-						case 'invertColors':
-						case 'shadowColor':
-							settings[value] = change[value].newValue;
-							filterHandler();
-							break;
-		
-						case 'borderRadius':
-							settings[value] = change[value].newValue;
-							borderRadius();
-							break;
-		
-						case 'flashAlarm':
-						case 'flashWidth':
-						case 'alertOpacity':
-						case 'alarmOpacity':
-						case 'flashSpeed':
-							settings[value] = change[value].newValue;
-							flashAlarm();
-					}
-				});
+	}, (localStorage) => {
+		settings = localStorage;
+		chrome.storage.onChanged.addListener( (change) => {
+			var values = Object.getOwnPropertyNames(change);
+			values.forEach(function(value) {
+				switch(value){
+					default:
+						settings[value] = change[value].newValue;
+						break;
+	
+					case 'hideHeader':
+						settings.hideHeader = change[value].newValue;
+						hideHeader();
+						break;
+	
+					case 'monitorOverride':
+					case 'monitors':
+					case 'zmMontageLayout':
+						settings[value] = change[value].newValue;
+						monitorOverride();
+						break;
+	
+					case 'gridWidth':
+					case 'gridColor':
+						settings[value] = change[value].newValue;
+						gridHandler();
+						break;
+	
+					case 'customLocation':
+						changeDeclarativeContent(change[value].newValue);
+						break;
+	
+					case 'toggleScroll':
+						settings.toggleScroll = change[value].newValue;
+						toggleScroll();
+						break;
+	
+					case 'dropShadow':
+					case 'invertColors':
+					case 'shadowColor':
+						settings[value] = change[value].newValue;
+						filterHandler();
+						break;
+	
+					case 'borderRadius':
+						settings[value] = change[value].newValue;
+						borderRadius();
+						break;
+	
+					case 'flashAlarm':
+					case 'flashWidth':
+					case 'alertOpacity':
+					case 'alarmOpacity':
+					case 'flashSpeed':
+						settings[value] = change[value].newValue;
+						flashAlarm();
+				}
 			});
+		});
 	});
 });
 
