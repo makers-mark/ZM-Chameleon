@@ -3,23 +3,7 @@
 var settings = {};
 var tabId = null;
 
-chrome.tabs.onUpdated.addListener( () => {
-	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
-		chrome.declarativeContent.onPageChanged.addRules([{
-			conditions: [
-				new chrome.declarativeContent.PageStateMatcher({
-					pageUrl: {queryPrefix: 'view=montage'}
-				}),
-				new chrome.declarativeContent.PageStateMatcher({
-					pageUrl: {queryPrefix: 'view=watch'}
-				}),
-				new chrome.declarativeContent.PageStateMatcher({
-					pageUrl: {queryPrefix: 'view=console'}
-				})
-			],
-			actions: [new chrome.declarativeContent.ShowPageAction()]
-		}]);
-	});
+chrome.runtime.onInstalled.addListener( () =>{
 	chrome.storage.local.get({
 		customLocation: '',
 		alarmOpacity: 0.5,
@@ -53,6 +37,26 @@ chrome.tabs.onUpdated.addListener( () => {
 		recordButtonSize: 70
 	}, (localStorage) => {
 		settings = localStorage;
+});
+
+	chrome.tabs.onUpdated.addListener( () => {
+		console.log('i updated')
+		chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
+			chrome.declarativeContent.onPageChanged.addRules([{
+				conditions: [
+					new chrome.declarativeContent.PageStateMatcher({
+						pageUrl: {queryPrefix: 'view=montage'}
+					}),
+					new chrome.declarativeContent.PageStateMatcher({
+						pageUrl: {queryPrefix: 'view=watch'}
+					}),
+					new chrome.declarativeContent.PageStateMatcher({
+						pageUrl: {queryPrefix: 'view=console'}
+					})
+				],
+				actions: [new chrome.declarativeContent.ShowPageAction()]
+			}]);
+		});
 		chrome.storage.onChanged.addListener( (change) => {
 			var values = Object.getOwnPropertyNames(change);
 			values.forEach(function(value) {
@@ -60,46 +64,46 @@ chrome.tabs.onUpdated.addListener( () => {
 					default:
 						settings[value] = change[value].newValue;
 						break;
-	
+
 					case 'hideHeader':
 						settings.hideHeader = change[value].newValue;
 						hideHeader();
 						break;
-	
+
 					case 'monitorOverride':
 					case 'monitors':
 					case 'zmMontageLayout':
 						settings[value] = change[value].newValue;
 						monitorOverride();
 						break;
-	
+
 					case 'gridWidth':
 					case 'gridColor':
 						settings[value] = change[value].newValue;
 						gridHandler();
 						break;
-	
+
 					case 'customLocation':
 						changeDeclarativeContent(change[value].newValue);
 						break;
-	
+
 					case 'toggleScroll':
 						settings.toggleScroll = change[value].newValue;
 						toggleScroll();
 						break;
-	
+
 					case 'dropShadow':
 					case 'invertColors':
 					case 'shadowColor':
 						settings[value] = change[value].newValue;
 						filterHandler();
 						break;
-	
+
 					case 'borderRadius':
 						settings[value] = change[value].newValue;
 						borderRadius();
 						break;
-	
+
 					case 'flashAlarm':
 					case 'flashWidth':
 					case 'alertOpacity':
