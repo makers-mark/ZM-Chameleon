@@ -37,83 +37,81 @@ chrome.runtime.onInstalled.addListener( () =>{
 		recordButtonSize: 70
 	}, (localStorage) => {
 		settings = localStorage;
+	});
+	
+	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
+		chrome.declarativeContent.onPageChanged.addRules([{
+			conditions: [
+				new chrome.declarativeContent.PageStateMatcher({
+					pageUrl: {queryPrefix: 'view=montage'}
+				}),
+				new chrome.declarativeContent.PageStateMatcher({
+					pageUrl: {queryPrefix: 'view=watch'}
+				}),
+				new chrome.declarativeContent.PageStateMatcher({
+					pageUrl: {queryPrefix: 'view=console'}
+				})
+			],
+			actions: [new chrome.declarativeContent.ShowPageAction()]
+		}]);
+	});	
 });
 
-	chrome.tabs.onUpdated.addListener( () => {
-		console.log('i updated')
-		chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
-			chrome.declarativeContent.onPageChanged.addRules([{
-				conditions: [
-					new chrome.declarativeContent.PageStateMatcher({
-						pageUrl: {queryPrefix: 'view=montage'}
-					}),
-					new chrome.declarativeContent.PageStateMatcher({
-						pageUrl: {queryPrefix: 'view=watch'}
-					}),
-					new chrome.declarativeContent.PageStateMatcher({
-						pageUrl: {queryPrefix: 'view=console'}
-					})
-				],
-				actions: [new chrome.declarativeContent.ShowPageAction()]
-			}]);
-		});
-		chrome.storage.onChanged.addListener( (change) => {
-			var values = Object.getOwnPropertyNames(change);
-			values.forEach(function(value) {
-				switch(value){
-					default:
-						settings[value] = change[value].newValue;
-						break;
+chrome.storage.onChanged.addListener( (change) => {
+	var values = Object.getOwnPropertyNames(change);
+	values.forEach(function(value) {
+		switch(value){
+			default:
+				settings[value] = change[value].newValue;
+				break;
 
-					case 'hideHeader':
-						settings.hideHeader = change[value].newValue;
-						hideHeader();
-						break;
+			case 'hideHeader':
+				settings.hideHeader = change[value].newValue;
+				hideHeader();
+				break;
 
-					case 'monitorOverride':
-					case 'monitors':
-					case 'zmMontageLayout':
-						settings[value] = change[value].newValue;
-						monitorOverride();
-						break;
+			case 'monitorOverride':
+			case 'monitors':
+			case 'zmMontageLayout':
+				settings[value] = change[value].newValue;
+				monitorOverride();
+				break;
 
-					case 'gridWidth':
-					case 'gridColor':
-						settings[value] = change[value].newValue;
-						gridHandler();
-						break;
+			case 'gridWidth':
+			case 'gridColor':
+				settings[value] = change[value].newValue;
+				gridHandler();
+				break;
 
-					case 'customLocation':
-						changeDeclarativeContent(change[value].newValue);
-						break;
+			case 'customLocation':
+				changeDeclarativeContent(change[value].newValue);
+				break;
 
-					case 'toggleScroll':
-						settings.toggleScroll = change[value].newValue;
-						toggleScroll();
-						break;
+			case 'toggleScroll':
+				settings.toggleScroll = change[value].newValue;
+				toggleScroll();
+				break;
 
-					case 'dropShadow':
-					case 'invertColors':
-					case 'shadowColor':
-						settings[value] = change[value].newValue;
-						filterHandler();
-						break;
+			case 'dropShadow':
+			case 'invertColors':
+			case 'shadowColor':
+				settings[value] = change[value].newValue;
+				filterHandler();
+				break;
 
-					case 'borderRadius':
-						settings[value] = change[value].newValue;
-						borderRadius();
-						break;
+			case 'borderRadius':
+				settings[value] = change[value].newValue;
+				borderRadius();
+				break;
 
-					case 'flashAlarm':
-					case 'flashWidth':
-					case 'alertOpacity':
-					case 'alarmOpacity':
-					case 'flashSpeed':
-						settings[value] = change[value].newValue;
-						flashAlarm();
-				}
-			});
-		});
+			case 'flashAlarm':
+			case 'flashWidth':
+			case 'alertOpacity':
+			case 'alarmOpacity':
+			case 'flashSpeed':
+				settings[value] = change[value].newValue;
+				flashAlarm();
+		}
 	});
 });
 
@@ -153,7 +151,7 @@ function changeDeclarativeContent(customLocation){
 }
 
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
-	if (!tabId && sender.tab){ //Get the id only once & make sure we don't get the popup message because it has no .tab
+	if (sender.tab){ //Make sure we don't get the popup message because it has no .tab
 		tabId = sender.tab.id;
 	}
 	var value = Object.getOwnPropertyNames(msg)[0];
@@ -194,7 +192,6 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			break;
 
 		case 'montageOpen':
-			console.log(sender);
 			tabId = sender.tab.id;
 			settings.zmMontageLayout = msg.zmMontageLayout || 3;
 			initMontage();			
