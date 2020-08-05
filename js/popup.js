@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		maximizeSingleView.checked = settings.maximizeSingleView;
 		invertColors.checked = settings.invertColors;
 		dropShadow.checked = settings.dropShadow;
-		shadowColor.value = settings.shadowColor;
+		shadowColor.value = settings.shadowColor || '#000000';
 		borderRadius.value = settings.borderRadius;
 	});
 
