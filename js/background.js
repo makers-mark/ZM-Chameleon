@@ -109,9 +109,8 @@ chrome.tabs.onUpdated.addListener( () => {
 							flashAlarm();
 					}
 				});
-			}); 	
+			});
 	});
-	
 });
 
 function initMontage() {
