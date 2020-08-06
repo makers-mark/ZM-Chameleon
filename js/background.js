@@ -255,8 +255,8 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 	return true;
 });
 
-const borderRadius = () => chrome.tabs.insertCSS(tabId, {code: 'img {border-radius: ' + settings.borderRadius + '% !important;}'});
-const gridHandler = () => chrome.tabs.insertCSS(tabId, {code: 'img {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
+const borderRadius = () => chrome.tabs.insertCSS(tabId, {code: 'img:not(.console) {border-radius: ' + settings.borderRadius + '% !important;}'});
+const gridHandler = () => chrome.tabs.insertCSS(tabId, {code: 'img:not(.console) {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
 
 function widthMax(){
  	if (settings.gridWidth > settings.widthMax){
@@ -306,13 +306,13 @@ function toggleScroll(){
 
 function filterHandler(sender = tabId){
 	if (settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
 	} else if (settings.dropShadow && !settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
 	} else if (!settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img {filter: invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: invert(1) !important;}'});
 	} else {
-		chrome.tabs.insertCSS(sender, {code: 'img {filter: none !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: none !important;}'});
 	}
 }
 

@@ -5,22 +5,26 @@ chrome.runtime.sendMessage({montageOpen: true, zmMontageLayout: zmMontageLayout.
     //console.log(msg);
 });
 var openPopupDiv = document.createElement('div');
-var openPopupImg = document.createElement('img');
+var openPopupImg = document.createElement('a');
 var content = document.getElementById('content');
 
-openPopupImg.src = chrome.extension.getURL('icons/icon-128.png');
+//openPopupImg.src = chrome.extension.getURL('icons/icon-128.png');
 openPopupDiv.id = 'openPopupDiv';
 openPopupImg.id = 'openPopupImg';
-openPopupImg.style.width = 'auto';
-openPopupImg.style.height = '50px';
+openPopupImg.href = '?view=console';
+//openPopupImg.style.width = 'auto';
+//openPopupImg.style.height = '50px';
 openPopupDiv.style.opacity = '.8';
-openPopupDiv.style.top = '0px';
-openPopupDiv.style.right = '0px';
+openPopupDiv.style.top = '10px';
+openPopupDiv.style.right = '10px';
 openPopupDiv.style.position = 'fixed';
+openPopupDiv.style.cursor = 'pointer';
 openPopupDiv.draggable = 'true';
-openPopupDiv.onclick = () => {
+openPopupImg.className = 'console';
+openPopupImg.innerText = 'Console';
+/* openPopupDiv.onclick = () => {
     window.location = 'index.php?view=console';
-}
+} */
 
 openPopupDiv.appendChild(openPopupImg);
 content.appendChild(openPopupDiv);
