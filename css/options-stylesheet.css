@@ -13,10 +13,6 @@ body {
     cursor: ew-resize;
 }
 
-button#recordButton {
-    outline: none !important;
-}
-
 h3, h4, input  {
     margin: .45em .45em .45em 0em;
 }
@@ -39,7 +35,7 @@ h3.warning {
     cursor: not-allowed;
 }
 
-button#clearStorage {
+button.blueButton {
     border: 2px solid #3474eb;
     padding: 5px;
     text-align: center;
@@ -55,7 +51,7 @@ button#clearStorage {
 
 }
 
-button#clearStorage:hover {
+button.blueButton:hover {
     background-color: white;
     color: #3474eb;
 }

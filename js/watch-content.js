@@ -111,7 +111,6 @@ if (ref.indexOf('view=montage') > 0){
                 const config = {childList: true};
                 const callback = (mutation) => {
                     state = mutation[0].addedNodes[0].data;
-                    console.log(state);
                     recordButton.className = recordDiv.className = state;
                 };
                 const observer = new MutationObserver(callback);

@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
   var disableRecordOnAlert = document.getElementById('disableRecordOnAlert');
   var recordButton = document.getElementById('recordButton');
   var recordDiv = document.getElementById('recordDiv');
+  var dropShadowString = document.getElementById('dropShadowString');
+  var dropShadowStringReset = document.getElementById('dropShadowStringReset');
+  var dropShadowApply = document.getElementById('dropShadowApply');
+  var inversionAmount = document.getElementById('inversionAmount');
+  var inversionAmountText = document.getElementById('inversionAmountText');
+  
+  var defaultShadow = '2px 4px 6px';
   document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
   var version = chrome.runtime.getManifest().version;
   if (version.indexOf('.') === -1){version += '.0';}
@@ -36,7 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
     lockRecordButton: false,
     obfuscate: false,
     disableRecordOnAlert: true,
-    recordButtonSize: 70
+    recordButtonSize: 70,
+    dropShadowString: defaultShadow,
+    inversionAmount: 1
   }, (settings) => {
     customLocation.value = settings.customLocation;
     alarmOpacity.value = settings.alarmOpacity;
@@ -54,6 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
     disableRecordOnAlert.checked = settings.disableRecordOnAlert;
     recordButtonSize.value = settings.recordButtonSize;
     recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = settings.recordButtonSize + 'px';
+    dropShadowString.value = settings.dropShadowString;
+    inversionAmount.value = settings.inversionAmount;
+    inversionAmountText.textContent = settings.inversionAmount;
   });
 
   document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
@@ -68,13 +80,19 @@ document.addEventListener('DOMContentLoaded', () => {
   alertOpacity.onchange = () => {
     alertOpacityText.textContent = alertOpacity.value;
     chrome.storage.local.set({alertOpacity: alertOpacity.value});
-  }
+  };
   alarmOpacity.onchange = () => {
     alarmOpacityText.textContent = alarmOpacity.value;
     chrome.storage.local.set({alarmOpacity: alarmOpacity.value});
+  };
+  inversionAmount.onchange = () => {
+    inversionAmountText.textContent = inversionAmount.value;
+    chrome.storage.local.set ({inversionAmount: inversionAmount.value});
   }
   recordButtonSize.oninput = () => recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = recordButtonSize.value + 'px';
   recordButtonSize.onchange = () => chrome.storage.local.set({recordButtonSize: recordButtonSize.value});
+  dropShadowApply.onclick = () => chrome.storage.local.set({dropShadowString: dropShadowString.value});
+  dropShadowStringReset.onclick = () => chrome.storage.local.set({dropShadowString: defaultShadow}, () => dropShadowString.value = defaultShadow);
   
   widthMax.onchange = () => chrome.storage.local.set({widthMax: widthMax.value});
   flashSpeed.onchange = () => chrome.storage.local.set({flashSpeed: flashSpeed.value});

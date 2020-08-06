@@ -34,7 +34,9 @@ chrome.runtime.onInstalled.addListener( () =>{
 		lockRecordButton: false,
 		obfuscate: false,
 		disableRecordOnAlert: true,
-		recordButtonSize: 70
+		recordButtonSize: 70,
+		dropShadowString: '2px 4px 6px',
+		inversionAmount: 1
 	}, (localStorage) => {
 		settings = localStorage;
 	});
@@ -95,6 +97,8 @@ chrome.storage.onChanged.addListener( (change) => {
 			case 'dropShadow':
 			case 'invertColors':
 			case 'shadowColor':
+			case 'dropShadowString':
+			case 'inversionAmount':
 				settings[value] = change[value].newValue;
 				filterHandler();
 				break;
@@ -152,9 +156,7 @@ function changeDeclarativeContent(customLocation){
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 	if (!tabId && sender.tab){ //Make sure we don't get the popup message because it has no .tab
 		tabId = sender.tab.id;
-		console.log('tabId just changed to ' +tabId);
 	}
-	console.log(tabId);
 	var value = Object.getOwnPropertyNames(msg)[0];
 	switch (value){
 		case 'fullscreen':
@@ -194,7 +196,6 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 
 		case 'montageOpen':
 			tabId = sender.tab.id;
-			console.log('tabId changed to ' + tabId);
 			initMontage();			
 			filterHandler();
 			gridHandler();
@@ -305,11 +306,11 @@ function toggleScroll(){
 
 function filterHandler(sender = tabId){
 	if (settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(' + settings.dropShadowString + ' ' + settings.shadowColor + ') invert(' + settings.inversionAmount + ') !important;}'});
 	} else if (settings.dropShadow && !settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(2px 4px 6px ' + settings.shadowColor + ') !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(' + settings.dropShadowString + ' ' + settings.shadowColor + ') !important;}'});
 	} else if (!settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: invert(1) !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: invert(' + settings.inversionAmount + ') !important;}'});
 	} else {
 		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: none !important;}'});
 	}
