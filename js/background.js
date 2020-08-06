@@ -117,11 +117,10 @@ chrome.storage.onChanged.addListener( (change) => {
 
 function initMontage() {
 	if (settings.monitorOverride) {
-		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}' });
+		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;} #content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
 	} else {
-		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}' });
+		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;} #content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
 	}
-	chrome.tabs.insertCSS(tabId, { code: 'div.monitorState{display: none !important;}#content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
 }
 
 function changeDeclarativeContent(customLocation){
@@ -151,9 +150,11 @@ function changeDeclarativeContent(customLocation){
 }
 
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
-	if (sender.tab){ //Make sure we don't get the popup message because it has no .tab
+	if (!tabId && sender.tab){ //Make sure we don't get the popup message because it has no .tab
 		tabId = sender.tab.id;
+		console.log('tabId just changed to ' +tabId);
 	}
+	console.log(tabId);
 	var value = Object.getOwnPropertyNames(msg)[0];
 	switch (value){
 		case 'fullscreen':
@@ -193,7 +194,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 
 		case 'montageOpen':
 			tabId = sender.tab.id;
-			settings.zmMontageLayout = msg.zmMontageLayout || 3;
+			console.log('tabId changed to ' + tabId);
 			initMontage();			
 			filterHandler();
 			gridHandler();
@@ -226,9 +227,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 
 		case 'fullscreenWatch':
 			if (msg.fullscreenWatch && settings.maximizeSingleView){
-				chrome.tabs.insertCSS(sender.tab.id, {code: 'img:first-child {object-fit: contain !important; width: 100vw !important; height: 100vh !important;}'});	
-				chrome.tabs.insertCSS(sender.tab.id, {code: 'div#content {margin: 0 !important;}'});
-				chrome.tabs.insertCSS(sender.tab.id, {code: 'div.navbar, div#header, div#monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events {display: none !important;}'});
+				chrome.tabs.insertCSS(sender.tab.id, {code: 'img:first-child {object-fit: contain !important; width: 100vw !important; height: 100vh !important;} div#content {margin: 0 !important;} div.navbar, div#header, div#monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events {display: none !important;}'});
 				chrome.windows.getCurrent( (window) => chrome.windows.update(window.id, {state: 'fullscreen'}));
 				chrome.storage.local.get({
 					[msg.monitorName]: {
@@ -297,7 +296,7 @@ function monitorOverride(){
 }
 
 function toggleScroll(){
-	if(settings.toggleScroll){
+	if (settings.toggleScroll){
 		chrome.tabs.insertCSS(tabId, {code: 'body {overflow: hidden !important;}'});
 	} else {
 		chrome.tabs.insertCSS(tabId, {code: 'body {overflow: visible !important;}'});
@@ -318,10 +317,16 @@ function filterHandler(sender = tabId){
 
 function flashAlarm(){
 	const flash = () => {
-		chrome.tabs.insertCSS(tabId, {code: '@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,' + settings.alarmOpacity + ');}} img.alarm {outline: ' + settings.flashWidth + 'px solid rgba(255,0,0,' + settings.alarmOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alarm ' + settings.flashSpeed + 's linear infinite;}' }, () => {
-			lastError();
-		});
-		chrome.tabs.insertCSS(tabId, {code: '@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,' + settings.alertOpacity + ');}} img.alert {outline: ' + settings.flashWidth + 'px solid rgba(255,247,28,' + settings.alertOpacity + '); outline-offset: -' + settings.flashWidth + 'px; animation: alert ' + settings.flashSpeed + 's linear infinite;}' }, () => {
+		chrome.tabs.insertCSS(tabId, {code: `
+			@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,`
+			+ settings.alarmOpacity + `);}} img.alarm {outline: ` + settings.flashWidth + `px solid rgba(255,0,0,`
+			+ settings.alarmOpacity + `); outline-offset: -` + settings.flashWidth + `px; animation: alarm `
+			+ settings.flashSpeed + `s linear infinite;}
+			@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,`
+			+ settings.alertOpacity + `);}} img.alert {outline: ` + settings.flashWidth + `px solid rgba(255,247,28,`
+			+ settings.alertOpacity + `); outline-offset: -` + settings.flashWidth + `px; animation: alert `
+			+ settings.flashSpeed + `s linear infinite;}`
+		}, () => {
 			lastError();
 		});
 	};
@@ -335,12 +340,12 @@ function flashAlarm(){
 
 function hideHeader(){
 	if (settings.hideHeader){
-		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: none !important;}div#header{display: none !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: none !important;}div#header{display: none !important;} div.fixed-top {display: none !important;}'});
 		//New bootstrap header in 1.35.5
-		chrome.tabs.insertCSS({code : 'div.fixed-top {display: none !important;}'});
+		//chrome.tabs.insertCSS({code : 'div.fixed-top {display: none !important;}'});
 	} else {
-		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: block !important;}div#header{display: block !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: block !important;}div#header{display: block !important;} div.fixed-top {display: block !important;}'});
 		//New bootstrap header in 1.35.5
-		chrome.tabs.insertCSS({code : 'div.fixed-top {display: block !important;}'});		
+		//chrome.tabs.insertCSS({code : 'div.fixed-top {display: block !important;}'});		
 	}
 }

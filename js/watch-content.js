@@ -101,23 +101,25 @@ if (ref.indexOf('view=montage') > 0){
     }
 
     chrome.runtime.sendMessage({fullscreenWatch: true, monitorName: monitorName}, (msg) =>{
-        lockRecordButton = msg.lockRecordButton;
-        disableRecordOnAlert = msg.disableRecordOnAlert;
-        recordButtonSize = msg.recordButtonSize;
-        if (forceAlarm && cancelAlarm){
-            placeDiv(msg.obj[monitorName].x, msg.obj[monitorName].y);
-            const recording = document.getElementById('stateValue');
-            const config = {childList: true};
-            const callback = (mutation) => {
-                state = mutation[0].addedNodes[0].data;
-                console.log(state);
-                recordButton.className = recordDiv.className = state;
-            };
-            const observer = new MutationObserver(callback);
-            observer.observe(recording, config);
-        }
-        if (msg.showFps){
-            showFpsFunc(msg.fpsColor, msg.x, msg.y);
+        if (msg){
+            lockRecordButton = msg.lockRecordButton;
+            disableRecordOnAlert = msg.disableRecordOnAlert;
+            recordButtonSize = msg.recordButtonSize;
+            if (forceAlarm && cancelAlarm){
+                placeDiv(msg.obj[monitorName].x, msg.obj[monitorName].y);
+                const recording = document.getElementById('stateValue');
+                const config = {childList: true};
+                const callback = (mutation) => {
+                    state = mutation[0].addedNodes[0].data;
+                    console.log(state);
+                    recordButton.className = recordDiv.className = state;
+                };
+                const observer = new MutationObserver(callback);
+                observer.observe(recording, config);
+            }
+            if (msg.showFps){
+                showFpsFunc(msg.fpsColor, msg.x, msg.y);
+            }
         }
     }); 
 
