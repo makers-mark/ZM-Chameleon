@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		flashWidth.max = settings.widthMax;
 		toggleMonitors.checked = settings.monitorOverride;
 		slider.value = settings.monitors;
-		sliderText.textContent = settings.monitors + ' Monitors Per Row';
+		sliderText.textContent = `${settings.monitors} Monitors Per Row`;
 		hideHeader.checked = settings.hideHeader;
 		colorPicker.value = settings.gridColor || '#000000';
 		gridWidth.value = settings.gridWidth;
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});	
 
 	slider.oninput = () => {
-		sliderText.textContent = slider.value + ' Monitors Per Row';
+		sliderText.textContent = `${slider.value} Monitors Per Row`;
 	}
 	slider.onchange = () => {
 		chrome.storage.local.set({monitors: slider.value});

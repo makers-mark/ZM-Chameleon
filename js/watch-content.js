@@ -22,8 +22,8 @@ if (ref.indexOf('view=montage') > 0){
         fpsDiv.draggable = true;
         fpsDiv.style.color = color;
 
-        fpsDiv.style.left = x + 'px';
-        fpsDiv.style.top = y + 'px';
+        fpsDiv.style.left = `${x}px`;
+        fpsDiv.style.top = `${y}px`;
 
         const fps = document.getElementById('fpsValue');
         const fpsCallback = (mutation) => fpsDiv.innerText = mutation[0].addedNodes[0].data;
@@ -45,14 +45,14 @@ if (ref.indexOf('view=montage') > 0){
         var recordText = document.createTextNode('REC');
         recordButton = document.createElement('button');
         recordButton.style.backgroundColor = 'darkred';
-        recordButton.style.width = recordButton.style.height = recordButton.style.borderRadius = recordDiv.style.fontSize = recordButtonSize + 'px';
+        recordButton.style.width = recordButton.style.height = recordButton.style.borderRadius = recordDiv.style.fontSize = `${recordButtonSize}px`;
         recordButton.id = 'recordButton';
 
         recordDiv.appendChild(recordButton);
         recordDiv.appendChild(recordText);
         recordDiv.style.position = 'fixed';
-        recordDiv.style.top = y + 'px';
-        recordDiv.style.left = x + 'px';
+        recordDiv.style.top = `${y}px`;
+        recordDiv.style.left = `${x}px`;
         recordDiv.id = 'recordDiv';
         recordDiv.draggable = !lockRecordButton;
         recordDiv.className = recordButton.className = state;

@@ -121,9 +121,9 @@ chrome.storage.onChanged.addListener( (change) => {
 
 function initMontage() {
 	if (settings.monitorOverride) {
-		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;} #content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
+		chrome.tabs.insertCSS(tabId, { code: `.monitorFrame {width:${100 / settings.monitors}% !important;} #content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}`});
 	} else {
-		chrome.tabs.insertCSS(tabId, { code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;} #content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}' });
+		chrome.tabs.insertCSS(tabId, { code: `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;} #content{width: 100% !important;margin: 0px !important;}}#header{border-bottom: 0px !important;}`});
 	}
 }
 
@@ -255,8 +255,8 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 	return true;
 });
 
-const borderRadius = () => chrome.tabs.insertCSS(tabId, {code: 'img:not(.console) {border-radius: ' + settings.borderRadius + '% !important;}'});
-const gridHandler = () => chrome.tabs.insertCSS(tabId, {code: 'img:not(.console) {border: ' + settings.gridWidth + 'px solid ' + settings.gridColor +' !important;}'});
+const borderRadius = () => chrome.tabs.insertCSS(tabId, {code: `img:not(.console) {border-radius:${settings.borderRadius}% !important;}`});
+const gridHandler = () => chrome.tabs.insertCSS(tabId, {code: `img:not(.console) {border:${settings.gridWidth}px solid ${settings.gridColor} !important;}`});
 
 function widthMax(){
  	if (settings.gridWidth > settings.widthMax){
@@ -286,13 +286,13 @@ const lastError = () => {
 
 function monitorOverride(){
 	if (settings.monitorOverride){
-		chrome.tabs.insertCSS(tabId, {code: '.monitorFrame {width: ' + 100 / settings.monitors + '% !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: `.monitorFrame {width:${100 / settings.monitors}% !important;}`});
 	} else {
 		if (settings.zmMontageLayout == 1){
 			//freeform is selected in ZoneMinder, so do nothing
 			return;
 		}
-		chrome.tabs.insertCSS(tabId, {code: '.monitorFrame {width: ' + 100 / settings.zmMontageLayout + '% !important;}'});
+		chrome.tabs.insertCSS(tabId, {code: `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;}`});
 	}
 }
 
@@ -306,11 +306,11 @@ function toggleScroll(){
 
 function filterHandler(sender = tabId){
 	if (settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(' + settings.dropShadowString + ' ' + settings.shadowColor + ') invert(' + settings.inversionAmount + ') !important;}'});
+		chrome.tabs.insertCSS(sender, {code: `img:not(.console) {filter: drop-shadow(${settings.dropShadowString}${settings.shadowColor}) invert(${settings.inversionAmount}) !important;}`});
 	} else if (settings.dropShadow && !settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: drop-shadow(' + settings.dropShadowString + ' ' + settings.shadowColor + ') !important;}'});
+		chrome.tabs.insertCSS(sender, {code: `img:not(.console) {filter: drop-shadow(${settings.dropShadowString}${settings.shadowColor}) !important;}`});
 	} else if (!settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: invert(' + settings.inversionAmount + ') !important;}'});
+		chrome.tabs.insertCSS(sender, {code: `img:not(.console) {filter: invert(${settings.inversionAmount}) !important;}`});
 	} else {
 		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: none !important;}'});
 	}
@@ -319,14 +319,14 @@ function filterHandler(sender = tabId){
 function flashAlarm(){
 	const flash = () => {
 		chrome.tabs.insertCSS(tabId, {code: `
-			@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,`
-			+ settings.alarmOpacity + `);}} img.alarm {outline: ` + settings.flashWidth + `px solid rgba(255,0,0,`
-			+ settings.alarmOpacity + `); outline-offset: -` + settings.flashWidth + `px; animation: alarm `
-			+ settings.flashSpeed + `s linear infinite;}
-			@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,`
-			+ settings.alertOpacity + `);}} img.alert {outline: ` + settings.flashWidth + `px solid rgba(255,247,28,`
-			+ settings.alertOpacity + `); outline-offset: -` + settings.flashWidth + `px; animation: alert `
-			+ settings.flashSpeed + `s linear infinite;}`
+			@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,
+			${settings.alarmOpacity});}} img.alarm {outline: ${settings.flashWidth}px solid rgba(255,0,0,
+			${settings.alarmOpacity}); outline-offset: -${settings.flashWidth}px; animation: alarm
+			${settings.flashSpeed}s linear infinite;}
+			@-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,
+			${settings.alertOpacity});}} img.alert {outline: ${settings.flashWidth}px solid rgba(255,247,28,
+			${settings.alertOpacity}); outline-offset: -${settings.flashWidth}px; animation: alert
+			${settings.flashSpeed}s linear infinite;}`
 		}, () => {
 			lastError();
 		});

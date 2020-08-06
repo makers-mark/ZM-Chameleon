@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
   var version = chrome.runtime.getManifest().version;
   if (version.indexOf('.') === -1){version += '.0';}
-  versionH3.innerText = 'Version ' + version;
+  versionH3.innerText = `Version ${version}`;
 
   chrome.storage.local.get({
     customLocation: '',
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     obfuscate.checked = settings.obfuscate;
     disableRecordOnAlert.checked = settings.disableRecordOnAlert;
     recordButtonSize.value = settings.recordButtonSize;
-    recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = settings.recordButtonSize + 'px';
+    recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = `${settings.recordButtonSize}px`;
     dropShadowString.value = settings.dropShadowString;
     inversionAmount.value = settings.inversionAmount;
     inversionAmountText.textContent = settings.inversionAmount;
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inversionAmountText.textContent = inversionAmount.value;
     chrome.storage.local.set ({inversionAmount: inversionAmount.value});
   }
-  recordButtonSize.oninput = () => recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = recordButtonSize.value + 'px';
+  recordButtonSize.oninput = () => recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = `${recordButtonSize.value}px`;
   recordButtonSize.onchange = () => chrome.storage.local.set({recordButtonSize: recordButtonSize.value});
   dropShadowApply.onclick = () => chrome.storage.local.set({dropShadowString: dropShadowString.value});
   dropShadowStringReset.onclick = () => chrome.storage.local.set({dropShadowString: defaultShadow}, () => dropShadowString.value = defaultShadow);
