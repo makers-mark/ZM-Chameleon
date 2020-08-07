@@ -350,7 +350,6 @@ function flashAlarm(){
 }
 
 function hideHeader(){
-	console.log('hideheader ran');
 	if (settings.hideHeader){
 		chrome.tabs.insertCSS(tabId, {code: 'div.navbar{display: none !important;}div#header{display: none !important;} div.fixed-top {display: none !important;}'});
 		//New bootstrap header in 1.35.5
