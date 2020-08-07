@@ -146,7 +146,7 @@ https://www.w3schools.com/howto/howto_js_rangeslider.asp
 }
 
 input[type="number"]{
-    width: 3em;
+    width: 4em;
 }
 
 .slider::before {
