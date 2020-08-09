@@ -12,11 +12,13 @@ zmMontageLayout.addEventListener('input', () => {
 document.addEventListener('mousedown', (e) => {
     e.preventDefault();
     if (e.buttons === 3){
-      window.location = '?view=console';
-      chrome.runtime.sendMessage({goToConsole: true});
+        window.location = '?view=console';
+        chrome.runtime.sendMessage({goToConsole: true});
+    } else if (e.which ===2){
+        chrome.runtime.sendMessage({fullscreen: true});
     }
 });
 
 document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-})
+});

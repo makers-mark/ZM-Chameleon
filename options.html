@@ -29,7 +29,7 @@
         <input type="number" min="1" id="widthMax" class="smallNumber">
       </h3>
       <hr>
-      <h3>Custom 'Url-contains' that matches pages that this extension should be run on: <input id="customLocation"></input></h3>
+      <h3>Custom 'Url-contains' that matches pages that this extensions popup is enabled on: <input id="customLocation"></input></h3>
       <h4>Examples: 'https://192.168.0.2/zm' OR 'zm' OR 'localhost'...</h4>
       <hr>
       <h3>Drop shadow string (default is '2px 4px 6px'): <input id="dropShadowString" type="text" value="2px 4px 6px"></input><button id="dropShadowApply" class="blueButton">Apply</button><button id="dropShadowStringReset" class="blueButton">Reset</button></h3>
@@ -37,13 +37,10 @@
       <h3>Fps Color <input type="color" id="fpsColor"></h3>
       <h3><input type="checkbox" id="showFps">Show FPS</h3>
       <h3><input type="checkbox" id="lockRecordButton">Lock the record button position on all monitors</h3>
-      <h3><input type="checkbox" id="disableRecordOnAlert">Disable the record button in 'Alert/yellow' mode</h3>
-      <h3>Record button size in pixels
-        <input type="number" min="1" id="recordButtonSize" class="smallNumber" value="70">
-        (Click the button to see the true scaled size) 
-      </h3>
-      <div id="recordDiv" class="Idle">
-        <button id="recordButton" class="Idle"></button>REC
+      <h3><input type="checkbox" id="disableRecordOnAlert">Disable record button click in 'Alert/yellow' mode</h3>
+      <h3>Record button size (pixels): <input type="number" min="1" id="recordButtonSize" class="smallNumber" value="70"></h3>
+      <div id="recordDiv" class="Alarm">
+        <button id="recordButton" class="Alarm"></button>REC
       </div>
       <hr>
       <h3>You can use the two fields below to autofill the user and password at the login screen.</h3>

@@ -3,6 +3,10 @@
 var settings = {};
 var tabId = null;
 
+chrome.runtime.onUpdateAvailable.addListener( () => {
+	chrome.runtime.reload();
+});
+
 chrome.runtime.onInstalled.addListener( () =>{
 	chrome.storage.local.get({
 		customLocation: '',
@@ -33,7 +37,7 @@ chrome.runtime.onInstalled.addListener( () =>{
 		borderRadius: 0,
 		lockRecordButton: false,
 		obfuscate: false,
-		disableRecordOnAlert: true,
+		disableRecordOnAlert: false,
 		recordButtonSize: 70,
 		dropShadowString: '2px 4px 6px',
 		inversionAmount: 1
@@ -59,6 +63,16 @@ chrome.runtime.onInstalled.addListener( () =>{
 	});	
 });
 
+chrome.tabs.onRemoved.addListener( (id) => {
+	//If this is not here, when you change a value for certain things
+	//on the options page, it will error if the ZoneMinder tab has 
+	//closed. Those settings check for tabId before attempting to
+	//insertCSS into a tab that no longer exists.
+	if (id == tabId){
+		tabId = null;
+	}
+})
+
 chrome.storage.onChanged.addListener( (change) => {
 	var values = Object.getOwnPropertyNames(change);
 	values.forEach(function(value) {
@@ -82,7 +96,7 @@ chrome.storage.onChanged.addListener( (change) => {
 			case 'gridWidth':
 			case 'gridColor':
 				settings[value] = change[value].newValue;
-				gridHandler();
+				if (tabId){gridHandler();}
 				break;
 
 			case 'customLocation':
@@ -100,7 +114,7 @@ chrome.storage.onChanged.addListener( (change) => {
 			case 'dropShadowString':
 			case 'inversionAmount':
 				settings[value] = change[value].newValue;
-				filterHandler();
+				if (tabId){filterHandler();}
 				break;
 
 			case 'borderRadius':
@@ -114,18 +128,18 @@ chrome.storage.onChanged.addListener( (change) => {
 			case 'alarmOpacity':
 			case 'flashSpeed':
 				settings[value] = change[value].newValue;
-				flashAlarm();
+				if (tabId){flashAlarm();}
 		}
 	});
 });
 
-function initMontage() {
+/* function initMontage() {
 	if (settings.monitorOverride) {
 		chrome.tabs.insertCSS(tabId, { code: `.monitorFrame {width:${100 / settings.monitors}% !important;} #content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`});
 	} else {
 		chrome.tabs.insertCSS(tabId, { code: `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;} #content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`});
 	}
-}
+} */
 
 function changeDeclarativeContent(customLocation){
  	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
@@ -154,8 +168,11 @@ function changeDeclarativeContent(customLocation){
 }
 
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
-	if (!tabId && sender.tab){ //Make sure we don't get the popup message because it has no .tab
+	//if (sender.url.indexOf('chrome-extension://') === -1){tabId = sender.tab.id;}
+	//console.log(sender);
+ 	if (sender.tab && sender.url.indexOf('view=watch') === -1 && sender.tab.title.indexOf('ZM - ') !== -1){
 		tabId = sender.tab.id;
+		console.log('everything matched tab id set to ' + tabId);
 	}
 	var value = Object.getOwnPropertyNames(msg)[0];
 	switch (value){
@@ -189,16 +206,21 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			break;
 
 		case 'clearStorage':
-			chrome.storage.local.clear( () =>{
-				chrome.tabs.executeScript(tabId, {code: `window.location.reload();`}, () =>{
+			if (tabId){
+				chrome.storage.local.clear( () =>{
+					chrome.tabs.executeScript(tabId, {code: `window.location.reload();`}, () =>{
+						chrome.runtime.reload();
+					});
+				});
+			} else {
+				chrome.storage.local.clear( () => {
 					chrome.runtime.reload();
 				});
-			});
+			}
 			break;
 
 		case 'montageOpen':
-			tabId = sender.tab.id;
-			initMontage();
+			chrome.tabs.insertCSS(tabId, { code: `#content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`});
 			filterHandler();
 			gridHandler();
 			borderRadius();
@@ -206,7 +228,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			chrome.storage.local.set({zmMontageLayout: msg.zmMontageLayout});
 			var settingNames = Object.getOwnPropertyNames(settings);
 			for (var name in settingNames){
-				if (typeof window[settingNames[name]] === 'function' && settings[settingNames[name]] === true) {
+				if (typeof window[settingNames[name]] === 'function'){
 					window[settingNames[name]]();
 				}
 			}

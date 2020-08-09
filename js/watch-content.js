@@ -11,6 +11,12 @@ var recordButtonSize = 70;
 var state = 'Idle';
 
 if (ref.indexOf('view=montage') > 0){
+    document.addEventListener('mousedown', (e) => {  
+        if (e.which === 2){
+          e.preventDefault();
+          chrome.runtime.sendMessage({fullscreen: true});
+        }
+    });
     var recordDiv;
     var recordButton;
     var content = document.getElementById('content');

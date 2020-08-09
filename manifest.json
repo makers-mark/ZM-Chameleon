@@ -2,11 +2,11 @@
 	"manifest_version": 2,
 	"name": "ZM Chameleon",
 	"description": "This extension is designed to make the ZoneMinder viewing experience better!",
-	"version": "1.0.1",
+	"version": "1.0.0",
 	"permissions": [
 		"activeTab",
 		"storage",
-		"*://*/*",
+		"*://*/zm/*",
 		"declarativeContent"
 	],
 	"options_ui": {
@@ -25,7 +25,9 @@
 		},
 		{
 			"matches": [
-				"*://*/zm/*view=login*"
+				"*://*/zm/*view=login*",
+				"*://*/zm/index.php",
+				"*://*/zm/"
 			],
 			"js": ["js/login-content.js"]
 		},

@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var defaultShadow = '2px 4px 6px';
   document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
   var version = chrome.runtime.getManifest().version;
-  if (version.indexOf('.') === -1){version += '.0';}
+  if (version.indexOf('.') === -1){version += '.0.0';}
   versionH3.innerText = `Version ${version}`;
 
   chrome.storage.local.get({
@@ -36,13 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
     alertOpacity: 0.5,
     userName: '',
     password: '',
-    widthMax: 10,
+    widthMax: 20,
     flashSpeed: 0.6,
     showFps: true,
     fpsColor: '#ffffff',
     lockRecordButton: false,
     obfuscate: false,
-    disableRecordOnAlert: true,
+    disableRecordOnAlert: false,
     recordButtonSize: 70,
     dropShadowString: defaultShadow,
     inversionAmount: 1
