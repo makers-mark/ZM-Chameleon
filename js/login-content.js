@@ -13,25 +13,24 @@
 //      "*://*/zm/index.php",
 //      "*://*/zm/"
 //]
-if (window.document.title === 'ZM - Login'){
-  chrome.runtime.sendMessage({loginPageOpen: true});
-  chrome.storage.local.get({
-    userName: '',
-    password: '',
-    obfuscate: false
-  }, (item) => {
-    const user = document.getElementById('inputUsername') || null;
-    if (user && item.obfuscate){
-      user.type = 'password';
-      user.value = item.userName;
-    } else  if (user && item.userName !== ''){
-      user.value = item.userName;
-    }
-    if (item.password !== ''){
-      document.getElementById('inputPassword').value = item.password || null;
-    }
-  });
-} else {
-  chrome.runtime.sendMessage({getTabId: true});
-  //We are already logged in and are at the 'ZM - Console' page.
-}
+//document.addEventListener('DOMContentLoaded', () => {
+
+    chrome.runtime.sendMessage({loginPageOpen: true});
+    chrome.storage.local.get({
+      userName: '',
+      password: '',
+      obfuscate: false
+    }, (item) => {
+      const user = document.getElementById('inputUsername') || null;
+      if (user && item.obfuscate){
+        user.type = 'password';
+        user.value = item.userName;
+      } else  if (user && item.userName !== ''){
+        user.value = item.userName;
+      }
+      if (item.password !== ''){
+        document.getElementById('inputPassword').value = item.password || null;
+      }
+    });
+
+//});
