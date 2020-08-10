@@ -13,7 +13,7 @@
 //      "*://*/zm/index.php",
 //      "*://*/zm/"
 //]
-//document.addEventListener('DOMContentLoaded', () => {
+//document.addEventListener('DOMContentLoaded', () => {  This has to be declared when a content script is directly injected with the declarative content api, otherwise run_at 'document_idle' the default does the job.
 
     chrome.runtime.sendMessage({loginPageOpen: true});
     chrome.storage.local.get({

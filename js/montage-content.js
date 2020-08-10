@@ -1,6 +1,6 @@
 "use strict";
 
-//document.addEventListener('DOMContentLoaded', () => {
+//document.addEventListener('DOMContentLoaded', () => {This has to be declared when a content script is directly injected with the declarative content api, otherwise run_at 'document_idle' the default does the job.
     var zmMontageLayout = document.getElementById('zmMontageLayout');
     chrome.runtime.sendMessage({montageOpen: true, zmMontageLayout: zmMontageLayout.value}, (msg) =>{
         //console.log(msg);

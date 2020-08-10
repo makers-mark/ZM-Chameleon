@@ -1,14 +1,6 @@
 "use strict";
 
-//document.addEventListener('DOMContentLoaded', () => {
-
-    let head = document.getElementsByTagName('head')[0];
-    let link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = 'css/watch-content-stylesheet.css';
-    head.appendChild(link);
-
+//document.addEventListener('DOMContentLoaded', () => {This has to be declared when a content script is directly injected with the declarative content api, otherwise run_at 'document_idle' the default does the job.
     var ref = document.referrer;
     var monitorName = document.getElementById('monitorName').innerText;
     var showFps;
