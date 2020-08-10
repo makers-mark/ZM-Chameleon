@@ -6,7 +6,7 @@
 	"permissions": [
 		"activeTab",
 		"storage",
-		"*://*/*",
+		"*://*/zm",
 		"declarativeContent"
 	],
 	"options_ui": {
@@ -31,12 +31,6 @@
 			],
 			"js": ["js/login-content.js"]
 		},
-		{
-			"matches": [
-				"*://*/zm/*"
-			],
-			"js": ["js/general-content.js"]
-		},		
 		{
 			"matches": [
 				"*://*/zm/*view=watch*"

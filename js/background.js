@@ -44,7 +44,19 @@ chrome.runtime.onInstalled.addListener( () =>{
 	}, (localStorage) => {
 		settings = localStorage;
 	});
-	
+	/* 	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
+		chrome.declarativeContent.onPageChanged.addRules([{
+			conditions: [
+				new chrome.declarativeContent.PageStateMatcher({
+					css: ["div.monitorFrame"]                             //Montage page
+				}),
+				new chrome.declarativeContent.PageStateMatcher({
+					css: ["form[name='monitorForm']"]                     //Console page
+				})
+			],
+		actions: [new chrome.declarativeContent.ShowPageAction()]
+		}]);
+	});	*/
 	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
 		chrome.declarativeContent.onPageChanged.addRules([{
 			conditions: [
@@ -65,9 +77,9 @@ chrome.runtime.onInstalled.addListener( () =>{
 
 chrome.tabs.onRemoved.addListener( (id) => {
 	//If this is not here, when you change a value for certain things
-	//on the options page, it will error if the ZoneMinder tab has 
-	//closed. Those settings check for tabId before attempting to
-	//insertCSS into a tab that no longer exists.
+	//(flash, grid, css filters) on the options page, it will error if
+	//the ZoneMinder tab has closed. Those settings check for tabId 
+	//before attempting to insertCSS into a tab that no longer exists.
 	if (id == tabId){
 		tabId = null;
 	}
@@ -133,14 +145,6 @@ chrome.storage.onChanged.addListener( (change) => {
 	});
 });
 
-/* function initMontage() {
-	if (settings.monitorOverride) {
-		chrome.tabs.insertCSS(tabId, { code: `.monitorFrame {width:${100 / settings.monitors}% !important;} #content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`});
-	} else {
-		chrome.tabs.insertCSS(tabId, { code: `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;} #content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`});
-	}
-} */
-
 function changeDeclarativeContent(customLocation){
  	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
 		chrome.declarativeContent.onPageChanged.addRules([{
@@ -152,27 +156,11 @@ function changeDeclarativeContent(customLocation){
 		actions: [new chrome.declarativeContent.ShowPageAction()]
 		}]);
 	}); 
-/* 	chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
-		chrome.declarativeContent.onPageChanged.addRules([{
-			conditions: [
-				new chrome.declarativeContent.PageStateMatcher({
-					css: ["div.monitorFrame"]                             //Montage page
-				}),
-				new chrome.declarativeContent.PageStateMatcher({
-					css: ["form[name='monitorForm']"]                     //Console page
-				})
-			],
-		actions: [new chrome.declarativeContent.ShowPageAction()]
-		}]);
-	});	*/
 }
 
 chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
-	//if (sender.url.indexOf('chrome-extension://') === -1){tabId = sender.tab.id;}
-	//console.log(sender);
  	if (sender.tab && sender.url.indexOf('view=watch') === -1 && sender.tab.title.indexOf('ZM - ') !== -1){
 		tabId = sender.tab.id;
-		console.log('everything matched tab id set to ' + tabId);
 	}
 	var value = Object.getOwnPropertyNames(msg)[0];
 	switch (value){
@@ -220,6 +208,7 @@ chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
 			break;
 
 		case 'montageOpen':
+			tabId = sender.tab.id;
 			chrome.tabs.insertCSS(tabId, { code: `#content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`});
 			filterHandler();
 			gridHandler();
@@ -338,13 +327,13 @@ function toggleScroll(){
 
 function filterHandler(sender = tabId){
 	if (settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: `img:not(.console) {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor}) invert(${settings.inversionAmount}) !important;}`});
+		chrome.tabs.insertCSS(sender, {code: `img {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor}) invert(${settings.inversionAmount}) !important;}`});
 	} else if (settings.dropShadow && !settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: `img:not(.console) {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor}) !important;}`});
+		chrome.tabs.insertCSS(sender, {code: `img {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor}) !important;}`});
 	} else if (!settings.dropShadow && settings.invertColors){
-		chrome.tabs.insertCSS(sender, {code: `img:not(.console) {filter: invert(${settings.inversionAmount}) !important;}`});
+		chrome.tabs.insertCSS(sender, {code: `img {filter: invert(${settings.inversionAmount}) !important;}`});
 	} else {
-		chrome.tabs.insertCSS(sender, {code: 'img:not(.console) {filter: none !important;}'});
+		chrome.tabs.insertCSS(sender, {code: 'img {filter: none !important;}'});
 	}
 }
 
