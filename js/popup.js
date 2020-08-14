@@ -1,90 +1,86 @@
-"use strict";
+(() => {
+    "use strict";
 
-document.addEventListener('DOMContentLoaded', () => {
-	var slider = document.getElementById('monitorSlider');
-	var sliderText = document.getElementById('sliderText');
-	var hideHeader = document.getElementById('hideHeader');
-	var toggleMonitors = document.getElementById('toggleMonitors');
-	var colorPicker = document.getElementById('colorPicker');
-	var gridWidth = document.getElementById('gridWidth');
-	var closeIcon = document.getElementById('closeIcon');
-	var toggleScroll = document.getElementById('toggleScroll');
-	var flashAlarm = document.getElementById('flashAlarm');
-	var flashWidth = document.getElementById('flashWidth');
-	var maximizeSingleView = document.getElementById('maximizeSingleView');
-	var invertColors = document.getElementById('invertColors');
-	var dropShadow = document.getElementById('dropShadow');
-	var shadowColor = document.getElementById('shadowColor');
-	var borderRadius = document.getElementById('borderRadius');
+    let slider = document.getElementById('monitorSlider');
+    let sliderText = document.getElementById('sliderText');
+    let hideHeader = document.getElementById('hideHeader');
+    let toggleMonitors = document.getElementById('toggleMonitors');
+    let colorPicker = document.getElementById('colorPicker');
+    let gridWidth = document.getElementById('gridWidth');
+    let closeIcon = document.getElementById('closeIcon');
+    let toggleScroll = document.getElementById('toggleScroll');
+    let flashAlarm = document.getElementById('flashAlarm');
+    let flashWidth = document.getElementById('flashWidth');
+    let maximizeSingleView = document.getElementById('maximizeSingleView');
+    let invertColors = document.getElementById('invertColors');
+    let dropShadow = document.getElementById('dropShadow');
+    let shadowColor = document.getElementById('shadowColor');
+    let borderRadius = document.getElementById('borderRadius');
 
-	chrome.runtime.sendMessage({popupOpen: true}, (settings) => {
-		cssLoader(settings.toggleDark);
-		gridWidth.max = settings.widthMax;
-		flashWidth.max = settings.widthMax;
-		toggleMonitors.checked = settings.monitorOverride;
-		slider.value = settings.monitors;
-		sliderText.textContent = `${settings.monitors} Monitors Per Row`;
-		hideHeader.checked = settings.hideHeader;
-		colorPicker.value = settings.gridColor || '#000000';
-		gridWidth.value = settings.gridWidth;
-		toggleScroll.checked = settings.toggleScroll;
-		flashAlarm.checked = settings.flashAlarm;
-		flashWidth.value = settings.flashWidth;
-		maximizeSingleView.checked = settings.maximizeSingleView;
-		invertColors.checked = settings.invertColors;
-		dropShadow.checked = settings.dropShadow;
-		shadowColor.value = settings.shadowColor || '#000000';
-		borderRadius.value = settings.borderRadius;
-	});
+    chrome.runtime.sendMessage({popupOpen: true}, settings => {
+        cssLoader(settings.toggleDark);
+        gridWidth.max = settings.widthMax;
+        flashWidth.max = settings.widthMax;
+        toggleMonitors.checked = settings.monitorOverride;
+        slider.value = settings.monitors;
+        sliderText.textContent = `${settings.monitors} Monitors Per Row`;
+        hideHeader.checked = settings.hideHeader;
+        colorPicker.value = settings.gridColor || '#000000';
+        gridWidth.value = settings.gridWidth;
+        toggleScroll.checked = settings.toggleScroll;
+        flashAlarm.checked = settings.flashAlarm;
+        flashWidth.value = settings.flashWidth;
+        maximizeSingleView.checked = settings.maximizeSingleView;
+        invertColors.checked = settings.invertColors;
+        dropShadow.checked = settings.dropShadow;
+        shadowColor.value = settings.shadowColor || '#000000';
+        borderRadius.value = settings.borderRadius;
+    });
 
-	toggleMonitors.addEventListener('click', () => chrome.storage.local.set({monitorOverride: toggleMonitors.checked}));
-	hideHeader.addEventListener('click', () => chrome.storage.local.set({hideHeader: hideHeader.checked}));
-	toggleScroll.addEventListener('click', () => chrome.storage.local.set({toggleScroll: toggleScroll.checked}));
-	flashAlarm.addEventListener('click', () => chrome.storage.local.set({flashAlarm: flashAlarm.checked}));
-	maximizeSingleView.addEventListener('click', () => chrome.storage.local.set({maximizeSingleView: maximizeSingleView.checked}));
-	invertColors.addEventListener('click', () => chrome.storage.local.set({invertColors: invertColors.checked}));
-	dropShadow.addEventListener('click', () => chrome.storage.local.set({dropShadow: dropShadow.checked}));
-	borderRadius.addEventListener('input', () => chrome.storage.local.set({borderRadius: borderRadius.value}));
-	closeIcon.addEventListener('click', () => window.close());
+    toggleMonitors.addEventListener('click', () => chrome.storage.local.set({monitorOverride: toggleMonitors.checked}));
+    hideHeader.addEventListener('click', () => chrome.storage.local.set({hideHeader: hideHeader.checked}));
+    toggleScroll.addEventListener('click', () => chrome.storage.local.set({toggleScroll: toggleScroll.checked}));
+    flashAlarm.addEventListener('click', () => chrome.storage.local.set({flashAlarm: flashAlarm.checked}));
+    maximizeSingleView.addEventListener('click', () => chrome.storage.local.set({maximizeSingleView: maximizeSingleView.checked}));
+    invertColors.addEventListener('click', () => chrome.storage.local.set({invertColors: invertColors.checked}));
+    dropShadow.addEventListener('click', () => chrome.storage.local.set({dropShadow: dropShadow.checked}));
+    borderRadius.addEventListener('input', () => chrome.storage.local.set({borderRadius: borderRadius.value}));
+    closeIcon.addEventListener('click', () => window.close());
 
-	colorPicker.addEventListener('change', () => {
-		var color = colorPicker.value || '#000000';
-		chrome.storage.local.set({gridColor: color});
-	});
+    colorPicker.addEventListener('change', () => {
+        let color = colorPicker.value || '#000000';
+        chrome.storage.local.set({gridColor: color});
+    });
 
-	shadowColor.addEventListener('change', () => {
-		var color = shadowColor.value || '#000000';
-		chrome.storage.local.set({shadowColor: color})
-	})
+    shadowColor.addEventListener('change', () => {
+        let color = shadowColor.value || '#000000';
+        chrome.storage.local.set({shadowColor: color})
+    })
 
-	logo.addEventListener('click', () => {
-		chrome.storage.local.get({toggleDark: false}, (toggleDark) => {
-			chrome.storage.local.set({toggleDark: !toggleDark.toggleDark});
-			cssLoader(!toggleDark.toggleDark);
-		});		
-	});	
+    logo.addEventListener('click', () => {
+        chrome.storage.local.get({toggleDark: false}, toggleDark => {
+            chrome.storage.local.set({toggleDark: !toggleDark.toggleDark});
+            cssLoader(!toggleDark.toggleDark);
+        });		
+    });	
 
-	slider.oninput = () => {
-		sliderText.textContent = `${slider.value} Monitors Per Row`;
-	}
-	slider.onchange = () => {
-		chrome.storage.local.set({monitors: slider.value});
-	}
+    slider.oninput = () => {
+        sliderText.textContent = `${slider.value} Monitors Per Row`;
+    }
+    slider.onchange = () => {
+        chrome.storage.local.set({monitors: slider.value});
+    }
 
-	gridWidth.oninput = () => chrome.storage.local.set({gridWidth: gridWidth.value});
-	flashWidth.oninput = () => chrome.storage.local.set({flashWidth: flashWidth.value});
-});
+    gridWidth.oninput = () => chrome.storage.local.set({gridWidth: gridWidth.value});
+    flashWidth.oninput = () => chrome.storage.local.set({flashWidth: flashWidth.value});
 
-function cssLoader(toggleDark) {
-	let head = document.getElementsByTagName('head')[0];
-	let link = document.createElement('link');
-	link.rel = 'stylesheet';
-	link.type = 'text/css';
 
-	if (toggleDark) {
-		link.href = 'css/darkStylesheet.css';
-	} else {
-		link.href = 'css/stylesheet.css';
-	}
-	head.appendChild(link);
-}
+    const cssLoader = toggleDark => {
+        let head = document.getElementsByTagName('head')[0];
+        let link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        toggleDark ? link.href = 'css/darkStylesheet.css' : link.href = 'css/stylesheet.css';
+        head.appendChild(link);
+    }
+})();

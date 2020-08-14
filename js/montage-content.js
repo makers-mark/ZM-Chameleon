@@ -1,26 +1,24 @@
-"use strict";
+(() => {
+    "use strict";
 
-//document.addEventListener('DOMContentLoaded', () => {This has to be declared when a content script is directly injected with the declarative content api, otherwise run_at 'document_idle' the default does the job.
-    var zmMontageLayout = document.getElementById('zmMontageLayout');
-    chrome.runtime.sendMessage({montageOpen: true, zmMontageLayout: zmMontageLayout.value}, (msg) =>{
-        //console.log(msg);
-    });
+    let zmMontageLayout = document.getElementById('zmMontageLayout');
+    chrome.runtime.sendMessage({montageOpen: true, zmMontageLayout: zmMontageLayout.value});
 
     //Listen for a change in the manual selection (dropdown) for the number of monitors in ZM webpage
     zmMontageLayout.addEventListener('input', () => {
         chrome.runtime.sendMessage({zmMontageChanged: true, value: zmMontageLayout.value || 3});
     });
-    document.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        if (e.buttons === 3){
+    document.addEventListener('mousedown', evt => {
+        evt.preventDefault();
+        if (evt.buttons === 3){
             window.location = '?view=console';
             chrome.runtime.sendMessage({goToConsole: true});
-        } else if (e.which ===2){
+        } else if (evt.which ===2){
             chrome.runtime.sendMessage({fullscreen: true});
         }
     });
 
-    document.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
+    document.addEventListener('contextmenu', evt => {
+        evt.preventDefault();
     });
-//});
+})();

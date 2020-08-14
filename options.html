@@ -20,8 +20,8 @@
       <hr>
     </div>
     <div>
-      <h3>Alarm Opacity: <input type="range" step="0.05" class="optionsSlider" min="0" max="1" id="alarmOpacity"><span id="alarmOpacityText"></span></h3>
-      <h3>Alert Opacity: <input type="range" step="0.05" class="optionsSlider" min="0" max="1" id="alertOpacity"><span id="alertOpacityText"></span></h3>
+      <h3>Alarm Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="alarmOpacity"><span id="alarmOpacityText"></span></h3>
+      <h3>Alert Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="alertOpacity"><span id="alertOpacityText"></span></h3>
       <h3>Flashing animation speed (seconds): <input type="number" class="smallNumber" id="flashSpeed" min="0" step="0.01"></h3>
       <h4>(default is 0.6 seconds, and setting this to 0 will disable the flash animation)</h4>
       <hr>
@@ -33,15 +33,29 @@
       <h4>Examples: 'https://192.168.0.2/zm' OR 'zm' OR 'localhost'...</h4>
       <hr>
       <h3>Drop shadow string (default is '2px 4px 6px'): <input id="dropShadowString" type="text" value="2px 4px 6px"></input><button id="dropShadowApply" class="blueButton">Apply</button><button id="dropShadowStringReset" class="blueButton">Reset</button></h3>
+      <h4>You just need to put the first three values (offset-x, offset-y, blur-radius), the color is set in the popup.</h4>
+      <h4><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow">https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow</a></h4>
       <h3>Color Inversion Amount: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="inversionAmount"> <span id="inversionAmountText"></span></h3>
       <h3>Fps Color <input type="color" id="fpsColor"></h3>
+      <h3>Font size for the frames per second display: 
+        <input type="number" min="1" id="fpsSize" class="smallNumber">
+      </h3>
       <h3><input type="checkbox" id="showFps">Show FPS</h3>
       <h3><input type="checkbox" id="lockRecordButton">Lock the record button position on all monitors</h3>
       <h3><input type="checkbox" id="disableRecordOnAlert">Disable record button click in 'Alert/yellow' mode</h3>
-      <h3>Record button size (pixels): <input type="number" min="1" id="recordButtonSize" class="smallNumber" value="70"></h3>
-      <div id="recordDiv" class="Alarm">
-        <button id="recordButton" class="Alarm"></button>REC
-      </div>
+      <table>
+        <tr>
+          <td>
+            <h3>Record button size (pixels): <input type="number" min="1" id="recordButtonSize" class="smallNumber" value="70"></h3>
+            <h4>Click the button or hover over it to see the true scaled size.</h4>
+          </td>
+          <td>
+            <div id="recordDiv" class="Idle">
+              <button id="recordButton" class="Idle"></button>REC
+            </div>
+          </td>
+        </tr>
+      </table>
       <hr>
       <h3>You can use the two fields below to autofill the user and password at the login screen.</h3>
       <h3 class="warning">This is NOT recommended because the information is stored in local storage on your computer.<br></h3>
