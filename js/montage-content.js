@@ -9,11 +9,11 @@
         chrome.runtime.sendMessage({zmMontageChanged: true, value: zmMontageLayout.value || 3});
     });
     document.addEventListener('mousedown', evt => {
-        evt.preventDefault();
         if (evt.buttons === 3){
             window.location = '?view=console';
             chrome.runtime.sendMessage({goToConsole: true});
         } else if (evt.which ===2){
+            evt.preventDefault();
             chrome.runtime.sendMessage({fullscreen: true});
         }
     });
