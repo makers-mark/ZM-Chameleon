@@ -37,7 +37,8 @@
             disableRecordOnAlert: false,
             recordButtonSize: 70,
             dropShadowString: '2px 4px 6px',
-            inversionAmount: 1
+            inversionAmount: 1,
+            transparentGrid: false
         }, localStorage => {
             settings = localStorage;
         });
@@ -92,6 +93,7 @@
 
                 case 'gridWidth':
                 case 'gridColor':
+                case 'transparentGrid':
                     settings[value] = change[value].newValue;
                     if (tabId) gridHandler();
                     break;
@@ -177,7 +179,8 @@
                     invertColors: settings.invertColors,
                     dropShadow: settings.dropShadow,
                     shadowColor: settings.shadowColor,
-                    borderRadius: settings.borderRadius
+                    borderRadius: settings.borderRadius,
+                    transparentGrid: settings.transparentGrid
                 });
                 break;
 
@@ -258,8 +261,11 @@
     });
 
     const borderRadius = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code: `img {border-radius:${settings.borderRadius}% !important;}`}));
-    const gridHandler = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid transparent !important;}`}));
-
+    const gridHandler = () => {
+        tabId.forEach( id => {
+            settings.transparentGrid ? chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid transparent !important;}`}) : chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid ${settings.gridColor} !important;}`});
+        });
+    }
     const widthMax = () => {
         if (settings.gridWidth > settings.widthMax) settings.gridWidth = settings.widthMax;
         if (settings.flashWidth > settings.widthMax) settings.flashWidth = settings.widthMax;

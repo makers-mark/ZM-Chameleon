@@ -16,6 +16,7 @@
     let dropShadow = document.getElementById('dropShadow');
     let shadowColor = document.getElementById('shadowColor');
     let borderRadius = document.getElementById('borderRadius');
+    let transparentGrid = document.getElementById('transparentGrid');
 
     chrome.runtime.sendMessage({popupOpen: true}, settings => {
         cssLoader(settings.toggleDark);
@@ -35,6 +36,7 @@
         dropShadow.checked = settings.dropShadow;
         shadowColor.value = settings.shadowColor || '#000000';
         borderRadius.value = settings.borderRadius;
+        transparentGrid.checked = settings.transparentGrid;
     });
 
     toggleMonitors.addEventListener('click', () => chrome.storage.local.set({monitorOverride: toggleMonitors.checked}));
@@ -45,6 +47,7 @@
     invertColors.addEventListener('click', () => chrome.storage.local.set({invertColors: invertColors.checked}));
     dropShadow.addEventListener('click', () => chrome.storage.local.set({dropShadow: dropShadow.checked}));
     borderRadius.addEventListener('input', () => chrome.storage.local.set({borderRadius: borderRadius.value}));
+    transparentGrid.addEventListener('click', () => chrome.storage.local.set({transparentGrid: transparentGrid.checked}));
     closeIcon.addEventListener('click', () => window.close());
 
     colorPicker.addEventListener('change', () => {
@@ -73,8 +76,7 @@
 
     gridWidth.oninput = () => chrome.storage.local.set({gridWidth: gridWidth.value});
     flashWidth.oninput = () => chrome.storage.local.set({flashWidth: flashWidth.value});
-
-
+    
     const cssLoader = toggleDark => {
         let head = document.getElementsByTagName('head')[0];
         let link = document.createElement('link');
