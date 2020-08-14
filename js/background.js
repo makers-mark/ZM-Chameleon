@@ -233,6 +233,7 @@
                 break;
 
             case 'fullscreenWatch':
+
                 if (msg.fullscreenWatch && settings.maximizeSingleView){   //If the watch page was clicked on from the montage page and not the console page and the setting is selected in the popup. Maximize the monitor.
                     chrome.windows.getCurrent( window => chrome.windows.update(window.id, {state: 'fullscreen'}));
                     chrome.tabs.insertCSS(sender.tab.id, {code: 'img:first-child {object-fit: contain !important; width: 100vw !important; height: 100vh !important;} div#content {margin: 0 !important;} div.navbar, div#header, div#monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events {display: none !important;}'});
@@ -240,6 +241,8 @@
                         [msg.monitorName]: {
                             x: [msg.monitorName].x || 0,
                             y: [msg.monitorName].y || 0,
+                            fpsPosX: [msg.monitorName].fpsPosX || undefined,
+                            fpsPosY: [msg.monitorName].fpsPosY || undefined
                         }
                     }, obj => {
                         callback({obj: obj,
@@ -263,6 +266,7 @@
     const borderRadius = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code: `img {border-radius:${settings.borderRadius}% !important;}`}));
     const gridHandler = () => {
         tabId.forEach( id => {
+
             settings.transparentGrid ? chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid transparent !important;}`}) : chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid ${settings.gridColor} !important;}`});
         });
     }

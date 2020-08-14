@@ -10,27 +10,27 @@
     let recordButtonSize = 70;
     let state = 'Idle';
     let fpsSize = 30;
-    let fpsX = undefined;
-    let fpsY = undefined;
+    let fpsX;
+    let fpsY;
     let recX;
     let recY;
-    const config = {childList: true};
 
     if (ref.includes('view=montage')){
         let recordDiv;
         let recordButton;
+        const config = {childList: true};
         let content = document.getElementById('content');
         const fps = document.getElementById('fpsValue');
         const fpsCallback = (mutation) => fpsDiv.innerText = mutation[0].addedNodes[0].data;
         const fpsObserver = new MutationObserver(fpsCallback);
-        fpsObserver.observe(fps, config);        
+        fpsObserver.observe(fps, config);
+
         document.addEventListener('mousedown', (e) => {
             if (e.which === 2){
             e.preventDefault();
             chrome.runtime.sendMessage({fullscreen: true});
             }
         });
- 
 
         const showFpsFunc = (color = '#ffffff', x, y) => {
             let offset = [];
@@ -44,7 +44,7 @@
             //If the fps position has never been set, it will be 'undefined' and we will
             //put it at the bottom center of the maximized window. After it has been moved
             //and set somewhere else, we use the pixel position of the top-left corner of the div.
-            x ? fpsDiv.style.left = `${x}px` : fpsDiv.style.left = 'calc(50vw - 1.6em';
+            x ? fpsDiv.style.left = `${x}px` : fpsDiv.style.left = 'calc(50vw - 1.6em)';
             y ? fpsDiv.style.top = `${y}px` : fpsDiv.style.top = 'calc(100vh - 1.3em)';
 
             content.appendChild(fpsDiv);
@@ -135,8 +135,11 @@
                 recordButtonSize = reply.recordButtonSize;
                 fpsSize = reply.fpsSize;
                 if (forceAlarm && cancelAlarm){
-                    placeDiv(reply.obj[monitorName].x, reply.obj[monitorName].y);
+                    recX = reply.obj[monitorName].x;
+                    recY = reply.obj[monitorName].y;
+                    placeDiv(recX, recY);
                     const recording = document.getElementById('stateValue');
+                    const config = {childList: true};
                     const callback = mutation => {
                         state = mutation[0].addedNodes[0].data;
                         recordButton.className = recordDiv.className = state;
@@ -144,7 +147,9 @@
                     const observer = new MutationObserver(callback);
                     observer.observe(recording, config);
                 }
-                if (reply.showFps) showFpsFunc(reply.fpsColor, reply.obj[monitorName].fpsPosX, reply.obj[monitorName].fpsPosY);
+                fpsX = reply.obj[monitorName].fpsPosX;
+                fpsY = reply.obj[monitorName].fpsPosY;
+                if (reply.showFps) showFpsFunc(reply.fpsColor, fpsX, fpsY);
             }
         });
 
