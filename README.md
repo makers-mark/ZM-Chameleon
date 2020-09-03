@@ -83,5 +83,10 @@ If you wish to try this/modify this in any way, do this:
   - Same as above except this stores the password and fills it in
   ---
 
+- ### Mouse Additions
+  - Middle mouse click is the fullscreen toggle
+  - Left/Right buttons together on the Montage page goes directly back to the Console page
+  - Double click on a Single View monitor will go back
+  
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
