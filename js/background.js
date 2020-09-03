@@ -20,7 +20,7 @@
             hideHeader: false,
             gridColor: '#000000',
             gridWidth: 0,
-            toggleScroll: false,
+            toggleScroll: true,
             flashAlarm: true,
             toggleDark: true,
             flashWidth: 10,
@@ -28,7 +28,7 @@
             flashSpeed: 0.6,
             invertColors: false,
             showFps: true,
-            fpsColor: '#ffffff',
+            fpsColor: '#00ff00',
             fpsSize: 30,
             dropShadow: false,
             shadowColor: '#000000',
@@ -38,7 +38,8 @@
             recordButtonSize: 70,
             dropShadowString: '2px 4px 6px',
             inversionAmount: 1,
-            transparentGrid: false
+            transparentGrid: false,
+            applyFilters: false
         }, localStorage => {
             settings = localStorage;
         });
@@ -69,7 +70,7 @@
         if (tabId.includes(id)){
             tabId = tabId.filter( item => item !== id);
         }
-    })
+    });
 
     chrome.storage.onChanged.addListener( change => {
         let values = Object.getOwnPropertyNames(change);
@@ -143,14 +144,16 @@
             actions: [new chrome.declarativeContent.ShowPageAction()]
             }]);
         });
-    }
-    chrome.tabs.onUpdated.addListener( (id, reason, tab) => {
+    };
+
+    chrome.tabs.onUpdated.addListener( (id, tab) => {
         if (tab.title && tab.title === 'ZM - Montage'){
             if (!tabId.includes(id)){
                 tabId.push(id);
             }
         }
-    })
+    });
+
     chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
         let value = Object.getOwnPropertyNames(msg)[0];
         switch (value){
@@ -190,7 +193,7 @@
                         if (!lastError()) alert('Storage Cleared! Click OK to reload the extension and the ZoneMinder page.');
                         tabId.forEach( id => {
                             chrome.tabs.executeScript(id, {code: `window.location.reload();`}, () =>{
-                                chrome.runtime.reload();
+                                chrome.runtime.reload(); //Shouldn't run this on every open ZoneMinder tab, just once is enough.
                             });
                         });
                     });
@@ -203,7 +206,10 @@
                 break;
 
             case 'montageOpen':
-                tabId.forEach( id => chrome.tabs.insertCSS(id, { code: `#content{width: 100% !important;margin: 0px !important;}#header{border-bottom: 0px !important; margin: 0px !important;}`}));
+                if (!tabId.includes(sender.tab.id)){
+                    tabId.push(sender.tab.id);
+                }
+                initMontage();
                 hideHeader();
                 chrome.storage.local.set({zmMontageLayout: msg.zmMontageLayout});
                 flashAlarm();
@@ -233,10 +239,20 @@
                 break;
 
             case 'fullscreenWatch':
-
-                if (msg.fullscreenWatch && settings.maximizeSingleView){   //If the watch page was clicked on from the montage page and not the console page and the setting is selected in the popup. Maximize the monitor.
-                    chrome.windows.getCurrent( window => chrome.windows.update(window.id, {state: 'fullscreen'}));
-                    chrome.tabs.insertCSS(sender.tab.id, {code: 'img:first-child {object-fit: contain !important; width: 100vw !important; height: 100vh !important;} div#content {margin: 0 !important;} div.navbar, div#header, div#monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events {display: none !important;}'});
+                //If the watch page was clicked on from the montage page and not the
+                //console page and the setting is selected in the popup. Maximize the monitor.
+                if (msg.fullscreenWatch && settings.maximizeSingleView){
+                    chrome.windows.getCurrent( window => chrome.windows.update(window.id, {
+                        state: 'fullscreen'
+                    }));
+                    chrome.tabs.insertCSS(sender.tab.id, {code:
+                        `img:first-child {object-fit: contain !important;
+                        width: 100vw !important; height: 100vh !important;}
+                        div#content {margin: 0 !important;} 
+                        div.navbar, div#header, div#monitorStatus, div#dvrControls,
+                        div#replayStatus, div#ptzControls, div#events, div.warning {display: none !important;}`
+                        , runAt: 'document_start'
+                    });
                     chrome.storage.local.get({
                         [msg.monitorName]: {
                             x: [msg.monitorName].x || 0,
@@ -245,7 +261,8 @@
                             fpsPosY: [msg.monitorName].fpsPosY || undefined
                         }
                     }, obj => {
-                        callback({obj: obj,
+                        callback({
+                            obj: obj,
                             showFps: settings.showFps,
                             fpsColor: settings.fpsColor,
                             lockRecordButton: settings.lockRecordButton,
@@ -253,31 +270,52 @@
                             recordButtonSize: settings.recordButtonSize,
                             fpsSize: settings.fpsSize
                         });
-                        //filterHandler(sender.tab.id);
+                        if (settings.applyFilters) filterHandler([sender.tab.id]);
                     });
                 } else {
                     callback();
                 }
         }
-        //We have to return true or else the message port will close before storage.local.get is returned.
+        //We have to return true or else the message port
+        //will close before storage.local.get is returned.
         return true;
     });
 
-    const borderRadius = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code: `img {border-radius:${settings.borderRadius}% !important;}`}));
+    const initMontage = () => {
+        tabId.forEach( id => chrome.tabs.insertCSS(id, {
+            code:
+            `.monitorState {display: none !important;}
+            #content {width: 100% !important; margin: 0px !important;}
+            #header {border-bottom: 0px !important; margin: 0px !important;}`
+        }));
+    };
+
+    const borderRadius = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code:
+        `img {border-radius:${settings.borderRadius}% !important;}`
+    }));
+
     const gridHandler = () => {
         tabId.forEach( id => {
-
-            settings.transparentGrid ? chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid transparent !important;}`}) : chrome.tabs.insertCSS(id, {code: `img {border:${settings.gridWidth}px solid ${settings.gridColor} !important;}`});
+            settings.transparentGrid ?
+            chrome.tabs.insertCSS(id, {code:
+                `img {border:${settings.gridWidth}px solid transparent !important;}`
+            }) : 
+            chrome.tabs.insertCSS(id, {code:
+                `img {border:${settings.gridWidth}px solid ${settings.gridColor} !important;}`
+            });
         });
-    }
+    };
+
     const widthMax = () => {
         if (settings.gridWidth > settings.widthMax) settings.gridWidth = settings.widthMax;
         if (settings.flashWidth > settings.widthMax) settings.flashWidth = settings.widthMax;
-    }
+    };
 
     const toggleFullscreenFn = () => {
         chrome.windows.getCurrent( window => {
-            window.state !== 'fullscreen' ? chrome.windows.update(window.id, {state: 'fullscreen'}) : chrome.windows.update(window.id, {state: 'normal'});
+            window.state !== 'fullscreen' ?
+            chrome.windows.update(window.id, {state: 'fullscreen'}) : 
+            chrome.windows.update(window.id, {state: 'normal'});
         });
     }
 
@@ -288,46 +326,66 @@
             return true;
         }
         return false;
-    }
+    };
 
     const monitorOverride = () => {
         tabId.forEach( id => {
             if (settings.monitorOverride){
-                chrome.tabs.insertCSS(id, {code: `.monitorFrame {width:${100 / settings.monitors}% !important;}`});
+                chrome.tabs.insertCSS(id, {code:
+                    `.monitorFrame {width:${100 / settings.monitors}% !important;}`
+                });
             } else {
                 if (settings.zmMontageLayout == 1){
                     //freeform is selected in ZoneMinder, so do nothing
                     return;
                 }
-                chrome.tabs.insertCSS(id, {code: `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;}`});
+                chrome.tabs.insertCSS(id, {code:
+                    `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;}`
+                });
             }
         });
-    }
+    };
 
     const toggleScroll = () => {
         tabId.forEach( id => {
-            settings.toggleScroll ? chrome.tabs.insertCSS(id, {code: 'body {overflow: hidden !important;}'}) : chrome.tabs.insertCSS(id, {code: 'body {overflow: visible !important;}'});
+            settings.toggleScroll ?
+            chrome.tabs.insertCSS(id, {code:
+                '::-webkit-scrollbar {width: 0px !important;}'
+            }) :
+                chrome.tabs.insertCSS(id, {code:
+                    '::-webkit-scrollbar {all: auto !important;}'
+            });
         });
-    }
+    };
 
-    const filterHandler = () => {
-        tabId.forEach( id => {
+    const filterHandler = (sender = tabId) => {
+        sender.forEach( sender => {
             if (settings.dropShadow && settings.invertColors){
-                chrome.tabs.insertCSS(id, {code: `img {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor}) invert(${settings.inversionAmount}) !important;}`});
+                chrome.tabs.insertCSS(sender, {code:
+                    `img {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor})
+                    invert(${settings.inversionAmount}) !important;}`
+                });
             } else if (settings.dropShadow && !settings.invertColors){
-                chrome.tabs.insertCSS(id, {code: `img {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor}) !important;}`});
+                chrome.tabs.insertCSS(sender, {code:
+                    `img {filter: drop-shadow(${settings.dropShadowString} ${settings.shadowColor})
+                    !important;}`
+                });
             } else if (!settings.dropShadow && settings.invertColors){
-                chrome.tabs.insertCSS(id, {code: `img {filter: invert(${settings.inversionAmount}) !important;}`});
+                chrome.tabs.insertCSS(sender, {code:
+                    `img {filter: invert(${settings.inversionAmount}) !important;}`
+                });
             } else {
-                chrome.tabs.insertCSS(id, {code: 'img {filter: none !important;}'});
+                chrome.tabs.insertCSS(sender, {code:
+                    'img {filter: none !important;}'
+                });
             }
         });
-    }
+    };
 
     const flashAlarm = () => {
         const flash = (id) => {
-            chrome.tabs.insertCSS(id, {code: `
-                @-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,
+            chrome.tabs.insertCSS(id, {code:
+                `@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,
                 ${settings.alarmOpacity});}} img.alarm {outline: ${settings.flashWidth}px solid rgba(255,0,0,
                 ${settings.alarmOpacity}); outline-offset: -${settings.flashWidth}px; animation: alarm
                 ${settings.flashSpeed}s linear infinite;}
@@ -340,20 +398,31 @@
             });
         };
 
-        tabId.forEach( id => settings.flashAlarm ? flash(id) : chrome.tabs.insertCSS(id, {code: 'img.alarm, .alert {animation: none; outline: unset;}'}));
-    }
+        tabId.forEach( id => settings.flashAlarm ?
+            flash(id) :
+            chrome.tabs.insertCSS(id, {code:
+                'img.alarm, .alert {animation: none; outline: unset;}'
+            })
+        );
+    };
 
     const hideHeader = () => {
         tabId.forEach( id => {
             if (settings.hideHeader){
-                chrome.tabs.insertCSS(id, {code: 'div.navbar{display: none !important;}div#header{display: none !important;} div.fixed-top {display: none !important;}'});
-                //New bootstrap header in 1.35.5
-                //chrome.tabs.insertCSS({code : 'div.fixed-top {display: none !important;}'});
+                chrome.tabs.insertCSS(id, {code:
+                    `div.navbar{display: none !important;}
+                    div#header{display: none !important;}
+                    div.fixed-top {display: none !important;}`//New bootstrap header in 1.35.5
+                    , runAt: 'document_start'
+                });
             } else {
-                chrome.tabs.insertCSS(id, {code: 'div.navbar{display: block !important;}div#header{display: block !important;} div.fixed-top {display: block !important;}'});
-                //New bootstrap header in 1.35.5
-                //chrome.tabs.insertCSS({code : 'div.fixed-top {display: block !important;}'});
+                chrome.tabs.insertCSS(id, {code:
+                    `div.navbar{display: block !important;}
+                    div#header{display: block !important;} 
+                    div.fixed-top {display: block !important;}`
+                    , runAt: 'document_start'
+                });
             }
         });
-    }
+    };
 })();

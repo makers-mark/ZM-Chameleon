@@ -4,8 +4,8 @@
 	"description": "This extension is designed to make the ZoneMinder viewing experience better!",
 	"version": "1.0",
 	"permissions": [
-		"activeTab",
 		"storage",
+		"activeTab",
 		"*://*/zm",
 		"declarativeContent"
 	],
@@ -36,7 +36,8 @@
 				"*://*/zm/*view=watch*"
 			],
 			"js": ["js/watch-content.js"],
-			"css": ["css/watch-content-stylesheet.css"]
+			"css": ["css/watch-content-stylesheet.css"],
+			"run_at": "document_start"
 		}
 	],
 	"background": {

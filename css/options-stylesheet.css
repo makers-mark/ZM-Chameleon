@@ -17,6 +17,14 @@ h3, h4, input  {
     margin: .45em .45em .45em 0em;
 }
 
+.colorPicker{
+	padding: 0px; 
+	width: 96%;
+	height: 3em;
+	border: none;
+    margin: 0px;
+}
+
 h3.warning {
     margin: 1.2em;
 }

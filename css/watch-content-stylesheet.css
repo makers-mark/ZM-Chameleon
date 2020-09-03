@@ -29,8 +29,6 @@
     justify-content: center;
     cursor: pointer;
     transform: scale(.95);
-    width: auto;
-    height: auto;
     opacity: .55;
 }
 
@@ -68,18 +66,16 @@ button#recordButton.Idle {
 }
 
 button#recordButton.Alarm {
-    animation: pulse .5s infinite;
+    animation: pulse .4s infinite;
     background-color: red !important;
 }
 
 button#recordButton.Alert {
-    animation: pulse .58s infinite;
+    animation: pulse .4s infinite;
     background-color: yellow !important;
     opacity: .70;
 }
 
-#fpsDiv {
+#fpsSpan {
     position: fixed;
-    width: auto;
-    height: auto;
 }

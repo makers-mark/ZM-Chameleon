@@ -36,11 +36,23 @@
       <h4>You just need to put the first three values (offset-x, offset-y, blur-radius), the color is set in the popup.</h4>
       <h4><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow">https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow</a></h4>
       <h3>Color Inversion Amount: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="inversionAmount"> <span id="inversionAmountText"></span></h3>
-      <h3>Fps Color <input type="color" id="fpsColor"></h3>
-      <h3>Font size for the frames per second display: 
-        <input type="number" min="1" id="fpsSize" class="smallNumber">
-      </h3>
+      <h3><input type="checkbox" id="applyFilters">Apply filters to single monitor view</h3>
+      <hr>
       <h3><input type="checkbox" id="showFps">Show FPS</h3>
+      <table>
+        <tr>
+          <td>
+            <h3>Fps Color <input class="colorPicker" type="color" id="fpsColor"></h3>
+            <h3>Font size for the fps display (pixels): 
+              <input type="number" min="1" id="fpsSize" class="smallNumber">
+            </h3>
+          </td>
+          <td>
+            <div id="fpsSpan" style="position: static !important;" ></div>
+          </td>
+        </tr>
+      </table>
+      <hr>
       <h3><input type="checkbox" id="lockRecordButton">Lock the record button position on all monitors</h3>
       <h3><input type="checkbox" id="disableRecordOnAlert">Disable record button click in 'Alert/yellow' mode</h3>
       <table>

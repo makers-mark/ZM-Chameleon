@@ -16,9 +16,9 @@
     //]
     chrome.runtime.sendMessage({loginPageOpen: true});
     chrome.storage.local.get({
-    userName: '',
-    password: '',
-    obfuscate: false
+        userName: '',
+        password: '',
+        obfuscate: false
     }, item => {
         const user = document.getElementById('inputUsername') || null;
     if (user && item.obfuscate){

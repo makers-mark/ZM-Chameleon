@@ -2,170 +2,223 @@
     "use strict";
 
     let ref = document.referrer;
-    let monitorName = document.getElementById('monitorName').innerText;
-    let cancelAlarm = document.getElementById('cancelAlarmLink');
-    let forceAlarm = document.getElementById('forceAlarmLink');
-    let lockRecordButton = false;
-    let disableRecordOnAlert = true;
-    let recordButtonSize = 70;
     let state = 'Idle';
-    let fpsSize = 30;
     let fpsX;
     let fpsY;
     let recX;
     let recY;
+    
+    document.addEventListener('DOMContentLoaded', () => {
 
-    if (ref.includes('view=montage')){
-        let recordDiv;
-        let recordButton;
-        const config = {childList: true};
-        let content = document.getElementById('content');
-        const fps = document.getElementById('fpsValue');
-        const fpsCallback = (mutation) => fpsDiv.innerText = mutation[0].addedNodes[0].data;
-        const fpsObserver = new MutationObserver(fpsCallback);
-        fpsObserver.observe(fps, config);
+        let monitorName = document.getElementById('monitorName').innerText;
+        let cancelAlarm = document.getElementById('cancelAlarmLink');
+        let forceAlarm = document.getElementById('forceAlarmLink');
 
-        document.addEventListener('mousedown', (e) => {
-            if (e.which === 2){
-            e.preventDefault();
-            chrome.runtime.sendMessage({fullscreen: true});
-            }
-        });
+        //Added href === referrer here because the page will refresh on a 
+        //ZMS error and the referrer is the same watch page then.
 
-        const showFpsFunc = (color = '#ffffff', x, y) => {
-            let offset = [];
+        if (ref.includes('view=montage') || window.location.href === ref){
+            let recordDiv;
+            let recordButton;
+            let content = document.getElementById('content');
 
-            let fpsDiv = document.createElement('div');
-            fpsDiv.id = 'fpsDiv';
-            fpsDiv.draggable = true;
-            fpsDiv.style.fontSize = `${fpsSize}px`;
-            fpsDiv.style.color = color;
-
-            //If the fps position has never been set, it will be 'undefined' and we will
-            //put it at the bottom center of the maximized window. After it has been moved
-            //and set somewhere else, we use the pixel position of the top-left corner of the div.
-            x ? fpsDiv.style.left = `${x}px` : fpsDiv.style.left = 'calc(50vw - 1.6em)';
-            y ? fpsDiv.style.top = `${y}px` : fpsDiv.style.top = 'calc(100vh - 1.3em)';
-
-            content.appendChild(fpsDiv);
-            fpsDiv.addEventListener('mousedown', (event) => {
-                //handle the click position on the div
-                let bounds = fpsDiv.getBoundingClientRect();
-                offset = [
-                    event.clientX - bounds.left,
-                    event.clientY - bounds.top
-                ];
+            document.addEventListener('mousedown', (e) => {
+                if (e.which === 2){
+                    e.preventDefault();
+                    chrome.runtime.sendMessage({fullscreen: true});
+                }
             });
-            fpsDiv.addEventListener('dragend', (event) => {
-                event.preventDefault();
-                fpsX = event.clientX - offset[0];
-                fpsY = event.clientY - offset[1];
-                fpsDiv.parentNode.removeChild(fpsDiv);
-                chrome.runtime.sendMessage({setMonitor: true, monitorName: monitorName, positionX: recX, positionY: recY, fpsPosX: fpsX, fpsPosY: fpsY});
-                showFpsFunc(color, fpsX, fpsY);
-            });
-        }
 
-        const placeDiv = (x, y) => {
-            let offset = [];
-            recordDiv = document.createElement('div');
-            let recordText = document.createTextNode('REC');
-            recordButton = document.createElement('button');
-            recordButton.style.backgroundColor = 'darkred';
-            recordButton.style.width = recordButton.style.height = recordButton.style.borderRadius = recordDiv.style.fontSize = `${recordButtonSize}px`;
-            recordButton.id = 'recordButton';
+            const showFpsFunc = (
+                color = '#ffffff',
+                x,
+                y,
+                initValue = '0.00',
+                fpsSize = 30
+            ) => {
+                let offset = [];
+                let fpsSpan = document.createElement('span');
+                fpsSpan.id = 'fpsSpan';
+                fpsSpan.draggable = true;
+                fpsSpan.style.fontSize = `${fpsSize}px`;
+                fpsSpan.style.color = color;
+                fpsSpan.textContent = initValue;
 
-            recordDiv.appendChild(recordButton);
-            recordDiv.appendChild(recordText);
-            recordDiv.style.position = 'fixed';
-            recordDiv.style.top = `${y}px`;
-            recordDiv.style.left = `${x}px`;
-            recordDiv.id = 'recordDiv';
-            recordDiv.draggable = !lockRecordButton;
-            recordDiv.className = recordButton.className = state;
-            content.appendChild(recordDiv);
+                //If the fps position has never been set, it will be 'undefined' and we will
+                //put it at the bottom center of the maximized window. After it has been moved
+                //and set somewhere else, we use the pixel position of the top-left corner of the span.
 
-            if (!lockRecordButton){
-                recordDiv.addEventListener('dragend', (event) => {
-                    event.preventDefault();
-                    recordDiv.parentNode.removeChild(recordDiv);
-                    recX = event.clientX - offset[0];
-                    recY = event.clientY - offset[1];                    
-                    chrome.runtime.sendMessage({setMonitor: true, monitorName: monitorName, positionX: recX, positionY: recY, fpsPosX: fpsX, fpsPosY: fpsY});
-                    placeDiv(recX, recY);
-                });
+                x ? fpsSpan.style.left = `${x}px` : fpsSpan.style.left = 'calc(50vw - 1.6em)';
+                y ? fpsSpan.style.top = `${y}px` : fpsSpan.style.top = 'calc(100vh - 1.3em)';
+                content.appendChild(fpsSpan);
 
-                recordDiv.addEventListener('mousedown', (event) => {
-                    //handle the click position on the div
-                    let bounds = recordDiv.getBoundingClientRect();
+                fpsSpan.addEventListener('mousedown', e => {
+                    let bounds = fpsSpan.getBoundingClientRect();
                     offset = [
-                        event.clientX - bounds.left,
-                        event.clientY - bounds.top
+                        e.clientX - bounds.left,
+                        e.clientY - bounds.top
                     ];
                 });
-            }
 
-            recordDiv.addEventListener('click', () => {
-                if (state === 'Idle'){
-                    forceAlarm.click();
-                /*  This code below allows for an immediate animation when you click the REC div
-                    and allows for non-recordable monitors to lose the animation and class if the state
-                    doesn't change, the question is how long to wait? Could make an option for it.
-                    Response times can vary and machines vary. I will leave this alone for now.
-                    There is probably a better way around this.*/
+                fpsSpan.addEventListener('dragend', e => {
+                    //Save the current fps value after a move or else when you
+                    //move it there is nothing to display until a fps update.
+                    let initValue = fpsSpan.innerText;
+                    fpsSpan.remove();
+                    showFpsFunc(color,
+                        fpsX = e.clientX - offset[0],
+                        fpsY = e.clientY - offset[1],
+                        initValue,
+                        fpsSize
+                    );
+                    chrome.runtime.sendMessage({
+                        setMonitor: true,
+                        monitorName: monitorName,
+                        positionX: recX,
+                        positionY: recY,
+                        fpsPosX: fpsX,
+                        fpsPosY: fpsY
+                    });
+                });
+                const fpsObserver = new MutationObserver( mutation => {
+                    fpsSpan.textContent = mutation[0].addedNodes[0].data
+                }).observe(
+                    document.getElementById('fpsValue'),
+                    {
+                        childList: true
+                    }
+                );
+            };
 
-                    recordButton.className = recordDiv.className = 'Alarm';
-                    setTimeout(() => {
-                        if (state === 'Idle'){
-                            recordButton.className = recordDiv.className = state;
-                        }
-                    }, 1500);
-                } else if (state === 'Alert' && !disableRecordOnAlert){
-                    forceAlarm.click();
-                } else {
-                    cancelAlarm.click();
+            const placeDiv = (
+                x,
+                y,
+                lockRecordButton = false,
+                recordButtonSize = 70,
+                disableRecordOnAlert = false
+            ) => {
+                let offset = [0, 0];
+                recordDiv = document.createElement('span');
+                recordButton = document.createElement('button');
+                recordButton.style.backgroundColor = 'darkred';
+                recordButton.style.width =
+                recordButton.style.height =
+                recordButton.style.borderRadius = `${recordButtonSize}px`;
+                recordButton.id = 'recordButton';
+
+                recordDiv.style.fontSize = `${recordButtonSize}px`;
+                recordDiv.style.position = 'fixed';
+                recordDiv.style.top = `${y}px`;
+                recordDiv.style.left = `${x}px`;
+                recordDiv.id = 'recordDiv';
+                recordDiv.className = recordButton.className = state;
+                recordDiv.draggable = !lockRecordButton;
+
+                recordDiv.appendChild(recordButton);
+                recordDiv.appendChild(document.createTextNode('REC'));
+                content.appendChild(recordDiv);
+
+                if (!lockRecordButton){
+                    recordDiv.addEventListener('dragend', e => {
+                        recordDiv.remove();
+                        placeDiv(
+                            recX = e.clientX - offset[0],
+                            recY = e.clientY - offset[1],
+                            lockRecordButton,
+                            recordButtonSize,
+                            disableRecordOnAlert
+                        );
+                        chrome.runtime.sendMessage({
+                            setMonitor: true,
+                            monitorName: monitorName,
+                            positionX: recX,
+                            positionY: recY,
+                            fpsPosX: fpsX,
+                            fpsPosY: fpsY
+                        });
+                    });
+
+                    recordDiv.addEventListener('mousedown', e => {
+                        //handle the click position on the div
+                        let bounds = recordDiv.getBoundingClientRect();
+                        offset = [
+                            e.clientX - bounds.left,
+                            e.clientY - bounds.top
+                        ];
+                    });
+                }
+
+                recordDiv.addEventListener('click', () => {
+                    if (state === 'Idle'){
+                        forceAlarm.click();
+                    /*  This code below allows for an immediate animation when you click the REC div
+                        and allows for non-recordable monitors to lose the animation and class if the state
+                        doesn't change.*/
+
+                        recordButton.className = recordDiv.className = 'Alarm';
+                        setTimeout(() => {
+                            if (state === 'Idle'){
+                                recordButton.className = recordDiv.className = state;
+                            }
+                        }, 1500);
+                    } else if (state === 'Alert' && !disableRecordOnAlert){
+                        forceAlarm.click();
+                    } else {
+                        cancelAlarm.click();
+                    }
+                });
+            };
+
+            chrome.runtime.sendMessage({
+                fullscreenWatch: true,
+                monitorName: monitorName
+            }, reply => {
+                if (reply){
+                    if (forceAlarm && cancelAlarm){
+                        placeDiv(
+                            recX = reply.obj[monitorName].x,
+                            recY = reply.obj[monitorName].y,
+                            reply.lockRecordButton,
+                            reply.recordButtonSize,
+                            reply.disableRecordOnAlert
+                        );
+              
+                        const observer = new MutationObserver( mutation => {
+                            recordButton.className = 
+                            recordDiv.className = 
+                            state = 
+                            mutation[0].addedNodes[0].data
+                        }).observe(
+                            document.getElementById('stateValue'),
+                            {
+                                childList: true
+                            }
+                        );
+                    }
+                    if (reply.showFps) showFpsFunc(
+                        reply.fpsColor,
+                        fpsX = reply.obj[monitorName].fpsPosX,
+                        fpsY = reply.obj[monitorName].fpsPosY,
+                        undefined,   //Init value of 0.00 fps until the fps mutation observer updates.
+                        reply.fpsSize
+                    );
                 }
             });
-        }
 
-        chrome.runtime.sendMessage({fullscreenWatch: true, monitorName: monitorName}, reply => {
-            if (reply){
-                lockRecordButton = reply.lockRecordButton;
-                disableRecordOnAlert = reply.disableRecordOnAlert;
-                recordButtonSize = reply.recordButtonSize;
-                fpsSize = reply.fpsSize;
-                if (forceAlarm && cancelAlarm){
-                    recX = reply.obj[monitorName].x;
-                    recY = reply.obj[monitorName].y;
-                    placeDiv(recX, recY);
-                    const recording = document.getElementById('stateValue');
-                    const config = {childList: true};
-                    const callback = mutation => {
-                        state = mutation[0].addedNodes[0].data;
-                        recordButton.className = recordDiv.className = state;
-                    };
-                    const observer = new MutationObserver(callback);
-                    observer.observe(recording, config);
-                }
-                fpsX = reply.obj[monitorName].fpsPosX;
-                fpsY = reply.obj[monitorName].fpsPosY;
-                if (reply.showFps) showFpsFunc(reply.fpsColor, fpsX, fpsY);
-            }
-        });
-
-        //The page was navigated to from the montage screen which opens a new
-        //window, so close it on double click
-        document.ondblclick = e => {
-            e.preventDefault();
-            window.close();
-        };
-    } else {
-        chrome.runtime.sendMessage({fullscreenWatch: false});
-        //The page was navigated to from the console screen which opens in the
-        //same window, so don't close it and just go back.
-        document.ondblclick = e => {
-            e.preventDefault();
-            window.history.back();
+            //The page was navigated to from the montage screen which opens a new
+            //window, so close it on double click
+            document.ondblclick = e => {
+                e.preventDefault();
+                window.close();
+            };
+        } else {
+            chrome.runtime.sendMessage({fullscreenWatch: false});
+            //The page was navigated to from the console screen which opens in the
+            //same window, so don't close it and just go back.
+            document.ondblclick = e => {
+                e.preventDefault();
+                window.history.back();
+            };
         }
-    }
+    }); //end DOMContentLoaded
 })();

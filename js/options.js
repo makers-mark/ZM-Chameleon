@@ -25,6 +25,8 @@
     let inversionAmountText = document.getElementById('inversionAmountText');
     let fpsSize = document.getElementById('fpsSize');
     let defaultShadow = '2px 4px 6px';
+    let fpsSpan = document.getElementById('fpsSpan');
+    let applyFilters = document.getElementById('applyFilters');
 
     document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
     let version = chrome.runtime.getManifest().version;
@@ -40,14 +42,15 @@
         widthMax: 20,
         flashSpeed: 0.6,
         showFps: true,
-        fpsColor: '#ffffff',
+        fpsColor: '#00ff00',
         fpsSize: 30,
         lockRecordButton: false,
         obfuscate: false,
         disableRecordOnAlert: false,
         recordButtonSize: 70,
         dropShadowString: defaultShadow,
-        inversionAmount: 1
+        inversionAmount: 1,
+        applyFilters: false
     }, settings => {
         customLocation.value = settings.customLocation;
         alarmOpacity.value = settings.alarmOpacity;
@@ -60,7 +63,7 @@
         alarmOpacityText.textContent = settings.alarmOpacity;
         showFps.checked = settings.showFps;
         fpsSize.value = settings.fpsSize;
-        fpsColor.value = settings.fpsColor;
+        fpsSpan.style.color = fpsColor.value = settings.fpsColor;
         lockRecordButton.checked = settings.lockRecordButton;
         obfuscate.checked = settings.obfuscate;
         disableRecordOnAlert.checked = settings.disableRecordOnAlert;
@@ -69,39 +72,32 @@
         dropShadowString.value = settings.dropShadowString;
         inversionAmount.value = settings.inversionAmount;
         inversionAmountText.textContent = settings.inversionAmount;
+        fpsSpan.style.fontSize = `${settings.fpsSize}px`;
+        fpsSpan.innerText = ((Math.random() * 10) + 20).toFixed(2);
+        applyFilters.checked = settings.applyFilters;
     });
 
     document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
-
-    recordDiv.addEventListener('click', () => {
-        recordDiv.classList.contains('Alarm') ? recordButton.className = recordDiv.className = 'Idle' : recordButton.className = recordDiv.className = 'Alarm';
-    });
-    alertOpacity.onchange = () => {
-        alertOpacityText.textContent = alertOpacity.value;
-        chrome.storage.local.set({alertOpacity: alertOpacity.value});
-    };
-    alarmOpacity.onchange = () => {
-        alarmOpacityText.textContent = alarmOpacity.value;
-        chrome.storage.local.set({alarmOpacity: alarmOpacity.value});
-    };
-    inversionAmount.onchange = () => {
-        inversionAmountText.textContent = inversionAmount.value;
-        chrome.storage.local.set ({inversionAmount: inversionAmount.value});
-    }
+    recordDiv.addEventListener('click', () => recordDiv.classList.contains('Alarm') ? recordButton.className = recordDiv.className = 'Idle' : recordButton.className = recordDiv.className = 'Alarm');
+    alertOpacity.onchange = () => chrome.storage.local.set({alertOpacity: alertOpacityText.textContent = alertOpacity.value});
+    alarmOpacity.onchange = () => chrome.storage.local.set({alarmOpacity: alarmOpacityText.textContent = alarmOpacity.value});
+    inversionAmount.onchange = () => chrome.storage.local.set ({inversionAmount: inversionAmountText.textContent = inversionAmount.value});
     recordButtonSize.oninput = () => recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = `${recordButtonSize.value}px`;
     recordButtonSize.onchange = () => chrome.storage.local.set({recordButtonSize: recordButtonSize.value});
     dropShadowApply.onclick = () => chrome.storage.local.set({dropShadowString: dropShadowString.value});
     dropShadowStringReset.onclick = () => chrome.storage.local.set({dropShadowString: defaultShadow}, () => dropShadowString.value = defaultShadow);
-
-    widthMax.onchange = () => chrome.storage.local.set({widthMax: widthMax.value});
+    widthMax.onchange = () => chrome.storage.local.set({widthMax: parseInt(widthMax.value, 10)});
     flashSpeed.onchange = () => chrome.storage.local.set({flashSpeed: flashSpeed.value});
     userName.onchange = () => chrome.storage.local.set({userName: userName.value});
     password.onchange = () => chrome.storage.local.set({password: password.value});
     customLocation.onchange = () => chrome.storage.local.set({customLocation: customLocation.value});
     showFps.onchange = () => chrome.storage.local.set({showFps: showFps.checked});
     fpsSize.onchange = () => chrome.storage.local.set({fpsSize: fpsSize.value});
+    fpsSize.oninput = () =>  fpsSpan.style.fontSize = `${fpsSize.value}px`;
     fpsColor.onchange = () => chrome.storage.local.set({fpsColor: fpsColor.value});
+    fpsColor.oninput = () => fpsSpan.style.color = fpsColor.value;
     lockRecordButton.onchange = () =>  chrome.storage.local.set({lockRecordButton: lockRecordButton.checked});
     obfuscate.onchange = () => chrome.storage.local.set({obfuscate: obfuscate.checked});
     disableRecordOnAlert.onchange = () => chrome.storage.local.set({disableRecordOnAlert: disableRecordOnAlert.checked});
+    applyFilters.onchange = () => chrome.storage.local.set({applyFilters: applyFilters.checked});
 })();
