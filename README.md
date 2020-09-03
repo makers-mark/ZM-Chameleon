@@ -89,4 +89,4 @@ If you wish to try this/modify this in any way, do this:
   - Double click on a Single View monitor will go back
   
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/makers-mark/ZM-Chameleon/blob/master/LICENSE)
