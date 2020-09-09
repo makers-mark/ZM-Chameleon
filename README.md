@@ -1,15 +1,14 @@
 # ZM-Chameleon
 
 This is a chrome extension that overlays the standard montage screen and allows you to have full screen
-access. There are a lot of features that I have added too. This has been tested on ZoneMinder version 1.34
+access. I've also added several features too. This has been tested on ZoneMinder version 1.34
 and I currently test on Zoneminder version 1.35.5.
 
-## Who is this for and why use use it?
+## Who is this for and why use it?
 
-I designed this for a seamless way to interact with a fully functioning ZoneMinder system that is mainly intended to be used for monitoring.
-It had to look good and only display what was needed. It was also designed to not be tied to a keyboard. Also seeing a montage at full screen/maximum frame
+This was designed to look good and only display what was needed. To use this you do not be tied to a keyboard. Seeing a montage at full screen/maximum frame
 rate with fluidity too, and there is no better way than to manipulate the existing montage screen. The ZoneMinder montage screen with
-a bunch of monitors streaming full resolution jpgs can be taxing on a computer. So if you have a computer that struggles already, this will not
+several of monitors streaming full resolution jpgs can be taxing on a computer. If you have a computer that struggles already, this will not
 help you. ZoneMinder does have options to limit the bandwidth.
 
 A great option in that case is to use the ZMNinja app, I use it all of the time on the go, and on remote wireless tablets. ZMNinja and ZoneMinder are also open source. 
