@@ -1,11 +1,11 @@
 (() => {
     "use strict";
     let zmMontageLayout = document.getElementById('zmMontageLayout');
-    chrome.runtime.sendMessage({montageOpen: true, zmMontageLayout: zmMontageLayout.value});
+    chrome.runtime.sendMessage({montageOpen: true, zmMontageLayout: zmMontageLayout.value || document.getElementById('zmMontageLayout').value});
 
     //Listen for a change in the manual selection (dropdown) for the number of monitors in ZM webpage
     zmMontageLayout.addEventListener('input', () => {
-        chrome.runtime.sendMessage({zmMontageChanged: true, value: zmMontageLayout.value || 3});
+        chrome.runtime.sendMessage({zmMontageChanged: true, value: zmMontageLayout.value || document.getElementById('zmMontageLayout').value});
     });
     document.addEventListener('mousedown', e => {
         if (e.buttons === 3){

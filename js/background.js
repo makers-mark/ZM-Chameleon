@@ -234,7 +234,7 @@
 
             case "goToConsole":
                 chrome.windows.getCurrent( window => {
-                    if (window.state === 'fullscreen') chrome.windows.update(window.id, {state: 'normal'});
+                    chrome.windows.update(window.id, {state: 'normal'});
                 });
                 break;
 
