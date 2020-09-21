@@ -22,7 +22,8 @@ Link to current version on the Chrome Web Store [ZM-Chameleon (future link)](htt
 
 If you wish to try this/modify this in any way, do this:
 - Download the source files from this repo
-- Go into your browser and go to the Extensions page
+- Go into your browser and go to the Extensions page. Examples, browser dependent: "chrome://extensions" or "edge://extensions"
+- Some chromium browsers, like Opera, may need some additional actions. <a href="https://help.opera.com/en/latest/customization/#:~:text=Add%20Chrome%20extensions%20to%20Opera,you%20can%20use%20them%20right%20away." target="_blank">In Opera you have to install an addon from the Opera addons store just to use Chrome web store extensions.</a> You may have to look up other browsers too, and some of these next steps may be slightly different.
 - Turn on 'Developer Mode'
 - A button will appear at the top 'Load Unpacked'
 - After you click that find the folder for the source and select it!
