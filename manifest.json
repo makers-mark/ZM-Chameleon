@@ -17,10 +17,16 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"*://*/zm/*view=montage*"
+				"*://*/zm/*"
 			],
+			"js": ["js/general-content.js"]
+		},		
+		{
 			"exclude_matches": [
 				"*://*/zm/*view=montagereview*"
+			],
+			"matches": [
+				"*://*/zm/*view=montage*"
 			],
 			"js": ["js/montage-content.js"]
 		},

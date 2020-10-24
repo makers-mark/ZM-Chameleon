@@ -238,20 +238,24 @@
                 });
                 break;
 
-            case 'fullscreenWatch':
+            case 'watchPageOpen':
                 //If the watch page was clicked on from the montage page and not the
                 //console page and the setting is selected in the popup. Maximize the monitor.
-                if (msg.fullscreenWatch && settings.maximizeSingleView){
-                    chrome.windows.getCurrent( window => chrome.windows.update(window.id, {
-                        state: 'fullscreen'
-                    }));
+                if (settings.maximizeSingleView){
+                    let windowType;
+                    chrome.windows.getCurrent( window => {
+                        windowType = window.type;
+                        chrome.windows.update(window.id, {
+                            state: 'fullscreen'
+                        });
+                    });
                     chrome.tabs.insertCSS(sender.tab.id, {code:
                         `img:first-child {object-fit: contain !important;
                         width: 100vw !important; height: 100vh !important;}
-                        div#content {margin: 0 !important;} 
+                        div#content {margin: 0 !important;}
                         div.navbar, div#header, div#monitorStatus, div#dvrControls,
-                        div#replayStatus, div#ptzControls, div#events, div.warning {display: none !important;}`
-                        , runAt: 'document_start'
+                        div#replayStatus, div#ptzControls, div#events, div.warning {display: none !important;}
+                        div.fixed-top.container-fluid, div#header {display: none !important;}`
                     });
                     chrome.storage.local.get({
                         [msg.monitorName]: {
@@ -268,12 +272,12 @@
                             lockRecordButton: settings.lockRecordButton,
                             disableRecordOnAlert: settings.disableRecordOnAlert,
                             recordButtonSize: settings.recordButtonSize,
-                            fpsSize: settings.fpsSize
+                            fpsSize: settings.fpsSize,
+                            windowType: windowType,
+                            maximizeSingleView: settings.maximizeSingleView
                         });
                         if (settings.applyFilters) filterHandler([sender.tab.id]);
                     });
-                } else {
-                    callback();
                 }
         }
         //We have to return true or else the message port
