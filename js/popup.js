@@ -99,8 +99,8 @@
         link.rel = 'stylesheet';
         link.type = 'text/css';
         toggleDark ?
-            link.href = 'css/darkStylesheet.css' :
-            link.href = 'css/stylesheet.css';
+            link.href = 'css/popup-dark-stylesheet.css' :
+            link.href = 'css/popup-stylesheet.css';
         head.appendChild(link);
     }
 })();
