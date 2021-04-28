@@ -1,15 +1,12 @@
 # ZM-Chameleon
 
-This is a chrome extension that overlays the standard montage screen and allows you to have full screen
-access. I've also added several features too. This has been tested on ZoneMinder version 1.34
-and I currently test on Zoneminder version 1.35.5.
+This is a chrome extension that overlays the standard montage screen (it does way more than that),and allows you to have full screen
+access. I've also added several features too. This has been tested on ZoneMinder version 1.34.x
+and I currently test on edge versions of 1.35.x.
 
 ## Who is this for and why use it?
 
-This was designed to look good and only display what was needed. To use this you do not be tied to a keyboard. Seeing a montage at full screen/maximum frame
-rate with fluidity too, and there is no better way than to manipulate the existing montage screen. The ZoneMinder montage screen with
-several of monitors streaming full resolution jpgs can be taxing on a computer. If you have a computer that struggles already, this will not
-help you. ZoneMinder does have options to limit the bandwidth.
+This was designed to look good and only display what was needed, primarily if you intend on monitoring (aka Montage Screen). Some people don't just rely on the monitoring aspect and just rely on the recording capabilities of ZoneMinder, which this extension will not help you with! To use this extension, you do not need to be tied to a keyboard.
 
 A great option in that case is to use the ZMNinja app, I use it all of the time on the go, and on remote wireless tablets. ZMNinja and ZoneMinder are also open source. 
 You can use ZMNinja on the desktop too!
@@ -56,7 +53,7 @@ If you wish to try this/modify this in any way, do this:
   - Transparent grid option (overrides the grid color option)
   - Color inversion toggle (kind of for fun, but it can come in handy sometimes)
   - A monitor shadows option
-    > Tip: Playing with monitor shadows can make the montage look even nicer, and helps break up monitors next to each other if you use a narrow or nonexistant grid. It is a partially transparent css drop-shadow
+    > Tip: Playing with monitor shadows can make the montage look even nicer, and helps break up monitors next to each other if you use a narrow or transparent grid.
   - Then finally a color picker for the monitor shadow
   
 - ### Fine Tuning through the Extension Options Page
@@ -64,7 +61,7 @@ If you wish to try this/modify this in any way, do this:
   - Alert Opacity -Does the same as above for the Alert State flash
   - Flashing speed for the previous two options, in tenths of seconds
   - Option to change the popup max value on the grid and flash sliders  
-    > Tip: set this high and then bump it up on the Popups flash width slider, and you can get a semi transparent notification over the entire monitor from the montage page. It helps to lower the Alarm/Alert opacity up above too, I use around 0.23 or so.
+    > Tip: set this high and then bump it up on the Popups flash width slider (Up above^^), and you can get a semi transparent notification over the entire monitor from the montage page. It helps to lower the Alarm/Alert opacity up above too, I use around 0.23 or so.
   - An option to set a Custom Url that the popup will be available on
   - The monitor shadows CSS drop-shadow string can be customized
   - You can change the amount of the color inversion
@@ -81,6 +78,7 @@ If you wish to try this/modify this in any way, do this:
 - ### ```These next two settings are NOT recommended!!```
   - Option to store the User name and automatically fill it in on the login page
   - Same as above except this stores the password and fills it in
+  - The obfuscation user name option ^^ may be also handy when working around others.
   ---
 
 - ### Mouse Additions
