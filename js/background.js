@@ -4,6 +4,10 @@
     let settings = {};
     let tabId = [];
 
+    window.requestAnimationFrame(() => {
+        window.focus();
+    });
+
     chrome.runtime.onUpdateAvailable.addListener( () => {
         chrome.runtime.reload();
     });
@@ -157,7 +161,7 @@
     chrome.runtime.onMessage.addListener( (msg, sender, callback) => {
         let value = Object.getOwnPropertyNames(msg)[0];
         switch (value){
-            case 'fullscreen':
+            case 'fullscreenToggle':
                 toggleFullscreenFn();
                 break;
 
@@ -242,9 +246,9 @@
                 //If the watch page was clicked on from the montage page and not the
                 //console page and the setting is selected in the popup. Maximize the monitor.
                 if (settings.maximizeSingleView){
-                    let windowType;
+                    let windowState;
                     chrome.windows.getCurrent( window => {
-                        windowType = window.type;
+                        windowState = window.state;
                         chrome.windows.update(window.id, {
                             state: 'fullscreen'
                         });
@@ -255,7 +259,7 @@
                         div#content {margin: 0 !important;}
                         div.navbar, div#header, div#monitorStatus, div#dvrControls,
                         div#replayStatus, div#ptzControls, div#events, div.warning {display: none !important;}
-                        div.fixed-top.container-fluid, div#header {display: none !important;}`
+                        div.fixed-top.container-fluid, div#header, div.d-flex {display: none !important;}`
                     });
                     chrome.storage.local.get({
                         [msg.monitorName]: {
@@ -273,7 +277,7 @@
                             disableRecordOnAlert: settings.disableRecordOnAlert,
                             recordButtonSize: settings.recordButtonSize,
                             fpsSize: settings.fpsSize,
-                            windowType: windowType,
+                            windowState: windowState,
                             maximizeSingleView: settings.maximizeSingleView
                         });
                         if (settings.applyFilters) filterHandler([sender.tab.id]);
@@ -387,25 +391,27 @@
     };
 
     const flashAlarm = () => {
+        //At some point between ZM 1.34.x and 1.35.14, the img no longer got the alarm or alert
+        //class. So div.alarm img and div.alert img were added below to the css selectors.
         const flash = (id) => {
             chrome.tabs.insertCSS(id, {code:
                 `@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,
-                ${settings.alarmOpacity});}} img.alarm {outline: ${settings.flashWidth}px solid rgba(255,0,0,
+                ${settings.alarmOpacity});}} div.alarm > div.imageFeed > img, img.alarm {outline: ${settings.flashWidth}px solid rgba(255,0,0,
                 ${settings.alarmOpacity}); outline-offset: -${settings.flashWidth}px; animation: alarm
                 ${settings.flashSpeed}s linear infinite;}
                 @-webkit-keyframes alert {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,247,28,
-                ${settings.alertOpacity});}} img.alert {outline: ${settings.flashWidth}px solid rgba(255,247,28,
+                ${settings.alertOpacity});}} div.alert > div.imageFeed > img, img.alert {outline: ${settings.flashWidth}px solid rgba(255,247,28,
                 ${settings.alertOpacity}); outline-offset: -${settings.flashWidth}px; animation: alert
                 ${settings.flashSpeed}s linear infinite;}`
             }, () => {
                 lastError();
             });
         };
-
+        
         tabId.forEach( id => settings.flashAlarm ?
             flash(id) :
             chrome.tabs.insertCSS(id, {code:
-                'img.alarm, .alert {animation: none; outline: unset;}'
+                'div.alarm img, div.alert img, img.alarm, img.alert {animation: none; outline: unset;}'
             })
         );
     };
@@ -413,17 +419,20 @@
     const hideHeader = () => {
         tabId.forEach( id => {
             if (settings.hideHeader){
+                //div.fixed-top new bootstrap header in 1.35.5
                 chrome.tabs.insertCSS(id, {code:
                     `div.navbar{display: none !important;}
                     div#header{display: none !important;}
-                    div.fixed-top {display: none !important;}`//New bootstrap header in 1.35.5
-                    , runAt: 'document_start'
+                    div.fixed-top {display: none !important;}
+                    div#page {padding-bottom: 0px !important; padding-right: 0px !important; padding-left: 0px !important;}` //New bootstrap padding padding in montage page in 1.35.16
+                    , runAt: 'document_start' //Pay attention to this 12/25/2020
                 });
             } else {
                 chrome.tabs.insertCSS(id, {code:
                     `div.navbar{display: block !important;}
                     div#header{display: block !important;} 
-                    div.fixed-top {display: block !important;}`
+                    div.fixed-top {display: block !important;}
+                    div#page {padding-bottom: 10px !important; padding-right: 15px !important; padding-left: 15px !important;}`
                     , runAt: 'document_start'
                 });
             }

@@ -67,6 +67,7 @@
 		"512": "icons/icon-512.png"
 	}, 
 	"web_accessible_resources": [
-		"fonts/Digital7-1e1Z.ttf"
+		"fonts/Digital7-1e1Z.ttf",
+		"icons/pattern.gif"
 	]
 }

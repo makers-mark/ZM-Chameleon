@@ -6,13 +6,13 @@
     let fpsY;
     let recX;
     let recY;
-    let windowType;
+    let windowState;
 
     document.addEventListener('DOMContentLoaded', () => {
-
-        let monitorName = document.getElementById('monitorName').innerText;
-        let cancelAlarm = document.getElementById('cancelAlarmLink');
-        let forceAlarm = document.getElementById('forceAlarmLink');
+        let monitorName = document.getElementById('monitorName') || document.getElementsByTagName('h2')[0];
+        monitorName = monitorName.innerHTML;
+        let cancelAlarm = document.getElementById('cancelAlarmLink') || document.getElementById('enableAlmBtn');
+        let forceAlarm = document.getElementById('forceAlarmLink') || document.getElementById('forceAlmBtn');
         let content = document.getElementById('content');
         let recordDiv;
         let recordButton;
@@ -23,7 +23,7 @@
             monitorName: monitorName
         }, reply => {
             if (reply){
-                windowType = reply.windowType;
+                windowState = reply.windowState;
                 maximizeSingleView = reply.maximizeSingleView;
                 if (forceAlarm && cancelAlarm){
                     placeDiv(
@@ -37,11 +37,18 @@
                         recordButton.className = 
                         recordDiv.className = 
                         state = 
-                        mutation[0].addedNodes[0].data
+                        mutation[0].target.innerText || ''; //With version 1.35.15 two mutations started showing because the state is 'updated', even if it hasn't changed, because the fpsvalue changes
+                                                                                //Commit: https://github.com/ZoneMinder/zoneminder/commit/6e17b04a7e901f7ad6546fb0dccd9cd7a7efbb36
                     }).observe(
                         document.getElementById('stateValue'),
                         {
-                            childList: true
+                            attributeOldValue: false,
+                            characterData: false,
+                            subtree: false,
+                            childList: false,
+                            attributeFilter: [
+                                "class"
+                            ]
                         }
                     );
                 }
@@ -55,23 +62,16 @@
             }
         });  
 
-        document.addEventListener('mousedown', (e) => {
-            if (e.which === 2){
-                e.preventDefault();
-                chrome.runtime.sendMessage({fullscreen: true});
-            }
-        });
-
         //The montage page opens a monitor in a new
         //window, so close it on double click
         document.ondblclick = e => {
             e.preventDefault();
-            if (windowType === 'popup'){
+            if (windowState === 'popup'){  //Fix this, add window.type and windowType for popup to happen in older versions of zm
                 window.close()
             } else {
                 window.history.back();
-                if (maximizeSingleView){
-                    chrome.runtime.sendMessage({fullscreen: true});
+                if (maximizeSingleView && windowState === 'normal'){
+                    chrome.runtime.sendMessage({fullscreenToggle: true});
                 }
             }
             //chrome.runtime.sendMessage({goToConsole: true});
@@ -109,6 +109,7 @@
             });
 
             fpsSpan.addEventListener('dragend', e => {
+                console.log(e);
                 //Save the current fps value after a move or else when you
                 //move it there is nothing to display until a fps update.
                 let initValue = fpsSpan.innerText;
@@ -129,11 +130,15 @@
                 });
             });
             const fpsObserver = new MutationObserver( mutation => {
-                fpsSpan.textContent = mutation[0].addedNodes[0].data
+                fpsSpan.textContent = mutation[0].target.innerText || '';
             }).observe(
                 document.getElementById('fpsValue'),
                 {
-                    childList: true
+                    attributeOldValue: false,
+                    characterData: true,
+                    subtree: false,
+                    childList: true,
+                    attributes: false
                 }
             );
         };
@@ -209,7 +214,7 @@
                         if (state === 'Idle'){
                             recordButton.className = recordDiv.className = state;
                         }
-                    }, 1500);
+                    }, 3000);
                 } else if (state === 'Alert' && !disableRecordOnAlert){
                     forceAlarm.click();
                 } else {

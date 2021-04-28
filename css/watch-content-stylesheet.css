@@ -73,7 +73,7 @@ button#recordButton.Alarm {
 button#recordButton.Alert {
     animation: pulse .4s infinite;
     background-color: yellow !important;
-    opacity: .70;
+    opacity: .60;
 }
 
 #fpsSpan {

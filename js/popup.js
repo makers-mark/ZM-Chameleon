@@ -17,6 +17,18 @@
     let shadowColor = document.getElementById('shadowColor');
     let borderRadius = document.getElementById('borderRadius');
     let transparentGrid = document.getElementById('transparentGrid');
+    
+    //Keep at the top 12/25/2020, no more initial two clicks (not double clicks) to change theme.
+    const cssLoader = toggleDark => {
+        let head = document.getElementsByTagName('head')[0];
+        let link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        toggleDark ?
+            link.href = 'css/popup-dark-stylesheet.css' :
+            link.href = 'css/popup-stylesheet.css';
+        head.appendChild(link);
+    };
 
     chrome.runtime.sendMessage({popupOpen: true}, settings => {
         cssLoader(settings.toggleDark);
@@ -92,15 +104,4 @@
 
     gridWidth.oninput = () => chrome.storage.local.set({gridWidth: parseFloat(gridWidth.value)});
     flashWidth.oninput = () => chrome.storage.local.set({flashWidth: parseFloat(flashWidth.value)});
-    
-    const cssLoader = toggleDark => {
-        let head = document.getElementsByTagName('head')[0];
-        let link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.type = 'text/css';
-        toggleDark ?
-            link.href = 'css/popup-dark-stylesheet.css' :
-            link.href = 'css/popup-stylesheet.css';
-        head.appendChild(link);
-    }
 })();
