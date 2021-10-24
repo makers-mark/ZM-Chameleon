@@ -36,7 +36,7 @@ hr {
     opacity: 1;
 }
 
-h4, label.switch, input {
+h4, h6, label.switch, input {
     color: #000;
 }
 

@@ -25,20 +25,6 @@
 		<tr>
 			<td>
 				<label class="switch">
-					<input type="checkbox" id="toggleMonitors">
-					<span class="slider round"></span>
-				</label>
-			</td>
-			<td><h4 id="sliderText">Monitors Per Row</h4></td>
-		</tr>
-		<tr>
-			<td colspan="3"> 
-				<input type="range" step="1" min="1" max="10" class="mySlider" id="monitorSlider">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<label class="switch">
 					<input type="checkbox" id="toggleScroll">
 					<span class="slider round"></span>
 				</label>
@@ -96,9 +82,21 @@
 			</td>
 			<td><h4>Transparent Grid</h4></td>
 		</tr>
-	</table>
-	<hr>
-	<table>
+
+		<tr>
+			<td>
+				<label class="switch smallSwitch">
+					<input type="checkbox" id="toggleMonitors">
+					<span class="smallSlider round"></span>
+				</label>
+			</td>
+			<td><h4 id="sliderText">Monitors Per Row</h4></td>
+		</tr>
+		<tr>
+			<td colspan="3"> 
+				<input type="range" step="1" min="1" max="10" class="mySlider" id="monitorSlider">
+			</td>
+		</tr>
 		<tr>
 			<td>
 				<label class="switch smallSwitch">
@@ -107,6 +105,18 @@
 				</label>
 			</td>
 			<td><h4>Invert Colors</h4></td>
+		</tr>
+		<tr>
+			<td>
+				<label class="switch smallSwitch">
+					<input type="checkbox" id="forceAspect">
+					<span class="smallSlider round"></span>
+				</label>
+			</td>
+			<td><h4>Force Aspect Ratio</h4></td>
+		</tr>
+		<tr>
+			<td colspan="3"><h6>(Default is 16:9, ratio can be changed in the options)</h6></td>
 		</tr>
 		<tr>
 			<td>

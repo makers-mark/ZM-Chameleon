@@ -7,6 +7,9 @@
 
     document.addEventListener('mousedown', e => {
         if (e.buttons === 4){
+            //Keep mousewheel click (toggle fullscreen) from propogating
+            //to after the toggle into 'scroll'
+
             e.preventDefault();
         }
         if (e.buttons === 3){
@@ -23,7 +26,7 @@
                 } else {
                     window.location = '?view=montage';
                 }
-                    //chrome.runtime.sendMessage({goToConsole: true});
+                //chrome.runtime.sendMessage({goToConsole: true});
             }
         } else if (e.which === 2){
             //e.preventDefault();

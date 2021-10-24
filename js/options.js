@@ -27,6 +27,8 @@
     let defaultShadow = '2px 4px 6px';
     let fpsSpan = document.getElementById('fpsSpan');
     let applyFilters = document.getElementById('applyFilters');
+    let aspectRatio = document.getElementById('aspectRatio');
+    let forceAspect = document.getElementById('forceAspect');
 
     document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
     let version = chrome.runtime.getManifest().version;
@@ -50,7 +52,9 @@
         recordButtonSize: 70,
         dropShadowString: defaultShadow,
         inversionAmount: 1,
-        applyFilters: false
+        applyFilters: false,
+        aspectRatio: '16/9',
+        forceAspect: true
     }, settings => {
         customLocation.value = settings.customLocation;
         alarmOpacity.value = settings.alarmOpacity;
@@ -75,6 +79,8 @@
         fpsSpan.style.fontSize = `${settings.fpsSize}px`;
         fpsSpan.innerText = ((Math.random() * 10) + 20).toFixed(2);
         applyFilters.checked = settings.applyFilters;
+        aspectRatio.value = settings.aspectRatio;
+        forceAspect.checked = settings.forceAspect;
     });
 
     document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
@@ -100,4 +106,7 @@
     obfuscate.onchange = () => chrome.storage.local.set({obfuscate: obfuscate.checked});
     disableRecordOnAlert.onchange = () => chrome.storage.local.set({disableRecordOnAlert: disableRecordOnAlert.checked});
     applyFilters.onchange = () => chrome.storage.local.set({applyFilters: applyFilters.checked});
+    aspectRatioApply.onclick = () => chrome.storage.local.set({aspectRatio: aspectRatio.value});
+    aspectRatioReset.onclick = () => chrome.storage.local.set({aspectRatio: '16/9'}, () => aspectRatio.value = '16/9');
+    forceAspect.onchange = () => chrome.storage.local.set({forceAspect: forceAspect.checked});
 })();

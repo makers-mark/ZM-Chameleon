@@ -46,7 +46,7 @@ hr {
     margin: 2px 0px 0px 0px;
 }
 
-h4, label.switch {
+h4, h6, label.switch {
     text-shadow: 0 4px 8px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
     margin: 2px 0px 0px 0px;
 }
@@ -164,21 +164,21 @@ input[type="number"]{
 .smallSlider::before {
     position: absolute;
     content: "";
-    height: 8px;
-    width: 8px;
-    top: 0px;
+    height: 9px;
+    width: 9px;
+    top: 0.25px;
     left: 0px;
     border: .5px black solid;
 }
 
 input:checked + .slider::before {
     transform: translateX(20px);
-    transition: .3s;    
+    transition: .1s;    
 }
 
 input:checked + .smallSlider::before {
-    transform: translateX(28px);
-    transition: .2s;
+    transform: translateX(29px);
+    transition: .1s;
 }
 
 /* Rounded sliders */

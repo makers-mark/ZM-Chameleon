@@ -17,6 +17,7 @@
     let shadowColor = document.getElementById('shadowColor');
     let borderRadius = document.getElementById('borderRadius');
     let transparentGrid = document.getElementById('transparentGrid');
+    let forceAspect = document.getElementById('forceAspect');
     
     //Keep at the top 12/25/2020, no more initial two clicks (not double clicks) to change theme.
     const cssLoader = toggleDark => {
@@ -36,7 +37,7 @@
         flashWidth.max = settings.widthMax;
         toggleMonitors.checked = settings.monitorOverride;
         slider.value = settings.monitors;
-        sliderText.textContent = `${settings.monitors} Monitors Per Row`;
+        sliderText.textContent = `Monitors Per Row: ${settings.monitors}`;
         hideHeader.checked = settings.hideHeader;
         colorPicker.value = settings.gridColor || '#000000';
         gridWidth.value = settings.gridWidth;
@@ -49,6 +50,7 @@
         shadowColor.value = settings.shadowColor || '#000000';
         borderRadius.value = settings.borderRadius;
         transparentGrid.checked = settings.transparentGrid;
+        forceAspect.checked = settings.forceAspect;
     });
 
     toggleMonitors.addEventListener('click', () => chrome.storage.local.set({
@@ -78,6 +80,10 @@
     transparentGrid.addEventListener('click', () => chrome.storage.local.set({
         transparentGrid: transparentGrid.checked
     }));
+    forceAspect.addEventListener('click', () => chrome.storage.local.set({
+        forceAspect: forceAspect.checked
+    }));
+
     closeIcon.addEventListener('click', () => window.close());
 
     colorPicker.addEventListener('change', () => {
@@ -98,7 +104,7 @@
     });	
 
     slider.oninput = () => {
-        sliderText.textContent = `${slider.value} Monitors Per Row`;
+        sliderText.textContent = `Monitors Per Row: ${slider.value}`;
         chrome.storage.local.set({monitors: slider.value});
     };
 

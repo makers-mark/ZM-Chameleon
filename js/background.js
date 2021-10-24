@@ -43,7 +43,9 @@
             dropShadowString: '2px 4px 6px',
             inversionAmount: 1,
             transparentGrid: false,
-            applyFilters: false
+            applyFilters: false,
+            forceAspect: false,
+            aspectRatio: '16/9'
         }, localStorage => {
             settings = localStorage;
         });
@@ -125,6 +127,12 @@
                     settings[value] = change[value].newValue;
                     borderRadius();
                     break;
+                
+                case 'aspectRatio':
+                case 'forceAspect':
+                    settings[value] = change[value].newValue;
+                    forceAspect();
+                    break;
 
                 case 'flashAlarm':
                 case 'flashWidth':
@@ -187,7 +195,8 @@
                     dropShadow: settings.dropShadow,
                     shadowColor: settings.shadowColor,
                     borderRadius: settings.borderRadius,
-                    transparentGrid: settings.transparentGrid
+                    transparentGrid: settings.transparentGrid,
+                    forceAspect: settings.forceAspect
                 });
                 break;
 
@@ -223,6 +232,7 @@
                 filterHandler();
                 gridHandler();
                 borderRadius();
+                forceAspect();
                 break;
 
             case "setMonitor":
@@ -243,6 +253,15 @@
                 break;
 
             case 'watchPageOpen':
+                settings.forceAspect ?
+                    chrome.tabs.insertCSS(sender.tab.id, {code:
+                        `img:first-child {object-fit: contain !important;}`
+                    }) :
+                
+                    chrome.tabs.insertCSS(sender.tab.id, {code:
+                        `img:first-child {object-fit: cover !important;}`
+                    })
+                
                 //If the watch page was clicked on from the montage page and not the
                 //console page and the setting is selected in the popup. Maximize the monitor.
                 if (settings.maximizeSingleView){
@@ -254,8 +273,7 @@
                         });
                     });
                     chrome.tabs.insertCSS(sender.tab.id, {code:
-                        `img:first-child {object-fit: contain !important;
-                        width: 100vw !important; height: 100vh !important;}
+                        `img:first-child {width: 100vw !important; height: 100vh !important;}
                         div#content {margin: 0 !important;}
                         div.navbar, div#header, div#monitorStatus, div#dvrControls,
                         div#replayStatus, div#ptzControls, div#events, div.warning {display: none !important;}
@@ -296,6 +314,20 @@
             #content {width: 100% !important; margin: 0px !important;}
             #header {border-bottom: 0px !important; margin: 0px !important;}`
         }));
+    };
+
+    const forceAspect = () => {
+        tabId.forEach( id => {
+            if (settings.forceAspect){
+                chrome.tabs.insertCSS(id, {code:
+                    `img {aspect-ratio:${settings.aspectRatio} !important;}`
+                });
+            } else {
+                chrome.tabs.insertCSS(id, {code:
+                    `img {aspect-ratio: auto !important;}`
+                });
+            }
+        });
     };
 
     const borderRadius = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code:
