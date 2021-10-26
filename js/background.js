@@ -44,8 +44,9 @@
             inversionAmount: 1,
             transparentGrid: false,
             applyFilters: false,
-            forceAspect: false,
-            aspectRatio: '16/9'
+            overrideMontageAspect: false,
+            aspectRatio: '16/9',
+            maintainSingleMonitorAspect: true
         }, localStorage => {
             settings = localStorage;
         });
@@ -129,9 +130,9 @@
                     break;
                 
                 case 'aspectRatio':
-                case 'forceAspect':
+                case 'overrideMontageAspect':
                     settings[value] = change[value].newValue;
-                    forceAspect();
+                    overrideMontageAspect();
                     break;
 
                 case 'flashAlarm':
@@ -196,7 +197,7 @@
                     shadowColor: settings.shadowColor,
                     borderRadius: settings.borderRadius,
                     transparentGrid: settings.transparentGrid,
-                    forceAspect: settings.forceAspect
+                    overrideMontageAspect: settings.overrideMontageAspect
                 });
                 break;
 
@@ -232,7 +233,7 @@
                 filterHandler();
                 gridHandler();
                 borderRadius();
-                forceAspect();
+                overrideMontageAspect();
                 break;
 
             case "setMonitor":
@@ -253,7 +254,7 @@
                 break;
 
             case 'watchPageOpen':
-                settings.forceAspect ?
+                settings.maintainSingleMonitorAspect ?
                     chrome.tabs.insertCSS(sender.tab.id, {code:
                         `img:first-child {object-fit: contain !important;}`
                     }) :
@@ -316,9 +317,9 @@
         }));
     };
 
-    const forceAspect = () => {
+    const overrideMontageAspect = () => {
         tabId.forEach( id => {
-            if (settings.forceAspect){
+            if (settings.overrideMontageAspect){
                 chrome.tabs.insertCSS(id, {code:
                     `img {aspect-ratio:${settings.aspectRatio} !important;}`
                 });

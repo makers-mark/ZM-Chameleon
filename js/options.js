@@ -28,7 +28,7 @@
     let fpsSpan = document.getElementById('fpsSpan');
     let applyFilters = document.getElementById('applyFilters');
     let aspectRatio = document.getElementById('aspectRatio');
-    let forceAspect = document.getElementById('forceAspect');
+    let maintainSingleMonitorAspect = document.getElementById('maintainSingleMonitorAspect');
 
     document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
     let version = chrome.runtime.getManifest().version;
@@ -54,7 +54,7 @@
         inversionAmount: 1,
         applyFilters: false,
         aspectRatio: '16/9',
-        forceAspect: true
+        maintainSingleMonitorAspect: true
     }, settings => {
         customLocation.value = settings.customLocation;
         alarmOpacity.value = settings.alarmOpacity;
@@ -80,7 +80,7 @@
         fpsSpan.innerText = ((Math.random() * 10) + 20).toFixed(2);
         applyFilters.checked = settings.applyFilters;
         aspectRatio.value = settings.aspectRatio;
-        forceAspect.checked = settings.forceAspect;
+        maintainSingleMonitorAspect.checked = settings.maintainSingleMonitorAspect;
     });
 
     document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
@@ -108,5 +108,5 @@
     applyFilters.onchange = () => chrome.storage.local.set({applyFilters: applyFilters.checked});
     aspectRatioApply.onclick = () => chrome.storage.local.set({aspectRatio: aspectRatio.value});
     aspectRatioReset.onclick = () => chrome.storage.local.set({aspectRatio: '16/9'}, () => aspectRatio.value = '16/9');
-    forceAspect.onchange = () => chrome.storage.local.set({forceAspect: forceAspect.checked});
+    maintainSingleMonitorAspect.onchange = () => chrome.storage.local.set({maintainSingleMonitorAspect: maintainSingleMonitorAspect.checked});
 })();

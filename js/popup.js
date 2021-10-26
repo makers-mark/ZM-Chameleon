@@ -17,7 +17,7 @@
     let shadowColor = document.getElementById('shadowColor');
     let borderRadius = document.getElementById('borderRadius');
     let transparentGrid = document.getElementById('transparentGrid');
-    let forceAspect = document.getElementById('forceAspect');
+    let overrideMontageAspect = document.getElementById('overrideMontageAspect');
     
     //Keep at the top 12/25/2020, no more initial two clicks (not double clicks) to change theme.
     const cssLoader = toggleDark => {
@@ -50,7 +50,7 @@
         shadowColor.value = settings.shadowColor || '#000000';
         borderRadius.value = settings.borderRadius;
         transparentGrid.checked = settings.transparentGrid;
-        forceAspect.checked = settings.forceAspect;
+        overrideMontageAspect.checked = settings.overrideMontageAspect;
     });
 
     toggleMonitors.addEventListener('click', () => chrome.storage.local.set({
@@ -80,8 +80,8 @@
     transparentGrid.addEventListener('click', () => chrome.storage.local.set({
         transparentGrid: transparentGrid.checked
     }));
-    forceAspect.addEventListener('click', () => chrome.storage.local.set({
-        forceAspect: forceAspect.checked
+    overrideMontageAspect.addEventListener('click', () => chrome.storage.local.set({
+        overrideMontageAspect: overrideMontageAspect.checked
     }));
 
     closeIcon.addEventListener('click', () => window.close());
