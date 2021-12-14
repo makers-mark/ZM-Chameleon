@@ -260,7 +260,7 @@
                     }) :
                 
                     chrome.tabs.insertCSS(sender.tab.id, {code:
-                        `img:first-child {object-fit: cover !important;}`
+                        `img:first-child {object-fit: fill !important;}`
                     })
                 
                 //If the watch page was clicked on from the montage page and not the
@@ -313,7 +313,8 @@
             code:
             `.monitorState {display: none !important;}
             #content {width: 100% !important; margin: 0px !important;}
-            #header {border-bottom: 0px !important; margin: 0px !important;}`
+            #header {border-bottom: 0px !important; margin: 0px !important;}
+            img {width: 100% !important;}`    //Something around 1.36.10 made me have to put this
         }));
     };
 
