@@ -7,10 +7,12 @@
     let recX;
     let recY;
     let windowState;
+    let overrideZoom;
+    let zoomFactor;
 
     document.addEventListener('DOMContentLoaded', () => {
-        let monitorName = document.getElementById('monitorName') || document.getElementsByTagName('h2')[0];
-        monitorName = monitorName.innerHTML;
+        let monitorName = document.getElementById('monitorName') || document.getElementsByTagName('img')[0].alt;//document.getElementsByTagName('h2')[0];
+        monitorName = monitorName.innerHTML || monitorName;
         let cancelAlarm = document.getElementById('cancelAlarmLink') || document.getElementById('enableAlmBtn');
         let forceAlarm = document.getElementById('forceAlarmLink') || document.getElementById('forceAlmBtn');
         let content = document.getElementById('content');
@@ -25,6 +27,10 @@
             if (reply){
                 windowState = reply.windowState;
                 maximizeSingleView = reply.maximizeSingleView;
+                overrideZoom = reply.overrideZoom;
+                zoomFactor = reply.zoomFactor;
+
+                if (overrideZoom) setupZoom();
                 if (forceAlarm && cancelAlarm){
                     placeDiv(
                         recX = reply.obj[monitorName].x,
@@ -40,7 +46,7 @@
                         mutation[0].target.innerText || ''; //With version 1.35.15 two mutations started showing because the state is 'updated', even if it hasn't changed, because the fpsvalue changes
                                                                                 //Commit: https://github.com/ZoneMinder/zoneminder/commit/6e17b04a7e901f7ad6546fb0dccd9cd7a7efbb36
                     }).observe(
-                        document.getElementById('stateValue'),
+                        document.querySelector('[id^="stateValue"]'),
                         {
                             attributeOldValue: false,
                             characterData: false,
@@ -64,8 +70,8 @@
 
         //The montage page opens a monitor in a new
         //window, so close it on double click
-        document.ondblclick = e => {
-            e.preventDefault();
+        document.addEventListener("dblclick", e => {
+
             if (windowState === 'popup'){  //Fix this, add window.type and windowType for popup to happen in older versions of zm
                 window.close()
             } else {
@@ -75,6 +81,79 @@
                 }
             }
             //chrome.runtime.sendMessage({goToConsole: true});
+        });
+
+        const setupZoom = () => {
+            //override the default zoneminder zoom in watch.js
+            const script = document.createElement('script');
+            script.textContent = `function handleClick(){}`;
+            document.head.appendChild(script);
+
+            //Do not display the Ctrl-click zoom options on hover through the title attribute
+            const style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = `#imageFeed, div#content > div {pointer-events: none !important;}`
+            document.head.appendChild(style);
+
+            let scale     = 1;
+            let isPanning = false;
+            let pointX    = 0;
+            let pointY    = 0;
+            let initialXY = {x: 0, y: 0};
+            //const imageFeed = document.getElementById("imageFeed");
+            const imageFeed = document.querySelector('div#content > div')
+
+            imageFeed.style.title = '0';
+
+            imageFeed.style.transformOrigin = '0 0';
+    
+            function setTransform(){imageFeed.style.transform = "translate(" + pointX + "px, " + pointY + "px) scale(" + scale + ")";}
+            
+            content.addEventListener("mousedown", e => {
+                //console.log(e.target);
+                if (e.target.id == 'content' || e.target.id.includes('liveStream')){
+                    e.preventDefault();
+                    if (e.which === 2){
+                        //Reset the zoom when the middle mouse button is pressed
+                        imageFeed.style.transform = 'translate(0px, 0px) scale(1)';
+                        imageFeed.style.top       = imageFeed.style.left = pointX = pointY = 0;
+                        scale                     = 1;
+                        initialXY                 = {x: 0, y: 0};
+                    } else {
+                        initialXY = { x: e.clientX - pointX, y: e.clientY - pointY };
+                        isPanning = true;
+                    }
+                }
+            });
+
+            content.addEventListener("mouseup", e => {
+                isPanning = false;
+            });
+
+            content.addEventListener("mousemove", e => {
+                //e.preventDefault();
+                //console.log(e.target);
+                if (!isPanning) {
+                    return;
+                }
+                pointX = (e.clientX - initialXY.x);
+                pointY = (e.clientY - initialXY.y);
+                setTransform();
+            });
+
+            content.addEventListener('wheel', e => {
+                e.preventDefault();
+                const xScale = (e.clientX - pointX) / scale;
+                const yScale = (e.clientY - pointY) / scale;
+                const delta = (e.wheelDelta ? e.wheelDelta : -e.deltaY);
+
+                (delta > 0) ? (scale *= zoomFactor) : (scale /= zoomFactor);
+
+                pointX = e.clientX - xScale * scale;
+                pointY = e.clientY - yScale * scale;
+
+                setTransform();
+            }, {passive: false});
         };
 
         const showFpsFunc = (
@@ -109,7 +188,6 @@
             });
 
             fpsSpan.addEventListener('dragend', e => {
-                console.log(e);
                 //Save the current fps value after a move or else when you
                 //move it there is nothing to display until a fps update.
                 let initValue = fpsSpan.innerText;
@@ -132,7 +210,7 @@
             const fpsObserver = new MutationObserver( mutation => {
                 fpsSpan.textContent = mutation[0].target.innerText || '';
             }).observe(
-                document.getElementById('fpsValue'),
+                document.getElementById('fpsValue') || document.querySelector('[id*="FPSValue"]'),
                 {
                     attributeOldValue: false,
                     characterData: true,

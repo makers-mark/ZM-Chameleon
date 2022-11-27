@@ -91,7 +91,7 @@
         chrome.storage.local.set({gridColor: color});
     });
 
-    shadowColor.addEventListener('change', () => {
+    shadowColor.addEventListener('input', () => {
         let color = shadowColor.value || '#000000';
         chrome.storage.local.set({shadowColor: color})
     });

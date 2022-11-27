@@ -23,6 +23,8 @@
       <hr>
     </div>
     <div>
+      <h3>Background Color: <input class="colorPicker" type="color" id="backgroundColor"></h3>
+      <hr>
       <h3>Alarm Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="alarmOpacity"><span id="alarmOpacityText"></span></h3>
       <h3>Alert Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="alertOpacity"><span id="alertOpacityText"></span></h3>
       <h3>Flashing animation speed (seconds): <input type="number" class="smallNumber" id="flashSpeed" min="0" step="0.01"></h3>
@@ -42,6 +44,9 @@
       <h3><input type="checkbox" id="applyFilters">Apply filters to single monitor view</h3>
       <h3>Force Aspect ratio on Montage (default is 16/9): <input id="aspectRatio" type="text" value="16/9"></input><button id="aspectRatioApply" class="blueButton">Apply</button><button id="aspectRatioReset" class="blueButton">Reset</button></h3>
       <h3><input type="checkbox" id="maintainSingleMonitorAspect" checked> Maintain aspect ratio when 'Maximize Single View' is toggled in the popup</h3>
+      <h3><input type="checkbox" id="overrideZoom"> Override ZM zoom in Single View. This allows you to use the mouse wheel to zoom</h3>
+      <h4>Scroll zoom only works with 'Maximize Single View' is toggled in the popup</h4>
+      <h3>Mouse Wheel Zoom Factor: <input type="number" class="smallNumber" id="zoomFactor" min="1" step="0.01"></h3>
       <hr>
       <h3><input type="checkbox" id="showFps">Show FPS</h3>
       <table>
@@ -69,6 +74,36 @@
           <td>
             <div id="recordDiv" class="Idle">
               <button id="recordButton" class="Idle"></button>REC
+            </div>
+          </td>
+        </tr>
+      </table>
+      <hr>
+      <table class="outline">
+        <tr colspan="3">
+          <td>
+            <h3>Console Icon Scale: <input type="number" step="0.1" class="smallNumber" min="0" id="consoleScale"></h3>
+          </td>
+          <td>
+            <h3>Console Icon X position: <input type="range" step="0.01" class="optionsSlider" min="0" max="100" id="consoleX"><span id="consoleXText"></span></h3>
+           </td>
+          <td>
+            <h3>Console Icon Y position: <input type="range" step="0.01" class="optionsSlider" min="0" max="100" id="consoleY"><span id="consoleYText"></span></h3>           
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td>
+            <div class="outline">
+              <h3>Console Icon Stroke Color <input class="colorPicker" type="color" id="strokeColor"></h3>
+              <h3>Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="strokeOpacity"><span id="strokeOpacityText"></span></h3>
+            </div>
+          </td>
+          <td>
+            <div class="outline">
+              <h3>Console Icon Fill Color <input class="colorPicker" type="color" id="fillColor"></h3>
+              <h3>Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="fillOpacity"><span id="fillOpacityText"></span></h3>
             </div>
           </td>
         </tr>

@@ -1,6 +1,8 @@
 (() => {
     "use strict";
 
+    //let debug = false;
+
     let settings = {};
     let tabId = [];
 
@@ -46,7 +48,17 @@
             applyFilters: false,
             overrideMontageAspect: false,
             aspectRatio: '16/9',
-            maintainSingleMonitorAspect: true
+            maintainSingleMonitorAspect: true,
+            overrideZoom: false,
+            zoomFactor: 1.2,
+            backgroundColor: '#222222',
+            consoleScale: 2,
+            consoleX: 5,
+            consoleY: 5,
+            strokeColor: '#00c7b0',
+            strokeOpacity: 0.18,
+            fillColor: '#666ff0',
+            fillOpacity: 0.14
         }, localStorage => {
             settings = localStorage;
         });
@@ -55,13 +67,19 @@
             chrome.declarativeContent.onPageChanged.addRules([{
                 conditions: [
                     new chrome.declarativeContent.PageStateMatcher({
-                        pageUrl: {queryPrefix: 'view=montage'}
+                        pageUrl: {queryEquals: 'view=montage'}
                     }),
                     new chrome.declarativeContent.PageStateMatcher({
                         pageUrl: {queryPrefix: 'view=watch'}
                     }),
                     new chrome.declarativeContent.PageStateMatcher({
                         pageUrl: {queryPrefix: 'view=console'}
+                    }),
+                    new chrome.declarativeContent.PageStateMatcher({
+                        pageUrl: {      //Do not show Popup Icon for Montage Review
+                            pathEquals: '/zm/',
+                            queryEquals: ''
+                        }
                     })
                 ],
                 actions: [new chrome.declarativeContent.ShowPageAction()]
@@ -76,6 +94,7 @@
         //before attempting to insertCSS into a tab that no longer exists.
         if (tabId.includes(id)){
             tabId = tabId.filter( item => item !== id);
+            //if (debug){alert(`tabId is now: ${tabId}`)};
         }
     });
 
@@ -88,8 +107,10 @@
                     break;
 
                 case 'hideHeader':
-                    settings.hideHeader = change[value].newValue;
-                    hideHeader();
+                    settings.hideHeader = change[value].newValue;       //  \/\/ Don't run on Console page (who wants to hideheader of console? someone probably), just change the variables <<<<
+                    if (!window.location.href.includes('?view=console') || !window.location.search == ''){ //Change to run function on only Montage? Maybe, but may do similiar for event views soon
+                        hideHeader();
+                    }
                     break;
 
                 case 'monitorOverride':
@@ -142,10 +163,31 @@
                 case 'flashSpeed':
                     settings[value] = change[value].newValue;
                     if (tabId) flashAlarm();
+                    break;
+                case 'backgroundColor':
+                    settings[value] = change[value].newValue;
+                    setBackgroundColor();
+                case 'stroke':
+                case 'consoleX':
+                case 'consoleY':
+                case 'strokeColor':
+                case 'strokeOpacity':
+                case 'fillColor':
+                case 'fillOpacity':
+                case 'consoleScale':
+                    settings[value] = change[value].newValue;
+                    updateMontage();
             }
         });
     });
 
+    const updateMontage = () => tabId.forEach( id => chrome.tabs.insertCSS(id, {code:
+            `#consoleSvg {left:${settings.consoleX}% !important;
+            top:${settings.consoleY}% !important; width: ${settings.consoleScale * 24.75}px !important; height: ${settings.consoleScale * 21}px !important;}
+            #path {stroke: ${settings.strokeColor} !important; stroke-Opacity: ${settings.strokeOpacity} !important;
+            fill: ${settings.fillColor} !important; fill-Opacity: ${settings.fillOpacity} !important; transform: scale(${settings.consoleScale}) !important;}`
+    }));
+    
     const changeDeclarativeContent = customLocation => {
         chrome.declarativeContent.onPageChanged.removeRules(undefined, ()  => {
             chrome.declarativeContent.onPageChanged.addRules([{
@@ -163,6 +205,7 @@
         if (tab.title && tab.title === 'ZM - Montage'){
             if (!tabId.includes(id)){
                 tabId.push(id);
+                //if (debug){alert(`OnUpdated @ L208 => tabId just pushed ${id} on to it: ${tabId}`)};
             }
         }
     });
@@ -206,6 +249,7 @@
                     chrome.storage.local.clear( () =>{
                         if (!lastError()) alert('Storage Cleared! Click OK to reload the extension and the ZoneMinder page.');
                         tabId.forEach( id => {
+                            //if (debug){alert(`Running clearStorage on tabId: ${id}`)};
                             chrome.tabs.executeScript(id, {code: `window.location.reload();`}, () =>{
                                 chrome.runtime.reload(); //Shouldn't run this on every open ZoneMinder tab, just once is enough.
                             });
@@ -220,20 +264,31 @@
                 break;
 
             case 'montageOpen':
+                callback({
+                    consoleScale: settings.consoleScale,
+                    consoleX: settings.consoleX,
+                    consoleY: settings.consoleY,
+                    strokeColor: settings.strokeColor,
+                    strokeOpacity: settings.strokeOpacity,
+                    fillColor: settings.fillColor,
+                    fillOpacity: settings.fillOpacity
+                })
                 if (!tabId.includes(sender.tab.id)){
                     tabId.push(sender.tab.id);
-                }
-                initMontage();
-                hideHeader();
+                    //if (debug){alert(`MontageOpen @ L278 => tabId just pushed ${sender.tab.id} onto it: ${tabId}`)};
+                };
                 chrome.storage.local.set({zmMontageLayout: msg.zmMontageLayout});
-                flashAlarm();
+                initMontage();
                 monitorOverride();
+                overrideMontageAspect();
+                hideHeader();
                 toggleScroll();
+                flashAlarm();
                 widthMax();
                 filterHandler();
                 gridHandler();
                 borderRadius();
-                overrideMontageAspect();
+
                 break;
 
             case "setMonitor":
@@ -275,10 +330,11 @@
                     });
                     chrome.tabs.insertCSS(sender.tab.id, {code:
                         `img:first-child {width: 100vw !important; height: 100vh !important;}
-                        div#content {margin: 0 !important;}
-                        div.navbar, div#header, div#monitorStatus, div#dvrControls,
+                        div#content {margin: 0 !important;} .monitor {margin: 0px !important;}
+                        div.navbar, div#header, div#monitorStatus, .monitorStatus, div#dvrControls,
                         div#replayStatus, div#ptzControls, div#events, div.warning {display: none !important;}
-                        div.fixed-top.container-fluid, div#header, div.d-flex {display: none !important;}`
+                        div.fixed-top.container-fluid, div#header, div.d-flex {display: none !important;}
+                        div#navbar-container {display: none !important;} .imageFeed img {border: 0px !important;}`
                     });
                     chrome.storage.local.get({
                         [msg.monitorName]: {
@@ -297,7 +353,9 @@
                             recordButtonSize: settings.recordButtonSize,
                             fpsSize: settings.fpsSize,
                             windowState: windowState,
-                            maximizeSingleView: settings.maximizeSingleView
+                            maximizeSingleView: settings.maximizeSingleView,
+                            overrideZoom: settings.overrideZoom,
+                            zoomFactor: settings.zoomFactor
                         });
                         if (settings.applyFilters) filterHandler([sender.tab.id]);
                     });
@@ -309,6 +367,7 @@
     });
 
     const initMontage = () => {
+        //if (debug){alert(`InitMontage, inserting css into these tabs: ${tabId}`)};
         tabId.forEach( id => chrome.tabs.insertCSS(id, {
             code:
             `.monitorState {display: none !important;}
@@ -316,9 +375,17 @@
             #header {border-bottom: 0px !important; margin: 0px !important;}
             img {width: 100% !important;}`    //Something around 1.36.10 made me have to put this
         }));
+        
+        if (settings.backgroundColor != ''){
+            tabId.forEach( id => chrome.tabs.insertCSS(id, {
+                code:
+                `background-color: ${settings.backgroundColor} !important;}`
+            }));
+        }
     };
 
     const overrideMontageAspect = () => {
+        //if (debug){alert(`overrideMontageAspect, inserting css int these tabs: ${tabId}`)};
         tabId.forEach( id => {
             if (settings.overrideMontageAspect){
                 chrome.tabs.insertCSS(id, {code:
@@ -337,6 +404,7 @@
     }));
 
     const gridHandler = () => {
+        //if (debug){alert(`gridHandler, inserting css int these tabs: ${tabId}`)};
         tabId.forEach( id => {
             settings.transparentGrid ?
             chrome.tabs.insertCSS(id, {code:
@@ -371,24 +439,35 @@
     };
 
     const monitorOverride = () => {
+        //if (debug){alert(`MonitorOverride, inserting css int these tabs: ${tabId}`)};
         tabId.forEach( id => {
             if (settings.monitorOverride){
-                chrome.tabs.insertCSS(id, {code:
-                    `.monitorFrame {width:${100 / settings.monitors}% !important;}`
+                chrome.tabs.insertCSS(id, {code:  //.monitor added for 1.37
+                    //`[id^="monitor"]:not(#monitors):not(.monitor) {width:${100 / settings.monitors}% !important;}`
+                    //`.monitorFrame {width:${100 / settings.monitors}% !important;}
+                    //div:has(div + img) {width:${100 / settings.monitors}% !important;}
+                    //`
+                    `#monitors > div {width:${100 / settings.monitors}% !important;}
+                    img[id^="liveStream"] {height: auto !important;}`
                 });
             } else {
                 if (settings.zmMontageLayout == 1){
                     //freeform is selected in ZoneMinder, so do nothing
                     return;
                 }
-                chrome.tabs.insertCSS(id, {code:
-                    `.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;}`
+                chrome.tabs.insertCSS(id, {code:  //.monitor added for 1.37
+                    `#monitors > div {width:${100 / settings.zmMontageLayout}% !important;}`
+                    //`.monitorFrame {width:${100 / settings.zmMontageLayout}% !important;}
+                    //div:has(div + img) {width:${100 / settings.zmMontageLayout}% !important;}
+                    //`
+                    //`[id^="monitor"]:not(#monitors):not(.monitor) {width:${100 / settings.zmMontageLayout}% !important;}`
                 });
             }
         });
     };
 
     const toggleScroll = () => {
+        //if (debug){alert(`toggleScroll, inserting css int these tabs: ${tabId}`)};
         tabId.forEach( id => {
             settings.toggleScroll ?
             chrome.tabs.insertCSS(id, {code:
@@ -401,6 +480,7 @@
     };
 
     const filterHandler = (sender = tabId) => {
+        //if (debug){alert(`filterHandler, inserting css int these tabs: ${tabId} or ${sender}, if given to filterhandler.`)};
         sender.forEach( sender => {
             if (settings.dropShadow && settings.invertColors){
                 chrome.tabs.insertCSS(sender, {code:
@@ -428,6 +508,7 @@
         //At some point between ZM 1.34.x and 1.35.14, the img no longer got the alarm or alert
         //class. So div.alarm img and div.alert img were added below to the css selectors.
         const flash = (id) => {
+            //if (debug){alert(`flashAlarm, inserting css int these tabs: ${id}`)};
             chrome.tabs.insertCSS(id, {code:
                 `@-webkit-keyframes alarm {from, to {outline-color: transparent;} 50% {outline-color: rgba(255,0,0,
                 ${settings.alarmOpacity});}} div.alarm > div.imageFeed > img, img.alarm {outline: ${settings.flashWidth}px solid rgba(255,0,0,
@@ -452,11 +533,14 @@
 
     const hideHeader = () => {
         tabId.forEach( id => {
+            //if (debug){alert(`hideHeader, inserting css int these tabs: ${id}`)};
             if (settings.hideHeader){
                 //div.fixed-top new bootstrap header in 1.35.5
+                //div#navbar-container added 1.37@25
                 chrome.tabs.insertCSS(id, {code:
                     `div.navbar{display: none !important;}
                     div#header{display: none !important;}
+                    div#navbar-container{display: none !important;}
                     div.fixed-top {display: none !important;}
                     div#page {padding-bottom: 0px !important; padding-right: 0px !important; padding-left: 0px !important;}` //New bootstrap padding padding in montage page in 1.35.16
                     , runAt: 'document_start' //Pay attention to this 12/25/2020
@@ -464,12 +548,22 @@
             } else {
                 chrome.tabs.insertCSS(id, {code:
                     `div.navbar{display: block !important;}
-                    div#header{display: block !important;} 
+                    div#header{display: block !important;}
+                    div#navbar-container{display: block !important;}
                     div.fixed-top {display: block !important;}
                     div#page {padding-bottom: 10px !important; padding-right: 15px !important; padding-left: 15px !important;}`
                     , runAt: 'document_start'
                 });
             }
+        });
+    };
+
+    const setBackgroundColor = () => {
+        tabId.forEach( id => {
+            if (debug){alert(`setBackgroundColor, inserting css int these tabs: ${id}`)};
+            chrome.tabs.insertCSS(id, {code:
+                `body {background-color: ${settings.backgroundColor} !important;}`
+            });
         });
     };
 })();

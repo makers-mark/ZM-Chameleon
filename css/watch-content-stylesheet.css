@@ -79,3 +79,13 @@ button#recordButton.Alert {
 #fpsSpan {
     position: fixed;
 }
+
+/*hide scrollbar when zooming*/
+::-webkit-scrollbar {
+    display: none !important;
+}
+
+/*Get rid of 96% width, fix scroll zoom not working on right side of screen*/
+#content {
+    width: 100% !important;
+}

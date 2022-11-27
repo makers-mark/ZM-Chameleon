@@ -21,14 +21,14 @@
         obfuscate: false
     }, item => {
         const user = document.getElementById('inputUsername') || null;
-    if (user && item.obfuscate){
-        user.type = 'password';
-        user.value = item.userName;
-    } else  if (user && item.userName !== ''){
-        user.value = item.userName;
-    }
-    if (item.password !== ''){
-        document.getElementById('inputPassword').value = item.password || null;
-    }
+        if (user && item.obfuscate){
+            user.type = 'password';
+            user.value = item.userName;
+        } else  if (user && item.userName !== ''){
+            user.value = item.userName;
+        }
+        if (item.password !== ''){
+            document.getElementById('inputPassword').value = item.password || null;
+        }
     });
 })();

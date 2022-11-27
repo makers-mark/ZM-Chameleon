@@ -29,6 +29,19 @@
     let applyFilters = document.getElementById('applyFilters');
     let aspectRatio = document.getElementById('aspectRatio');
     let maintainSingleMonitorAspect = document.getElementById('maintainSingleMonitorAspect');
+    let overrideZoom = document.getElementById('overrideZoom');
+    let zoomFactor = document.getElementById('zoomFactor');
+    let backgroundColor = document.getElementById('backgroundColor');
+    let consoleScale = document.getElementById('consoleScale');
+    let consoleX = document.getElementById('consoleX');
+    let consoleXText = document.getElementById('consoleXText');
+    let consoleY = document.getElementById('consoleY');
+    let consoleYText = document.getElementById('consoleYText');
+    let strokeColor = document.getElementById('strokeColor');
+    let strokeOpacity = document.getElementById('strokeOpacity');
+    let strokeOpacityText = document.getElementById('strokeOpacityText');
+    let fillOpacity = document.getElementById('fillOpacity');
+    let fillOpacityText = document.getElementById('fillOpacityText');
 
     document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
     let version = chrome.runtime.getManifest().version;
@@ -54,17 +67,25 @@
         inversionAmount: 1,
         applyFilters: false,
         aspectRatio: '16/9',
-        maintainSingleMonitorAspect: true
+        maintainSingleMonitorAspect: true,
+        overrideZoom: false,
+        zoomFactor: 1.2,
+        backgroundColor: '#222222',
+        consoleScale: 2,
+        consoleX: 5,
+        consoleY: 5,
+        strokeColor: '#00c7b0',
+        strokeOpacity: 0.18,
+        fillColor: '#666ff0',
+        fillOpacity: 0.14
     }, settings => {
         customLocation.value = settings.customLocation;
-        alarmOpacity.value = settings.alarmOpacity;
-        alertOpacity.value = settings.alertOpacity;
         userName.value = settings.userName;
         password.value = settings.password;
         widthMax.value = settings.widthMax;
         flashSpeed.value = settings.flashSpeed;
-        alertOpacityText.textContent = settings.alertOpacity;
-        alarmOpacityText.textContent = settings.alarmOpacity;
+        alertOpacityText.textContent = settings.alertOpacity = alertOpacity.value;
+        alarmOpacityText.textContent = settings.alarmOpacity = alarmOpacity.value;
         showFps.checked = settings.showFps;
         fpsSize.value = settings.fpsSize;
         fpsSpan.style.color = fpsColor.value = settings.fpsColor;
@@ -74,13 +95,22 @@
         recordButtonSize.value = settings.recordButtonSize;
         recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = `${settings.recordButtonSize}px`;
         dropShadowString.value = settings.dropShadowString;
-        inversionAmount.value = settings.inversionAmount;
-        inversionAmountText.textContent = settings.inversionAmount;
+        inversionAmountText.textContent = inversionAmount.value = settings.inversionAmount;
         fpsSpan.style.fontSize = `${settings.fpsSize}px`;
         fpsSpan.innerText = ((Math.random() * 10) + 20).toFixed(2);
         applyFilters.checked = settings.applyFilters;
         aspectRatio.value = settings.aspectRatio;
         maintainSingleMonitorAspect.checked = settings.maintainSingleMonitorAspect;
+        overrideZoom.checked = settings.overrideZoom;
+        zoomFactor.value = settings.zoomFactor;
+        backgroundColor.value = settings.backgroundColor;
+        consoleScale.value = settings.consoleScale;
+        consoleXText.textContent = consoleX.value = settings.consoleX;
+        consoleYText.textContent = consoleY.value = settings.consoleY;
+        strokeColor.value = settings.strokeColor;
+        strokeOpacityText.textContent = strokeOpacity.value = settings.strokeOpacity;
+        fillColor.value = settings.fillColor;
+        fillOpacityText.textContent = fillOpacity.value = settings.fillOpacity;
     });
 
     document.getElementById('clearStorage').addEventListener('click', () => chrome.runtime.sendMessage({clearStorage: true}));
@@ -109,4 +139,14 @@
     aspectRatioApply.onclick = () => chrome.storage.local.set({aspectRatio: aspectRatio.value});
     aspectRatioReset.onclick = () => chrome.storage.local.set({aspectRatio: '16/9'}, () => aspectRatio.value = '16/9');
     maintainSingleMonitorAspect.onchange = () => chrome.storage.local.set({maintainSingleMonitorAspect: maintainSingleMonitorAspect.checked});
+    overrideZoom.onchange = () => chrome.storage.local.set({overrideZoom: overrideZoom.checked});
+    zoomFactor.onchange = () => chrome.storage.local.set({zoomFactor: zoomFactor.value});
+    backgroundColor.oninput = () => chrome.storage.local.set({backgroundColor: backgroundColor.value});
+    consoleScale.oninput = () => chrome.storage.local.set({consoleScale: consoleScale.value});
+    consoleX.oninput = () => chrome.storage.local.set({consoleX: consoleXText.textContent = consoleX.value});
+    consoleY.oninput = () => chrome.storage.local.set({consoleY: consoleYText.textContent = consoleY.value});
+    strokeColor.oninput = () => chrome.storage.local.set({strokeColor: strokeColor.value});
+    strokeOpacity.oninput = () => chrome.storage.local.set({strokeOpacity: strokeOpacityText.textContent = strokeOpacity.value});
+    fillColor.oninput = () => chrome.storage.local.set({fillColor: fillColor.value});
+    fillOpacity.oninput = () => chrome.storage.local.set({fillOpacity: fillOpacityText.textContent = fillOpacity.value});
 })();

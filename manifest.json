@@ -17,7 +17,9 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"*://*/zm/*"
+				"*://*/zm/*view=montage*",
+				"*://*/zm/index.php",
+				"*://*/zm/*view=console*"
 			],
 			"js": ["js/general-content.js"]
 		},		
@@ -28,7 +30,12 @@
 			"matches": [
 				"*://*/zm/*view=montage*"
 			],
-			"js": ["js/montage-content.js"]
+			"js": [
+				"js/montage-content.js",
+				"js/consoleBtn.js"
+			],
+			"css": ["css/montage-content-stylesheet.css"],
+			"run_at": "document_start"
 		},
 		{
 			"matches": [

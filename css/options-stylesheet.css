@@ -9,18 +9,22 @@ body {
     outline-offset: 14px;
 }
 
-.optionsSlider{
-    width: 220px;
+div.outline h3 {
+    padding: 15px;
+}
+
+div.outline {
+    outline: 1px dotted #222;
+}
+
+.optionsSlider {
+    width: 50%;
     cursor: ew-resize;
 }
 
-h3, h4, input  {
-    margin: .45em .45em .45em 0em;
-}
-
-.colorPicker{
+.colorPicker {
 	padding: 0px; 
-	width: 96%;
+	width: 40px;
 	height: 3em;
 	border: none;
     margin: 0px;

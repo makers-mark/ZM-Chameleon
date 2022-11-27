@@ -1,0 +1,32 @@
+#monitors .monitor {
+    min-width: 0px !important;      /*take care of width restriction with a large row of monitors*/
+}
+
+.monitorStatus {
+    display: none !important;
+}
+
+#consoleSvg {
+    cursor:  pointer !important;
+    -webkit-transition: transform .6s;
+    transition: transform .6s;
+}
+
+#consoleSvg > path {
+    -webkit-transition: stroke-opacity .6s;
+    transition: stroke-opacity .6s;
+}
+
+#consoleSvg:hover {
+    -webkit-transition: .3s;
+    transition: .3s;
+    transform-origin: center;
+    transform: scale(1.08);
+}
+
+#consoleSvg:hover > path {
+    /*fill-opacity: 1 !important;*/
+    stroke-opacity: 1 !important;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
