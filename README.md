@@ -1,8 +1,8 @@
 # ZM-Chameleon
 
 This is a chrome extension that overlays the standard montage screen (it does way more than that),and allows you to have full screen
-access. I've also added several features too. This has been tested on ZoneMinder version 1.34.x
-and I currently test on edge versions of 1.35.x.
+access. I've also added several features too. This has been tested on ZoneMinder version 1.36.x
+and I currently test on edge versions of 1.37.x.
 
 ## Who is this for and why use it?
 
@@ -57,6 +57,7 @@ If you wish to try this/modify this in any way, do this:
   - Then finally a color picker for the monitor shadow
   
 - ### Fine Tuning through the Extension Options Page
+  - Change the ZM Background color (not noticible unless using 'transparent borders' in Montage)
   - Alarm Opacity -This changes the opacity of the Alarm State notification flash
   - Alert Opacity -Does the same as above for the Alert State flash
   - Flashing speed for the previous two options, in tenths of seconds
@@ -72,6 +73,9 @@ If you wish to try this/modify this in any way, do this:
   - Toggle to lock/unlock the current stored RECord button position on all monitors
   - You can disable the ability of the RECord button press when the monitor is in Alert state
   - Change the size in pixels of the RECord button
+  - Added a Console (hamburger Icon) to go back to the Console screen from Montage
+    >Right+Left Click still works too, but sometimes a click goes through to a monitor
+  - Options to change the look of the Console Icon, including stroke/fill color and opacities
   - Option to obfuscate the user name on the login page
   - A button to clear all extension storage (everything goes back to default)
   ---
