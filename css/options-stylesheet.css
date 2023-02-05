@@ -9,12 +9,27 @@ body {
     outline-offset: 14px;
 }
 
-div.outline h3 {
-    padding: 15px;
+input {
+    text-align: center;
 }
 
-div.outline {
-    outline: 1px dotted #222;
+table {
+    width: 100%;
+}
+
+td {
+    border: 1px solid black;
+    padding: 10px;
+    align-content: center;
+}
+
+.head {
+    text-align: center;
+    background-color: #eee;
+    line-height: 2em;
+    border-radius: 5px;
+    font-size: 1.5em;
+    font-weight: 400;
 }
 
 .optionsSlider {
@@ -24,18 +39,12 @@ div.outline {
 
 .colorPicker {
 	padding: 0px; 
-	width: 40px;
-	height: 3em;
 	border: none;
     margin: 0px;
 }
 
 h3.warning {
     margin: 1.2em;
-}
-
-.smallNumber {
-    width: 3em;
 }
 
 .warning {

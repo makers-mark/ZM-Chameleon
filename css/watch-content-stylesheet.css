@@ -1,4 +1,4 @@
-@keyframes pulse{
+@keyframes pulse {
     0% {
         box-shadow: 0px 0px 5px 0px rgba(173,0,0,.5);
         transform: scale(1);
@@ -24,8 +24,8 @@
     user-select: none; /* Fix for Edge turning the whole screen blue because of a slight click/drag */
     text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
     color: darkred;
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
     justify-content: center;
     cursor: pointer;
     transform: scale(.95);
@@ -43,9 +43,9 @@
 button#recordButton {
     border: none !important;
     outline: none !important;
-    margin: 8px;
+    margin: 8px !important;
     background-color: darkred !important;
-    box-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    box-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000 !important;
 }
 
 #recordDiv.Idle {

@@ -31,7 +31,9 @@
         head.appendChild(link);
     };
 
-    chrome.runtime.sendMessage({popupOpen: true}, settings => {
+    chrome.runtime.sendMessage({
+        popupOpen: true
+    }, settings => {
         cssLoader(settings.toggleDark);
         gridWidth.max = settings.widthMax;
         flashWidth.max = settings.widthMax;

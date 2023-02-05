@@ -8,25 +8,18 @@
 
 #consoleSvg {
     cursor:  pointer !important;
-    -webkit-transition: transform .6s;
-    transition: transform .6s;
-}
-
-#consoleSvg > path {
-    -webkit-transition: stroke-opacity .6s;
-    transition: stroke-opacity .6s;
+    transition: all .5s cubic-bezier(0.18, 0.89, 0.32, 1.28) 0s;
 }
 
 #consoleSvg:hover {
-    -webkit-transition: .3s;
-    transition: .3s;
-    transform-origin: center;
-    transform: scale(1.08);
+    scale: 1.08;
+}
+
+#consoleSvg > path {
+    transition: all .5s cubic-bezier(0.18, 0.89, 0.32, 1.28) 0s;
 }
 
 #consoleSvg:hover > path {
-    /*fill-opacity: 1 !important;*/
-    stroke-opacity: 1 !important;
-    -webkit-transition: .5s;
-    transition: .5s;
+    stroke-opacity: .8 !important;
+    fill-opacity: .3 !important;
 }
