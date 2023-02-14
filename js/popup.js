@@ -20,6 +20,7 @@
     let borderRadius          = document.getElementById('borderRadius');
     let transparentGrid       = document.getElementById('transparentGrid');
     let overrideMontageAspect = document.getElementById('overrideMontageAspect');
+    let hueRotate             = document.getElementById('hueRotate');
 
     const cssLoader = toggleDark => {
         let link = document.createElement('link');
@@ -52,6 +53,7 @@
         borderRadius.value              = settings.borderRadius;
         transparentGrid.checked         = settings.transparentGrid;
         overrideMontageAspect.checked   = settings.overrideMontageAspect;
+        hueRotate.value                 = settings.hueRotate;
     });
 
     closeIcon.addEventListener('click', () => window.close() );
@@ -70,6 +72,7 @@
     flashWidth.addEventListener('input', () => chrome.storage.local.set({ flashWidth: parseFloat( flashWidth.value ) }));
     monitorSlider.addEventListener('input', () => chrome.storage.local.set({ monitors: sliderText.textContent = monitorSlider.value }));
     colorPicker.addEventListener('change', () => chrome.storage.local.set({ gridColor: colorPicker.value || '#000000' }));
+    hueRotate.addEventListener('change', () => chrome.storage.local.set({ hueRotate: hueRotate.value }));
     logo.addEventListener('click', () => {
         chrome.storage.local.get({
             toggleDark: true

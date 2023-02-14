@@ -40,6 +40,7 @@
             widthMax: 20,
             flashSpeed: 0.6,
             invertColors: false,
+            hueRotate: 0,
             showFps: true,
             fpsColor: '#00ff00',
             fpsSize: 30,
@@ -121,7 +122,12 @@
             switch( value ){
 
                 default:
-                    settings[value] = change[value].newValue; //MaximizeSingleView, panelPosition
+                    settings[value] = change[value].newValue; //panelPosition
+                    break;
+
+                case 'maximizeSingleView':
+                    settings[value] = change[value].newValue;
+                    maximizeSingleView();
                     break;
 
                 case 'hideHeader':
@@ -219,9 +225,24 @@
                     settings[value] = change[value].newValue;
                     fpsOverlay();
                     break;
+
+                case 'hueRotate':
+                    settings[value] = change[value].newValue;
+                    hueRotate();
+                    break;                    
             }
         });
     });
+
+    const hueRotate = () => {
+        tabId.forEach( sender => {
+            chrome.tabs.insertCSS( sender, { code:
+                `img {
+                    filter: hue-rotate(${settings.hueRotate}deg) !important;
+                }`
+            });
+        });
+    };
 
     chrome.tabs.onUpdated.addListener(( id, tab ) => {
         if (tab.title && tab.title === 'ZM - Montage' && !tabId.includes( id )){
@@ -255,6 +276,7 @@
                     flashWidth: settings.flashWidth,
                     maximizeSingleView: settings.maximizeSingleView,
                     invertColors: settings.invertColors,
+                    hueRotate: settings.hueRotate,
                     dropShadow: settings.dropShadow,
                     shadowColor: settings.shadowColor,
                     borderRadius: settings.borderRadius,
@@ -317,6 +339,7 @@
                 gridHandler();
                 if ( settings.borderRadius ) borderRadius();
                 setBackgroundColor();
+                hueRotate();
                 break;
 
             case "setOverlay":
@@ -345,32 +368,7 @@
                 
                 //If the watch page was clicked on from the montage page and not the
                 //console page and the setting is selected in the popup. Maximize the monitor.
-                if ( settings.maximizeSingleView ){
-                    chrome.tabs.insertCSS( sender.tab.id, { code:
-                        `.imageFeed img {
-                            border: 0px !important;
-                        }
-                        img:first-child {
-                            width: 100vw !important;
-                            height: 100vh !important;
-                        }
-                        div#content {
-                            margin: 0 !important;
-                        }
-                        .monitor {
-                            margin: 0px !important;
-                        }
-                        div.navbar, div#header, div#monitorStatus, .monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events, div.warning {
-                            display: none !important;
-                        }
-                        div.fixed-top.container-fluid, div#header, div.d-flex {
-                            display: none !important;
-                        }
-                        div#navbar-container {
-                            display: none !important;
-                        }`
-                    });
-                }
+                if ( settings.maximizeSingleView ) maximizeSingleView();
                 chrome.storage.local.get({
                     [msg.monitorName + '_fps']: {
                         x: [].x || undefined,
@@ -393,7 +391,7 @@
                         overrideZoom: settings.overrideZoom,
                         zoomFactor: settings.zoomFactor
                     });
-                    if (settings.applyFilters) filterHandler([sender.tab.id]);
+                    if ( settings.applyFilters ) filterHandler([ sender.tab.id ]);
                 });
                 break;
 
@@ -419,8 +417,38 @@
         return true;
     });
 
+const maximizeSingleView = () => {
+    const code = 
+        `.imageFeed img {
+            border: 0px !important;
+        }
+        img:first-child {
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+        div#content {
+            margin: 0 !important;
+        }
+        .monitor {
+            margin: 0px !important;
+        }
+        div.navbar, div#header, div#monitorStatus, .monitorStatus, div#dvrControls, div#replayStatus, div#ptzControls, div#events, div.warning {
+            display: none !important;
+        }
+        div.fixed-top.container-fluid, div#header, div.d-flex {
+            display: none !important;
+        }
+        div#navbar-container {
+            display: none !important;
+        }`
+    tabId.forEach( id => {
+        settings.maximizeSingleView ?
+            chrome.tabs.insertCSS( id, { code: code }) :
+            chrome.tabs.removeCSS( id, { code: code })
+    })
+}
+
     const initMontage = () => {
-        //if (debug){alert(`InitMontage, inserting css into these tabs: ${tabId}`)};
         tabId.forEach( id =>
             chrome.tabs.insertCSS( id, { code:
                 `.monitorState {
@@ -439,15 +467,6 @@
                 }`    //Something around 1.36.10 made me have to put this
             })
         );
-/*         
-        if (settings.backgroundColor != ''){
-            tabId.forEach( id => chrome.tabs.insertCSS(id, {
-                code:
-                `body {
-                    background-color: ${settings.backgroundColor} !important;
-                }`
-            }));
-        } */
     };
 
     const overrideMontageAspect = () => {
@@ -544,7 +563,7 @@
     };
 
     const filterHandler = () => {
-        tabId.forEach( sender => {
+        tabId.forEach( sender => {          
             if ( settings.dropShadow && settings.invertColors ){
                 chrome.tabs.insertCSS( sender, { code:
                     `img, #panel {
