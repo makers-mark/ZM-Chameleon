@@ -70,10 +70,13 @@ button.blueButton {
     transition-duration: .35s;
     cursor: pointer;
     margin: 5px;
-
 }
 
 button.blueButton:hover {
     background-color: white;
     color: #3474eb;
+}
+
+.top {
+    vertical-align: top;
 }

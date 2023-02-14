@@ -5,13 +5,8 @@ const setupZoom = ( zoomFactor ) => {
     });
 
     //override the default zoneminder zoom in watch.js
-    const script = document.createElement('script');
-    script.textContent = `function handleClick(){}`;
-    document.head.appendChild(script);
-
     //Do not display the Ctrl-click zoom options on hover through the title attribute
     const style = document.createElement('style');
-    //style.type = 'text/css'; //<<deprecated
     style.innerHTML = `#imageFeed, div#content > div {pointer-events: none !important;}`
     document.head.appendChild(style);
 
@@ -21,8 +16,8 @@ const setupZoom = ( zoomFactor ) => {
     let pointY    = 0;
     let initialXY = {x: 0, y: 0};
 
-    const imageFeed = document.querySelector('div#content > div')
-    imageFeed.style.title = '0';
+    const imageFeed = document.querySelector('div#content > div');
+    imageFeed.setAttribute('title', '');
     imageFeed.style.transformOrigin = '0 0';
 
     const setTransform = () => imageFeed.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;

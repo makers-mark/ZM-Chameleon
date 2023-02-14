@@ -28,7 +28,7 @@
                 }
                 //chrome.runtime.sendMessage({goToConsole: true});
             }
-        } else if (e.which === 2){
+        } else if (e.buttons === 4){
             //e.preventDefault();
             chrome.runtime.sendMessage({fullscreenToggle: true});
         }

@@ -2,7 +2,19 @@
     "use strict";
 
     let defaultAspectRatio = '4/3';
-    let defaultShadow      = '2px 4px 6px';    
+    let defaultShadow      = '2px 4px 6px';
+    let cssToBeRemoved     = '';
+    let defaultCustomCSS   =
+`#navbar-container {
+    transform-origin: top center;
+    transform: perspective(100em) rotateX(-75deg);
+}
+div#navbar-container:hover {
+    transform: rotate(0);
+    div#header {
+        transform: rotate(0);
+    }  
+}`;
 
     let customLocation              = document.getElementById('customLocation');
     let alarmOpacity                = document.getElementById('alarmOpacity');
@@ -40,6 +52,10 @@
     let strokeOpacityText           = document.getElementById('strokeOpacityText');
     let fillOpacity                 = document.getElementById('fillOpacity');
     let fillOpacityText             = document.getElementById('fillOpacityText');
+    let ghostHeader                 = document.getElementById('ghostHeader');
+    let customCSS                   = document.getElementById('customCSS');
+    let customCSSApply              = document.getElementById('customCSSApply');
+    let customCSSReset              = document.getElementById('customCSSReset');
 
     document.getElementById('whoami').innerText = chrome.runtime.getURL('') || '';
     let version = chrome.runtime.getManifest().version;
@@ -73,7 +89,9 @@
         strokeColor: '#00c7b0',
         strokeOpacity: 0.18,
         fillColor: '#666ff0',
-        fillOpacity: 0.14
+        fillOpacity: 0.14,
+        ghostHeader: false,
+        customCSS: defaultCustomCSS
     }, settings => {
         customLocation.value                = settings.customLocation;
         userName.value                      = settings.userName;
@@ -105,6 +123,8 @@
         strokeOpacityText.textContent       = strokeOpacity.value = settings.strokeOpacity;
         fillColor.value                     = settings.fillColor;
         fillOpacityText.textContent         = fillOpacity.value = settings.fillOpacity;
+        ghostHeader.checked                 = settings.ghostHeader;
+        customCSS.value                     = cssToBeRemoved = settings.customCSS;
     });
 
     document.getElementById('clearStorage').addEventListener('click', () => 
@@ -117,37 +137,39 @@
         recordButton.className = recordDiv.className = 'Alarm'
     );
 
-    alertOpacity.onchange                = () => chrome.storage.local.set({alertOpacity: alertOpacityText.textContent = alertOpacity.value});
-    alarmOpacity.onchange                = () => chrome.storage.local.set({alarmOpacity: alarmOpacityText.textContent = alarmOpacity.value});
-    inversionAmount.onchange             = () => chrome.storage.local.set ({inversionAmount: inversionAmountText.textContent = inversionAmount.value});
+    alertOpacity.onchange                = () => chrome.storage.local.set({ alertOpacity: alertOpacityText.textContent = alertOpacity.value });
+    alarmOpacity.onchange                = () => chrome.storage.local.set({ alarmOpacity: alarmOpacityText.textContent = alarmOpacity.value });
+    inversionAmount.onchange             = () => chrome.storage.local.set({ inversionAmount: inversionAmountText.textContent = inversionAmount.value });
     recordButtonSize.oninput             = () => recordButton.style.height = recordButton.style.width = recordButton.style.borderRadius = recordDiv.style.fontSize = `${recordButtonSize.value}px`;
-    recordButtonSize.onchange            = () => chrome.storage.local.set({recordButtonSize: recordButtonSize.value});
-    dropShadowApply.onclick              = () => chrome.storage.local.set({dropShadowString: dropShadowString.value});
-    dropShadowStringReset.onclick        = () => chrome.storage.local.set({dropShadowString: defaultShadow}, () => dropShadowString.value = defaultShadow);
-    widthMax.onchange                    = () => chrome.storage.local.set({widthMax: parseInt(widthMax.value, 10)});
-    flashSpeed.onchange                  = () => chrome.storage.local.set({flashSpeed: flashSpeed.value});
-    userName.onchange                    = () => chrome.storage.local.set({userName: userName.value});
-    password.onchange                    = () => chrome.storage.local.set({password: password.value});
-    customLocation.onchange              = () => chrome.storage.local.set({customLocation: customLocation.value});
-    showFps.onchange                     = () => chrome.storage.local.set({showFps: showFps.checked});
-    fpsSize.onchange                     = () => chrome.storage.local.set({fpsSize: fpsSize.value});
+    recordButtonSize.onchange            = () => chrome.storage.local.set({ recordButtonSize: recordButtonSize.value });
+    dropShadowApply.onclick              = () => chrome.storage.local.set({ dropShadowString: dropShadowString.value });
+    dropShadowStringReset.onclick        = () => chrome.storage.local.set({ dropShadowString: defaultShadow }, () => dropShadowString.value = defaultShadow);
+    widthMax.onchange                    = () => chrome.storage.local.set({ widthMax: parseInt( widthMax.value, 10 )});
+    flashSpeed.onchange                  = () => chrome.storage.local.set({ flashSpeed: flashSpeed.value });
+    userName.onchange                    = () => chrome.storage.local.set({ userName: userName.value });
+    password.onchange                    = () => chrome.storage.local.set({ password: password.value });
+    customLocation.onchange              = () => chrome.storage.local.set({ customLocation: customLocation.value });
+    showFps.onchange                     = () => chrome.storage.local.set({ showFps: showFps.checked });
+    fpsSize.onchange                     = () => chrome.storage.local.set({ fpsSize: fpsSize.value });
     fpsSize.oninput                      = () => fpsSpan.style.fontSize = `${fpsSize.value}px`;
-    fpsColor.onchange                    = () => chrome.storage.local.set({fpsColor: fpsColor.value});
+    fpsColor.onchange                    = () => chrome.storage.local.set({ fpsColor: fpsColor.value });
     fpsColor.oninput                     = () => fpsSpan.style.color = fpsColor.value;
-    lockRecordButton.onchange            = () => chrome.storage.local.set({lockRecordButton: lockRecordButton.checked});
-    obfuscate.onchange                   = () => chrome.storage.local.set({obfuscate: obfuscate.checked});
-    disableRecordOnAlert.onchange        = () => chrome.storage.local.set({disableRecordOnAlert: disableRecordOnAlert.checked});
-    applyFilters.onchange                = () => chrome.storage.local.set({applyFilters: applyFilters.checked});
-    aspectRatioApply.onclick             = () => chrome.storage.local.set({aspectRatio: aspectRatio.value});
-    aspectRatioReset.onclick             = () => chrome.storage.local.set({aspectRatio: defaultAspectRatio}, () => aspectRatio.value = defaultAspectRatio);
-    maintainSingleMonitorAspect.onchange = () => chrome.storage.local.set({maintainSingleMonitorAspect: maintainSingleMonitorAspect.checked});
-    overrideZoom.onchange                = () => chrome.storage.local.set({overrideZoom: overrideZoom.checked});
-    zoomFactor.onchange                  = () => chrome.storage.local.set({zoomFactor: zoomFactor.value});
-    backgroundColor.oninput              = () => chrome.storage.local.set({backgroundColor: backgroundColor.value});
-    strokeColor.oninput                  = () => chrome.storage.local.set({strokeColor: strokeColor.value});
-    strokeOpacity.oninput                = () => chrome.storage.local.set({strokeOpacity: strokeOpacityText.textContent = strokeOpacity.value});
-    fillColor.oninput                    = () => chrome.storage.local.set({fillColor: fillColor.value});
-    fillOpacity.oninput                  = () => chrome.storage.local.set({fillOpacity: fillOpacityText.textContent = fillOpacity.value});
-    consoleScale.oninput                 = () => chrome.storage.local.set({consoleScale: consoleScale.value});
-
+    lockRecordButton.onchange            = () => chrome.storage.local.set({ lockRecordButton: lockRecordButton.checked });
+    obfuscate.onchange                   = () => chrome.storage.local.set({ obfuscate: obfuscate.checked });
+    disableRecordOnAlert.onchange        = () => chrome.storage.local.set({ disableRecordOnAlert: disableRecordOnAlert.checked });
+    applyFilters.onchange                = () => chrome.storage.local.set({ applyFilters: applyFilters.checked });
+    aspectRatioApply.onclick             = () => chrome.storage.local.set({ aspectRatio: aspectRatio.value });
+    aspectRatioReset.onclick             = () => chrome.storage.local.set({ aspectRatio: defaultAspectRatio}, () => aspectRatio.value = defaultAspectRatio );
+    maintainSingleMonitorAspect.onchange = () => chrome.storage.local.set({ maintainSingleMonitorAspect: maintainSingleMonitorAspect.checked });
+    overrideZoom.onchange                = () => chrome.storage.local.set({ overrideZoom: overrideZoom.checked });
+    zoomFactor.onchange                  = () => chrome.storage.local.set({ zoomFactor: zoomFactor.value });
+    backgroundColor.oninput              = () => chrome.storage.local.set({ backgroundColor: backgroundColor.value });
+    strokeColor.oninput                  = () => chrome.storage.local.set({ strokeColor: strokeColor.value });
+    strokeOpacity.oninput                = () => chrome.storage.local.set({ strokeOpacity: strokeOpacityText.textContent = strokeOpacity.value });
+    fillColor.oninput                    = () => chrome.storage.local.set({ fillColor: fillColor.value });
+    fillOpacity.oninput                  = () => chrome.storage.local.set({ fillOpacity: fillOpacityText.textContent = fillOpacity.value });
+    consoleScale.oninput                 = () => chrome.storage.local.set({ consoleScale: consoleScale.value });
+    ghostHeader.onchange                 = () => chrome.storage.local.set({ ghostHeader: ghostHeader.checked });
+    customCSSApply.onclick               = () => chrome.storage.local.set({ customCSS: customCSS.value });
+    customCSSReset.onclick               = () => chrome.storage.local.set({ customCSS: defaultCustomCSS }, () => customCSS.value = defaultCustomCSS);
 })();

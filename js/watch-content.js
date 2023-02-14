@@ -1,7 +1,7 @@
 (() => {
     "use strict";
 
-    let windowState;
+    //let windowState;
 
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -9,19 +9,19 @@
         monitorName     = monitorName.innerHTML || monitorName;
         let cancelAlarm = document.getElementById('cancelAlarmLink') || document.getElementById('enableAlmBtn');
         let forceAlarm  = document.getElementById('forceAlarmLink') || document.getElementById('forceAlmBtn');
-        let maximizeSingleView;
+        //let maximizeSingleView;
 
         chrome.runtime.sendMessage({
             watchPageOpen: true,
             monitorName: monitorName
         }, monitorSettings => {
             if (monitorSettings){
-                windowState = monitorSettings.windowState;
-                maximizeSingleView = monitorSettings.maximizeSingleView;
+                //windowState = monitorSettings.windowState;
+                //maximizeSingleView = monitorSettings.maximizeSingleView;
 
-                if (monitorSettings.overrideZoom) setupZoom(monitorSettings.zoomFactor);
+                if (monitorSettings.overrideZoom) setupZoom( monitorSettings.zoomFactor );
 
-                if (forceAlarm && cancelAlarm) placeRecordIcon(
+                if (monitorSettings.maximizeSingleView && forceAlarm && cancelAlarm) placeRecordIcon(
                     monitorName,
                     monitorSettings.monitor[monitorName + '_rec'],
                     monitorSettings.lockRecordButton,
@@ -43,14 +43,14 @@
         //window, so close it on double click
         document.addEventListener("dblclick", e => {
 
-            if (windowState === 'popup'){  //Fix this, add window.type and windowType for popup to happen in older versions of zm
-                window.close()
-            } else {
+            //if (windowState === 'popup'){  //Fix this, add window.type and windowType for popup to happen in older versions of zm
+             //   window.close()
+            //} else {
                 window.history.back();
-                if (maximizeSingleView && windowState === 'normal'){
-                    chrome.runtime.sendMessage({fullscreenToggle: true});
-                }
-            }
+                //if (maximizeSingleView && windowState === 'normal'){
+                    //chrome.runtime.sendMessage({fullscreenToggle: true});
+                //}
+            //}
         });
     }); //DOMContentLoaded
 })();

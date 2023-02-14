@@ -23,3 +23,7 @@
     stroke-opacity: .8 !important;
     fill-opacity: .3 !important;
 }
+
+[draggable = true] {
+    cursor: move;
+}
