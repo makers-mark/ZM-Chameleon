@@ -2,11 +2,10 @@
 	"manifest_version": 2,
 	"name": "ZM Chameleon",
 	"description": "This extension is designed to make the ZoneMinder viewing experience better!",
-	"version": "1.45",
+	"version": "2",
 	"permissions": [
 		"storage",
-		"*://*/zm",
-		"declarativeContent"
+		"*://*/*"
 	],
 	"options_ui": {
 		"page": "options.html",
@@ -16,12 +15,14 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"*://*/zm/*view=montage*",
-				"*://*/zm/index.php",
-				"*://*/zm/*view=console*"
+				"*://*/zm/*"
 			],
-			"js": ["js/general-content.js"]
-		},		
+			"js": [
+				"js/all-content.js",
+				"js/ghostHeader.js"
+			],
+			"run_at": "document_start"
+		},
 		{
 			"exclude_matches": [
 				"*://*/zm/*view=montagereview*"
@@ -37,27 +38,45 @@
 		},
 		{
 			"matches": [
+				"*://*/zm/*view=watch*"
+			],
+			"js": [
+				"js/watch-content.js"
+			],
+			"css": ["css/watch-content-stylesheet.css"],
+			"run_at": "document_start"
+		},
+		{
+			"matches": [
+				"*://*/zm/*view=event&*"
+			],
+			"js": [
+				"js/event-content.js"
+			],
+			"css": ["css/event-stylesheet.css"],
+			"run_at": "document_start"
+		},
+		{
+			"matches": [
+				"*://*/zm/*view=montage*",
+				"*://*/zm/index.php",
+				"*://*/zm/*view=console*"
+			],
+			"js": ["js/general-content.js"]
+		},
+		{
+			"matches": [
 				"*://*/zm/*view=login*",
 				"*://*/zm/"
 			],
 			"js": ["js/login-content.js"]
-		},
-		{
-			"matches": [
-				"*://*/zm/*view=watch*"
-			],
-			"js": [
-				"js/watch-content.js",
-				"js/recordBtn.js",
-				"js/mouseZoom.js",
-				"js/fps.js"
-			],
-			"css": ["css/watch-content-stylesheet.css"],
-			"run_at": "document_start"
 		}
 	],
 	"background": {
-		"scripts": ["js/background.js"],
+		"scripts": [
+			"js/background.js",
+			"js/all-content.js"
+		],
 		"persistent": true
 	},
 	"page_action": {
@@ -77,7 +96,7 @@
 	}, 
 	"web_accessible_resources": [
 		"fonts/Digital7-1e1Z.ttf",
-		"icons/pattern.gif",
-		"js/scaleScript.js"
+		"js/scaleScript.js",
+		"js/handleClick.js"
 	]
 }

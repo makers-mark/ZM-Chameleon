@@ -1,3 +1,7 @@
+body {
+    visibility: hidden;
+}
+
 #monitors .monitor {
     min-width: 0px !important;      /*take care of width restriction with a large row of monitors*/
 }
@@ -26,4 +30,26 @@
 
 [draggable = true] {
     cursor: move;
+}
+
+.monitorState {
+    display: none !important;
+}
+
+#content {
+    width: 100% !important;
+    margin: 0px !important;
+}
+
+#header {
+    border-bottom: 0px !important;
+    margin: 0px !important;
+}
+
+img {
+    width: 100% !important;
+}
+
+img[id^="liveStream"] {
+    height: auto !important;
 }

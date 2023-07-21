@@ -3,6 +3,7 @@
   <head>
 	<title>ZM Chameleon</title>
 	<link rel="preload" href="js/popup.js" as="script">
+	<link rel="preload" href="js/all-content.js" as="script">
 	<link rel="preload" href="css/popup-base-stylesheet.css" as="style">
 	<link rel="stylesheet" href="css/popup-base-stylesheet.css">
   </head>
@@ -20,7 +21,7 @@
 					<span class="slider round"></span>
 				</label>
 			</td>
-			<td><h4>Hide Header</h4></td>
+			<td><h4>Hide Montage Header</h4></td>
 		</tr>
 		<tr>
 			<td>
@@ -40,6 +41,15 @@
 			</td>
 			<td><h4>Maximize Single View</h4></td>
 		</tr>
+		<tr>
+			<td>
+				<label class="switch">
+					<input type="checkbox" id="maximizeEventView">
+					<span class="slider round"></span>
+				</label>
+			</td>
+			<td><h4>Maximize Event View</h4></td>
+		</tr>		
 	</table>
 	<hr>
 	<table>
@@ -84,17 +94,11 @@
 		</tr>
 
 		<tr>
-			<td>
-				<label class="switch smallSwitch">
-					<input type="checkbox" id="toggleMonitors">
-					<span class="smallSlider round"></span>
-				</label>
-			</td>
-			<td><h4>Monitors Per Row: <span id="sliderText"></span></h4></td>
+			<td colspan="3"><h4>Monitors Per Row: <span id="sliderText"></span></h4></td>
 		</tr>
 		<tr>
 			<td colspan="3"> 
-				<input type="range" step="1" min="1" max="10" class="mySlider" id="monitorSlider">
+				<input type="range" step="1" min="1" max="20" class="mySlider" id="monitorSlider">
 			</td>
 		</tr>
 		<tr>
@@ -145,6 +149,7 @@
 			</td>
 		</tr>		
 	</table>
+	<script src="js/all-content.js"></script>
 	<script src="js/popup.js"></script>
   </body>
 </html>

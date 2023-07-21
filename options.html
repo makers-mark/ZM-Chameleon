@@ -3,10 +3,9 @@
   <head>
     <title>ZM Chameleon Options</title>
     <link rel="preload" href="css/options-stylesheet.css" as="style">
-    <link rel="preload" href="css/watch-content-stylesheet.css" as="style">
+    <link rel="preload" href="js/all-content.js" as="script">
     <link rel="preload" href="js/options.js" as="script">
     <link rel="stylesheet" href="css/options-stylesheet.css">
-    <link rel="stylesheet" href="css/watch-content-stylesheet.css">
     <style> /* Override Chrome "button" css when options page style is set to "chrome_style" in manifest.json */
       button {
         min-width: unset !important;
@@ -27,12 +26,20 @@
         See the source and contribute on GitHub!
         </a>
       </h3>
-      <hr>
-      <div class="head">
-        Montage Options
-      </div>
     </div>
-    <div>
+    <div id="mainBtns" class="tabs">
+      <button id="montage" class="blueButton tablinks">Montage</button>
+      <button id="watch" class="blueButton tablinks">Watch</button>
+      <button id="event" class="blueButton tablinks">Event</button>
+      <button id="login" class="blueButton tablinks">Login</button>
+      <button id="icons" class="blueButton tablinks">Icons</button>
+      <button id="general" class="blueButton tablinks">General</button>
+      <button id="ghost" class="blueButton tablinks">Ghost CSS</button>
+    </div>
+
+    <div id="montageTab" class="tabcontent">
+      <h3><input type="checkbox" id="ghostHeaderMontage"> Ghost Header </h3>
+      <h4> This makes the Header/Nav transparent, sticky/movable, and unobtrusive (EXPERIMENTAL)</h4>
       <h3>Montage Background Color: <input class="colorPicker" type="color" id="backgroundColor"></h3>
       <hr>
       <h3>Alarm Opacity: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="alarmOpacity"><span id="alarmOpacityText"></span></h3>
@@ -44,25 +51,46 @@
         <input type="number" min="1" id="widthMax">
       </h3>
       <hr>
-      <h3>Custom 'Url-contains' that matches pages that this extensions popup is enabled on: 
+      <label for="autoScale">Force Scale in Zoneminder:</label>
+      <select name="scale" id="autoScale">
+        <option value="-1">None</option>
+        <option value="1">Auto</option>
+        <option value="400">4x</option>
+        <option value="300">3x</option>
+        <option value="200">2x</option>
+        <option value="150">1.5x</option>
+        <option value="100">Actual</option>
+        <option value="75">3/4</option>
+        <option value="50">1/2</option>
+        <option value="33">1/3</option>
+        <option value="25">1/4</option>
+        <option value="12.5">1/8</option>
+      </select>
+<!--       <h3>Custom 'Url-contains' that matches pages that this extensions popup is enabled on: 
         <input type="text" sltyle="width:100%;" id="customLocation">
       </h3>
       <h4>Examples: 'https://192.168.0.2/zm' OR 'zm' OR 'localhost'...</h4>
-      <hr>
-      <h3>Drop shadow string (default is '2px 4px 6px'): <input id="dropShadowString" type="text" value="2px 4px 6px"><button id="dropShadowApply" class="blueButton">Apply</button><button id="dropShadowStringReset" class="blueButton">Reset</button></h3>
+      <hr> -->
+      <h3>Drop shadow string (default is '<span id="defaultShadowText"></span>'): <input id="dropShadowString" type="text"><button id="dropShadowApply" class="blueButton">Apply</button><button id="dropShadowStringReset" class="blueButton">Reset</button></h3>
       <h4>You just need to put the first three values (offset-x, offset-y, blur-radius), the color is set in the popup.</h4>
       <h4><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow">https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow</a></h4>
       <h3>Color Inversion Amount: <input type="range" step="0.01" class="optionsSlider" min="0" max="1" id="inversionAmount"> <span id="inversionAmountText"></span></h3>
       <h3><input type="checkbox" id="applyFilters">Apply filters to single monitor view</h3>
-      <h3>Force Aspect Ratio on Montage (default is 4/3): <input id="aspectRatio" type="text" value="4/3"><button id="aspectRatioApply" class="blueButton">Apply</button><button id="aspectRatioReset" class="blueButton">Reset</button></h3>
-      <h3><input type="checkbox" id="ghostHeader"> Ghost Header </h3>
-      <h4> This makes the Header/Nav transparent, sticky/movable, and unobtrusive (EXPERIMENTAL)</h4>
-      <h4> Custom CSS for Ghost Header:</h4>
-      <textarea style="width: 60%;" spellcheck="false" cols=60 rows=20 id="customCSS"></textarea><button id="customCSSApply" class="blueButton top">Apply</button><button id="customCSSReset" class="blueButton top">Reset</button></h3>
-      <hr>
-      <div class="head">
-        Console Icon Appearance
+      <h3>Force Aspect Ratio on Montage (default is <span id="defaultAspectText"></span>): <input id="aspectRatio" type="text"><button id="aspectRatioApply" class="blueButton">Apply</button><button id="aspectRatioReset" class="blueButton">Reset</button></h3>
+      <div>
+        <table>
+          <tr>
+            <td><h4><p id="aspectCalculator"></p></h4></td>
+            <td><h4><p id="aspectCalculator2"></p></h4></td>
+          </tr>
+        </table>
       </div>
+      <h3> Custom CSS for the Montage Page.</h3>
+      <textarea style="width: 60%;" spellcheck="false" cols=60 rows=20 id="customCSSMontage"></textarea><button id="customCSSApplyMontage" class="blueButton top">Inject</button><button id="customCSSResetMontage" class="blueButton top">Remove</button></h3>
+    </div>
+
+    <div id="iconsTab" class="tabcontent">
+      <h3>Screen Resolution: <span id="width"></span>x<span id="height"></span></h3>
       <table>
         <tr>
           <td>
@@ -81,15 +109,13 @@
             <h3>Scale: <input type="number" step="0.1" min="0" id="consoleScale"></h3>
           </td>
         </tr>
-      </table>     
-      
-      
-      
-      <hr>
-      <div class="head">
-        Watch Page Options
-      </div>
+      </table>
+    </div>
 
+    <div id="watchTab" class="tabcontent">
+      <h3><input type="checkbox" id="hideHeaderWatch"> Hide Header/Navbar</h3>
+      <h3><input type="checkbox" id="ghostHeaderWatch"> Ghost Header </h3>
+      <h4> This makes the Header/Nav transparent, sticky/movable, and unobtrusive (EXPERIMENTAL)</h4>
       <h3><input type="checkbox" id="maintainSingleMonitorAspect" checked> Maintain aspect ratio when 'Maximize Single View' is toggled in the popup</h3>
       <h3><input type="checkbox" id="overrideZoom"> Override ZM zoom in Single View. This allows you to use the mouse wheel to zoom</h3>
       <h4>Scroll zoom only works with 'Maximize Single View' is toggled in the popup</h4>
@@ -107,29 +133,45 @@
       <h3><input type="checkbox" id="lockRecordButton">Lock the record button position on all monitors</h3>
       <h3><input type="checkbox" id="disableRecordOnAlert">Disable record button click in 'Alert/yellow' mode</h3>
 
-            <h3>Record button size (pixels): <input type="number" min="1" id="recordButtonSize" value="70"></h3>
-            <h4>Click the button or hover over it to see the true scaled size.</h4>
+        <h3>Record button size (pixels): <input type="number" min="1" id="recordButtonSize" value="70"></h3>
+        <h4>Click the button or hover over it to see the true scaled size.</h4>
 
-            <div id="recordDiv" class="Idle">
-              <button id="recordButton" class="Idle"></button>REC
-            </div>
+        <div id="recordDiv" class="Idle">
+          <button id="recordButton" class="Idle"></button>REC
+        </div>
 
-      <hr>
- 
-      <hr>
-      <h3>You can use the two fields below to autofill the user and password at the login screen.</h3>
-      <h3 class="warning">This is NOT recommended because the information is stored in local storage on your computer.<br></h3>
-      <h3>Do not use unless you understand the inherrent risks. For example, any person that uses your computer can access this data in plain text with the debugger.</h3>
-      <h3>User: <span><input type="password" id="userName"></span></h3>
-      <h3>Password: <span><input type="password" id="password"></span></h3>
-      <h3><input type="checkbox" id="obfuscate">Hide the user name on the login page.</h3>
-      <hr>
+        <h4> Custom CSS for Watch Page:</h4>
+        <textarea style="width: 60%;" spellcheck="false" cols=60 rows=20 id="customCSSWatch"></textarea><button id="customCSSApplyWatch" class="blueButton top">Inject</button><button id="customCSSResetWatch" class="blueButton top">Remove</button></h3> 
+    </div>
+  
+    <div id="eventTab" class="tabcontent">
+      <h3><input type="checkbox" id="hideHeaderEvent"> Hide Header/Navbar</h3>
+      
+      <h3><input type="checkbox" id="ghostHeaderEvent"> Ghost Header </h3>
+      <h3><input type="checkbox" id="maintainEventAspect" checked> Maintain aspect ratio when 'Maximize Event View' is toggled in the popup</h3>
+      <h3><input type="checkbox" id="eventStats">Show 'Event Stats' on event view page</h3>
+      <h3><input type="checkbox" id="eventsPageSticky"> Make the Header in 'Events' page sticky</h3>
+      <h4> Custom CSS for Event Page:</h4>
+      <textarea style="width: 60%;" spellcheck="false" cols=60 rows=20 id="customCSSEvent"></textarea><button id="customCSSApplyEvent" class="blueButton top">Inject</button><button id="customCSSResetEvent" class="blueButton top">Remove</button></h3>
+    </div>
+
+    <div id="loginTab" class="tabcontent">
+      <h3><input type="checkbox" id="obfuscate">Obfuscate user name on the login page.</h3>
+    </div>
+
+
+    <div id="generalTab" class="tabcontent">
       <div>
         <h3>Clearing storage will set the extension back to default values and reload the extension and ZoneMinder tab.
           <button id="clearStorage" class="blueButton">Clear Storage</button>
         </h3>
       </div>
     </div>
+  
+    <div id="ghostTab" class="tabcontent">Ghost Header/Navbar CSS
+      <textarea style="width: 60%;" spellcheck="false" cols=60 rows=20 id="ghostCSS"></textarea><button id="ghostCSSApply" class="blueButton top">Inject</button><button id="ghostCSSReset" class="blueButton top">Remove</button></h3>
+    </div>
+    <script src="js/all-content.js"></script>
     <script src="js/options.js"></script>
   </body>
 </html>

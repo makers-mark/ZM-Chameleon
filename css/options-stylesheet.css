@@ -2,11 +2,49 @@ body {
     width: auto;
     margin-left: auto;
     margin-right: auto;
-    max-width: 800px;
+    max-width: 880px;
     height: auto;
     padding: 10px;
     outline: 2px solid #222;
     outline-offset: 14px;
+}
+
+.tabs {
+    overflow: hidden;
+    border: 2px solid #222;
+    background-color: #f1f1f1;
+}
+
+.tabs button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+    text-shadow: none;
+}
+
+.tabs button:hover {
+    background-color: rgb(29, 28, 120);
+}
+
+.tabs button.active {
+    background-color: #d2e8f7;
+    color: #000000;
+}
+
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+#mainBtns {
+    outline: #222;
 }
 
 input {
@@ -79,4 +117,86 @@ button.blueButton:hover {
 
 .top {
     vertical-align: top;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0px 0px 5px 0px rgba(173,0,0,.5);
+        transform: scale(1);
+    }
+    25% {
+        box-shadow: 0px 0px 5px 25px rgba(173,0,0,.4);
+        transform: scale(.6);
+    }
+    99% {
+        box-shadow: 0px 0px 7px 70px rgba(173,0,0,0);
+        transform: scale(.1);
+    }
+}
+
+@font-face {
+    font-family: digitalFont;
+    src: url('chrome-extension://__MSG_@@extension_id__/fonts/Digital7-1e1Z.ttf');
+    /* font source: https://www.dafont.com/digital-7.font */
+}
+
+#recordDiv {
+    font-family: digitalfont;
+    user-select: none; /* Fix for Edge turning the whole screen blue because of a slight click/drag */
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    color: darkred;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(.95);
+    opacity: .55;
+}
+
+#recordDiv:hover {
+    transform: scale(1);
+}
+
+#recordDiv.child {
+    pointer-events: none;
+}
+
+button#recordButton {
+    border: none !important;
+    outline: none !important;
+    margin: 8px !important;
+    background-color: darkred !important;
+    box-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000 !important;
+}
+
+#recordDiv.Idle {
+    color: darkred !important;
+    opacity: .55;
+    transition: 1s;
+}
+
+#recordDiv.Alert, #recordDiv.Alarm {
+    color: red !important;
+    opacity: 1;
+    transform: scale(1);
+}
+
+button#recordButton.Idle {
+    background-color: darkred !important;
+    transition: 1s;
+}
+
+button#recordButton.Alarm {
+    animation: pulse .4s infinite;
+    background-color: red !important;
+}
+
+button#recordButton.Alert {
+    animation: pulse .4s infinite;
+    background-color: yellow !important;
+    opacity: .60;
+}
+
+#fpsSpan {
+    position: fixed;
 }
